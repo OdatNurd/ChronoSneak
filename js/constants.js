@@ -18,7 +18,7 @@ nurdz.sneak.constants = (function ()
          * The width of the stage, in pixels.
          *
          * @const
-         * @type {number}
+         * @type {Number}
          */
         STAGE_WIDTH: 800,
 
@@ -26,8 +26,16 @@ nurdz.sneak.constants = (function ()
          * The height of the stage, in pixels.
          *
          * @const
-         * @type {number}
+         * @type {Number}
          */
-        STAGE_HEIGHT: 600
+        STAGE_HEIGHT: 600,
+
+        /**
+         * The title page scene in the game.
+         *
+         * @const
+         * @type {String}
+         */
+        SCENE_TITLE: "title"
     }
 } ());
