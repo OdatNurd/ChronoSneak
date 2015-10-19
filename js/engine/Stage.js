@@ -1,4 +1,13 @@
 /**
+ * This sub-namespace contains all of the classes and objects to do with the game engine itself. There
+ * should (hopefully) be nothing game specific in this namespace.
+ *
+ * @alias nurdz.game
+ * @type {{}}
+ */
+nurdz.createNamespace ("nurdz.game");
+
+/**
  * Create the stage on which all rendering for the game will be done.
  *
  * A canvas will be created at the provided dimensions and will be inserted into the DOM as the last child
@@ -12,9 +21,9 @@
  * @param {String} containerDivID the ID of the DIV that should contain the created canvas
  * @param {String} [initialColor] the color to clear the canvas to once it is created
  * @constructor
- * @throws {Error} if there is no element with the ID provided
+ * @throws {ReferenceError} if there is no element with the ID provided
  */
-function Stage (width, height, containerDivID, initialColor)
+nurdz.game.Stage = function (width, height, containerDivID, initialColor)
 {
     "use strict";
 
@@ -52,7 +61,7 @@ function Stage (width, height, containerDivID, initialColor)
     // Get the container that will hold the canvas, and error if it does not exist.
     var container = document.getElementById (containerDivID);
     if (container == null)
-        throw new Error ("Unable to create stage: No such element with ID '" + containerDivID + "'");
+        throw new ReferenceError ("Unable to create stage: No such element with ID '" + containerDivID + "'");
 
     // Now create the canvas and give it the appropriate dimensions.
     this.canvas = document.createElement ("canvas");
@@ -71,12 +80,18 @@ function Stage (width, height, containerDivID, initialColor)
 
     // Append the canvas to the container
     container.appendChild (this.canvas);
-}
+};
 
 // Now define the various member functions and any static state.
 (function ()
 {
     "use strict";
+
+    /**
+     * A simple alias for the class whose methods we are defining.
+     * @type {Stage}
+     */
+    var Stage = nurdz.game.Stage;
 
     /**
      * Clear the entire stage with the provided color specification, or a default color if no color is
