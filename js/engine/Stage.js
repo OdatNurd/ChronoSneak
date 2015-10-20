@@ -84,7 +84,7 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
      *
      * @type {nurdz.game.Scene}
      */
-    var currentScene = new nurdz.game.Scene ("defaultScene");
+    var currentScene = new nurdz.game.Scene ("defaultScene", this);
 
     /**
      * The scene that should become active next, if any. When a scene change request happens, the scene to
@@ -117,10 +117,8 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
      * and it will then be asked to render itself.
      *
      * This should be invoked, say 30 or 60 times a second, to make the game run.
-     *
-     * @param {nurdz.game.Stage} stage the stage to use to render the game during the loop
      */
-    var sceneLoop = function (stage)
+    var sceneLoop = function ()
     {
         // If there is a scene change scheduled, change it now.
         if (nextScene != null)
@@ -132,7 +130,7 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
 
         // Do the frame update now
         currentScene.update ();
-        currentScene.render (stage);
+        currentScene.render ();
     };
 
     /**
@@ -152,14 +150,8 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
         if (gameTimerID != null)
             throw new Error ("Attempt to start the game running when it is already running");
 
-        // Note: In order to pass the stage to the sceneLoop function, we need to create a new bound
-        // function. The first argument specifies what "this" will refer to, and the second is an argument
-        // that is always passed. Here we do it twice.
-        //
-        // NOTE: Technically this method takes a variable number of arguments, and the third argument
-        // onward get passed to the timeout function, but we do it this way because WebStorm is inherently
-        // stupid about this.
-        gameTimerID = setInterval (sceneLoop.bind (this, this), 1000 / fps);
+        // Fire off a timer to invoke our scene loop using an appropriate interval.
+        gameTimerID = setInterval (sceneLoop, 1000 / fps);
     };
 
     /**
