@@ -1,16 +1,19 @@
 /**
  * A subclass of the Scene class that handles all action on the title screen.
  *
+ * @param {nurdz.game.Stage} stage the stage that will be associated with this scene
  * @see nurdz.game.Scene
  * @extends nurdz.game.Scene
  * @constructor
  */
-nurdz.game.TitleScene = function ()
+nurdz.game.TitleScene = function (stage)
 {
     "use strict";
 
     // Call the super constructor.
-    nurdz.game.Scene.call (this, "title screen");
+    nurdz.game.Scene.call (this, "title screen", stage);
+
+    this.addActor (new nurdz.sneak.Player (80, 80))
 };
 
 (function ()
@@ -27,15 +30,4 @@ nurdz.game.TitleScene = function ()
             value:        nurdz.game.Scene
         }
     });
-
-    /**
-     * This method is invoked every frame after the update() method is invoked to allow this scene to
-     * render to the screen everything that it visually wants to appear.
-     *
-     * @param {nurdz.game.Stage} stage the stage to render to
-     */
-    nurdz.game.TitleScene.prototype.render = function (stage)
-    {
-        stage.colorRect (80, 80, 200, 100, 'green');
-    };
 } ());
