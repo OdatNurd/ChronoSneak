@@ -1,13 +1,4 @@
 /**
- * This sub-namespace contains all of the classes and objects to do with the game engine itself. There
- * should (hopefully) be nothing game specific in this namespace.
- *
- * @alias nurdz.game
- * @type {{}}
- */
-nurdz.createNamespace ("nurdz.game");
-
-/**
  * A scene is just a wrapper around specific handling for object update, rendering and input handling.
  * This is the case class for all scenes in the game, and its implementation is empty. You should subclass
  * this class in order to provide more specific handling of scenes as appropriate.
