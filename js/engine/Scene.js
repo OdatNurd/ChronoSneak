@@ -66,6 +66,38 @@ nurdz.game.Scene = function (name, stage)
             this.actorList[i].render (this.stage);
     };
 
+    //noinspection JSUnusedLocalSymbols
+    /**
+     * This method is invoked when this scene is becoming the active scene in the game. This can be used
+     * to initialize (or re-initialize) anything in this scene that should be reset when it becomes active.
+     *
+     * This gets invoked after the current scene is told that it is deactivating. The parameter passed in
+     * is the scene that was previously active. This will be null if this is the first ever scene in the game.
+     *
+     * The next call made of the scene will be its update method for the next frame.
+     *
+     * @param {nurdz.game.Scene|null} previousScene
+     */
+    nurdz.game.Scene.prototype.activating = function (previousScene)
+    {
+        console.log ("Scene activation: " + this.toString ());
+    };
+
+    //noinspection JSUnusedLocalSymbols
+    /**
+     * This method is invoked when this scene is being deactivated in favor of a different scene. This can
+     * be used to persist any scene state or do any other house keeping.
+     *
+     * This gets invoked before the current scene gets told that it is becoming active. The parameter
+     * passed in is the scene that will become active.
+     *
+     * @param {nurdz.game.Scene} newScene the currently active scene which is about to deactivate.
+     */
+    nurdz.game.Scene.prototype.deactivating = function (newScene)
+    {
+        console.log ("Scene deactivation: " + this.toString ());
+    };
+
     /**
      * Add an actor to the list of actors that exist in this scene. This will cause the scene to
      * automatically invoke the update and render methods on this actor while this scene is active.

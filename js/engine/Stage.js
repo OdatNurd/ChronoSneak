@@ -121,9 +121,14 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
     var sceneLoop = function ()
     {
         // If there is a scene change scheduled, change it now.
-        if (nextScene != null)
+        if (nextScene != null && nextScene !== currentScene)
         {
-            console.log ("Changing scene to: " + nextScene);
+            // Notify the current scene that it is deactivating, then notify the new scene that it is
+            // activating.
+            currentScene.deactivating (nextScene);
+            nextScene.activating (currentScene);
+
+            // Now do the swap and clear the flag.
             currentScene = nextScene;
             nextScene = null;
         }
@@ -208,11 +213,11 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
      */
     nurdz.game.Stage.prototype.switchToScene = function (sceneName)
     {
-        // Get the actual new scene.
-        var newScene = sceneList[sceneName];
+        // Get the actual new scene, which might be null if the scene named passed in is null.
+        var newScene = sceneName != null ? sceneList[sceneName] : null;
 
-        // Display an error if there is no such scene.
-        if (newScene == null)
+        // If we were given a scene name and there was no such scene, complain before we leave.
+        if (sceneName != null && newScene == null)
         {
             console.log ("Attempt to switch to unknown scene named " + sceneName);
             return;
