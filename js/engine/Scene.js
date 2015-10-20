@@ -118,4 +118,49 @@ nurdz.game.Scene = function (name, stage)
     {
         return "[Scene: " + this.name + "]";
     };
+
+    /**
+     * This gets triggered while the game is running, this scene is the current scene, and a key has been
+     * pressed down.
+     *
+     * @param {Event} eventObj the event object
+     */
+    nurdz.game.Scene.prototype.inputKeyDown = function (eventObj)
+    {
+
+    };
+
+    /**
+     * This gets triggered while the game is running, this scene is the current scene, and a key has been
+     * released.
+     *
+     * @param {Event} eventObj the event object
+     */
+    nurdz.game.Scene.prototype.inputKeyUp = function (eventObj)
+    {
+
+    };
+
+    /**
+     * This gets triggered while the game is running, this scene is the current scene, and the mouse
+     * moves over the stage.
+     *
+     * @param {Event} eventObj the event object
+     * @see nurdz.game.Stage.calculateMousePos
+     */
+    nurdz.game.Scene.prototype.inputMouseMove = function (eventObj)
+    {
+    };
+
+    /**
+     * This gets triggered while the game is running, this scene is the current scene, and the mouse
+     * is clicked on the stage.
+     *
+     * @param {Event} eventObj the event object
+     * @see nurdz.game.Stage.calculateMousePos
+     */
+    nurdz.game.Scene.prototype.inputMouseClick = function (eventObj)
+    {
+
+    };
 } ());

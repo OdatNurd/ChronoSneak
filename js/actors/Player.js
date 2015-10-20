@@ -25,9 +25,29 @@ nurdz.sneak.Player = function (x, y)
             configurable: true,
             enumerable:   true,
             writable:     true,
-            value:        nurdz.game.Actor
+            value:        nurdz.sneak.Player
         }
     });
+
+    /**
+     * Called every frame to update the player object. We make sure it never leaves the bounds of the screen.
+     *
+     * @param {nurdz.game.Stage} stage the stage the player is on
+     */
+    nurdz.sneak.Player.prototype.update = function (stage)
+    {
+        if (this.x < 0)
+            this.x = 0;
+
+        if (this.y < 0)
+            this.y = 0;
+
+        if (this.x > stage.width - this.width)
+            this.x = stage.width - this.width;
+
+        if (this.y > stage.height - this.height)
+            this.y = stage.height - this.height;
+    };
 
     /**
      * Return a string representation of the object, for debugging purposes.

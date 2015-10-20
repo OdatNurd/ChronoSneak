@@ -11,7 +11,7 @@
         var stage = new nurdz.game.Stage (cv.STAGE_WIDTH, cv.STAGE_HEIGHT, 'gameContent');
 
         // Register all of our scenes.
-        stage.addScene (cv.SCENE_TITLE, new nurdz.game.TitleScene (stage));
+        stage.addScene (cv.SCENE_TITLE, new nurdz.sneak.TitleScene (stage));
 
         // Switch to the title screen scene and run the game.
         stage.switchToScene (cv.SCENE_TITLE);

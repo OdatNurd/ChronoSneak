@@ -157,6 +157,9 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
 
         // Fire off a timer to invoke our scene loop using an appropriate interval.
         gameTimerID = setInterval (sceneLoop, 1000 / fps);
+
+        // Turn on input events.
+        enableInputEvents (this.canvas);
     };
 
     /**
@@ -177,6 +180,9 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
         // Stop it.
         clearInterval (gameTimerID);
         gameTimerID = null;
+
+        // Turn off input events.
+        disableInputEvents (this.canvas);
     };
 
     /**
@@ -340,4 +346,102 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
         this.canvasContext.drawImage (bitmap, -(bitmap.width / 2), -(bitmap.height / 2));
         this.canvasContext.restore ();
     };
+
+    /**
+     * Given an event that represents a mouse event for the stage, calculate the position that the mouse
+     * is actually at relative to the top left of the stage. This is needed because the position of mouse
+     * events is normally relative to the document itself, which may be larger than the actual window.
+     *
+     * @param {Event} event the mouse movement or click event
+     * @returns {{x: number, y: number}}
+     */
+    nurdz.game.Stage.prototype.calculateMousePos = function (event)
+    {
+        // Some math has to be done because the mouse position is relative to document, which may have
+        // dimensions larger than the current viewable area of the browser window.
+        //
+        // As a result, we need to ensure that we take into account the position of the canvas in the document
+        // AND the scroll position of the document.
+        var rect = this.canvas.getBoundingClientRect ();
+        var root = document.documentElement;
+        var mouseX = event.clientX - rect.left - root.scrollLeft;
+        var mousey = event.clientY - rect.top - root.scrollTop;
+
+        return {
+            x: mouseX,
+            y: mousey
+        };
+    };
+
+    /**
+     * Handler for key down events. This gets triggered whenever the game is running and any key is pressed.
+     *
+     * @param {Event} evt the event object for this event
+     */
+    var keyDownEvent = function (evt)
+    {
+        currentScene.inputKeyDown (evt);
+    };
+
+    /**
+     * Handler for key up events. This gets triggered whenever the game is running and any key is released.
+     *
+     * @param {Event} evt the event object for this event
+     */
+    var keyUpEvent = function (evt)
+    {
+        currentScene.inputKeyUp (evt);
+    };
+
+    /**
+     * Handler for mouse movement events. This gets triggered whenever the game is running and the mouse
+     * moves over the canvas.
+     *
+     * @param {Event} evt the event object for this event
+     */
+    var mouseMoveEvent = function (evt)
+    {
+        currentScene.inputMouseMove (evt);
+    };
+
+    /**
+     * Handler for mouse movement events. This gets triggered whenever the game is running and the mouse is
+     * clicked over the canvas.
+     *
+     * @param {Event} evt the event object for this event
+     */
+    var mouseClickEvent = function (evt)
+    {
+        currentScene.inputMouseClick (evt);
+    };
+
+    /**
+     * Turn on input handling for the game. This will capture keyboard events from the document and mouse
+     * events for the canvas provided.
+     *
+     * @param {HTMLCanvasElement} canvas the canvas to listen for ouse events on.
+     */
+    var enableInputEvents = function (canvas)
+    {
+        // Mouse events are specific to the canvas.
+        canvas.addEventListener ('mousemove', mouseMoveEvent);
+        canvas.addEventListener ('mousedown', mouseClickEvent);
+
+        // Keyboard events are document wide because a canvas can't hold the input focus.
+        document.addEventListener ('keydown', keyDownEvent);
+        document.addEventListener ('keyup', keyUpEvent);
+    };
+
+    /**
+     * Turn off input handling for the game. This will turn off keyboard events from the document and
+     * mouse events for the canvas provided.
+     */
+    var disableInputEvents = function (canvas)
+    {
+        canvas.removeEventListener ('mousemove', mouseMoveEvent);
+        canvas.removeEventListener ('mousedown', mouseClickEvent);
+        document.removeEventListener ('keydown', keyDownEvent);
+        document.removeEventListener ('keyup', keyUpEvent);
+    };
+
 } ());
