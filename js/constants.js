@@ -8,6 +8,7 @@ nurdz.createNamespace ("nurdz.sneak");
 
 /**
  * The global constant values that control ChronoSneak.
+ * @type {Object<String, *>}
  */
 nurdz.sneak.constants = (function ()
 {

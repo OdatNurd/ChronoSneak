@@ -13,6 +13,7 @@
 
     /**
      * This sub-namespace contains definitions for key codes in key events, for use in input handling.
+     * @type {Object.<String, Number>}
      */
     nurdz.game.keys =
     {
