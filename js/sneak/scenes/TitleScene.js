@@ -22,15 +22,25 @@ nurdz.sneak.TitleScene = function (stage)
     this.mousePos = null;
 
     /**
-     * The player in the game.
+     * Load the level that we will be displaying.
+     *
+     * @type {nurdz.sneak.LevelData}
+     */
+    this.level = new nurdz.sneak.Level (nurdz.sneak.levels.level1);
+
+    /**
+     * The player in the game. We create the player at the location of the player start in our level.
      *
      * @type {nurdz.sneak.Player}
      */
-    this.player = new nurdz.sneak.Player (128, 128);
+    this.player = new nurdz.sneak.Player (this.level.playerStartPos.x * nurdz.sneak.constants.TILE_SIZE,
+                                          this.level.playerStartPos.y * nurdz.sneak.constants.TILE_SIZE);
+
 
     // Stick a player onto the screen. This will make the update and render methods of the player get
     // automatically invoked every frame.
     this.addActor (this.player);
+
 };
 
 (function ()
@@ -71,8 +81,10 @@ nurdz.sneak.TitleScene = function (stage)
      */
     nurdz.sneak.TitleScene.prototype.render = function ()
     {
-        // Clear the screen, then get the super to render.
+        // Clear the screen, display the level, then get the super to render. Since the player is
+        // registered as an actor on the stage, it will get drawn by the super.
         this.stage.clear ();
+        this.level.render (this.stage);
         nurdz.game.Scene.prototype.render.call (this);
     };
 
