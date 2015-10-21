@@ -36,17 +36,9 @@ nurdz.sneak.Player = function (x, y)
      */
     nurdz.sneak.Player.prototype.update = function (stage)
     {
-        if (this.x < 0)
-            this.x = 0;
-
-        if (this.y < 0)
-            this.y = 0;
-
-        if (this.x > stage.width - this.width)
-            this.x = stage.width - this.width;
-
-        if (this.y > stage.height - this.height)
-            this.y = stage.height - this.height;
+        // Make sure the player does not leave the stage.
+        this.position.clampX (0, stage.width - this.width);
+        this.position.clampY (0, stage.height - this.height);
     };
 
     /**
@@ -56,6 +48,6 @@ nurdz.sneak.Player = function (x, y)
      */
     nurdz.sneak.Player.prototype.toString = function ()
     {
-        return "[Player Actor: " + this.x + ", " + this.y + "]";
+        return "[Player Actor: pos=" + this.position.toString () +  "]";
     };
 } ());

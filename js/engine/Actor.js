@@ -21,18 +21,11 @@ nurdz.game.Actor = function (name, x, y, width, height, debugColor)
     this.name = name;
 
     /**
-     * The current X position of this actor.
+     * The position of this actor.
      *
-     * @type {Number}
+     * @type {nurdz.game.Point}
      */
-    this.x = x;
-
-    /**
-     * The current Y position of this actor
-     *
-     * @type {Number}
-     */
-    this.y = y;
+    this.position = new nurdz.game.Point (x, y);
 
     /**
      * How wide this actor is, in pixels.
@@ -78,7 +71,30 @@ nurdz.game.Actor = function (name, x, y, width, height, debugColor)
      */
     nurdz.game.Actor.prototype.render = function (stage)
     {
-        stage.colorRect (this.x, this.y, this.width, this.height, this.debugColor);
+        stage.colorRect (this.position.x, this.position.y, this.width, this.height, this.debugColor);
+    };
+
+    /**
+     * Change the position of this actor to that of the point passed in.
+     *
+     * @param {nurdz.game.Point} position the new position
+     * @see nurdz.game.Actor.setPosXY
+     */
+    nurdz.game.Actor.prototype.setPosition = function (position)
+    {
+        this.position.setToPoint (position);
+    };
+
+    /**
+     * Change the position of this actor to the coordinates provided.
+     *
+     * @param {Number} x the new X-coordinate for this actor
+     * @param {Number} y the new Y-coordinate for this actor
+     * @see nurdz.game.Actor.setPosition
+     */
+    nurdz.game.Actor.prototype.setPosXY = function (x, y)
+    {
+        this.position.setPos (x, y);
     };
 
     /**

@@ -353,7 +353,7 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
      * events is normally relative to the document itself, which may be larger than the actual window.
      *
      * @param {Event} event the mouse movement or click event
-     * @returns {{x: number, y: number}}
+     * @returns {nurdz.game.Point}
      */
     nurdz.game.Stage.prototype.calculateMousePos = function (event)
     {
@@ -365,12 +365,9 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
         var rect = this.canvas.getBoundingClientRect ();
         var root = document.documentElement;
         var mouseX = event.clientX - rect.left - root.scrollLeft;
-        var mousey = event.clientY - rect.top - root.scrollTop;
+        var mouseY = event.clientY - rect.top - root.scrollTop;
 
-        return {
-            x: mouseX,
-            y: mousey
-        };
+        return new nurdz.game.Point (mouseX, mouseY);
     };
 
     /**
@@ -421,7 +418,7 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
      * Turn on input handling for the game. This will capture keyboard events from the document and mouse
      * events for the canvas provided.
      *
-     * @param {HTMLCanvasElement} canvas the canvas to listen for ouse events on.
+     * @param {HTMLCanvasElement} canvas the canvas to listen for mouse events on.
      */
     var enableInputEvents = function (canvas)
     {

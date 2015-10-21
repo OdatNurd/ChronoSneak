@@ -17,7 +17,7 @@ nurdz.sneak.TitleScene = function (stage)
      * The current or last known mouse position on the canvas. It's null before the mouse enters the
      * canvas for the first time.
      *
-     * @type {{x: number, y: number}|null}
+     * @type {nurdz.game.Point|null}
      */
     this.mousePos = null;
 
@@ -56,10 +56,7 @@ nurdz.sneak.TitleScene = function (stage)
     {
         // If we have a mouse position, warp the player to it.
         if (this.mousePos != null)
-        {
-            this.player.x = this.mousePos.x;
-            this.player.y = this.mousePos.y;
-        }
+            this.player.setPosition (this.mousePos);
 
         // Call the super class version now.
         nurdz.game.Scene.prototype.update.call (this);
