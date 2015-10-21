@@ -29,18 +29,24 @@ nurdz.sneak.TitleScene = function (stage)
     this.level = new nurdz.sneak.Level (nurdz.sneak.levels.level1);
 
     /**
+     * The size of tilesin the game. Cached for quicker access.
+     *
+     * @type {Number}
+     */
+    this.tileSize = nurdz.sneak.constants.TILE_SIZE;
+
+    /**
      * The player in the game. We create the player at the location of the player start in our level.
      *
      * @type {nurdz.sneak.Player}
      */
-    this.player = new nurdz.sneak.Player (this.level.playerStartPos.x * nurdz.sneak.constants.TILE_SIZE,
-                                          this.level.playerStartPos.y * nurdz.sneak.constants.TILE_SIZE);
+    this.player = new nurdz.sneak.Player (this.level.playerStartPos.x * this.tileSize,
+                                          this.level.playerStartPos.y * this.tileSize);
 
 
     // Stick a player onto the screen. This will make the update and render methods of the player get
     // automatically invoked every frame.
     this.addActor (this.player);
-
 };
 
 (function ()
@@ -97,23 +103,44 @@ nurdz.sneak.TitleScene = function (stage)
      */
     nurdz.sneak.TitleScene.prototype.inputKeyDown = function (eventObj)
     {
+        // Calculate the map location where the player is by converting from screen coordinates to map
+        // coordinates.
+        var mapX = this.player.position.x / this.tileSize;
+        var mapY = this.player.position.y / this.tileSize;
+        var wall = nurdz.sneak.tiles.WALL;
         switch (eventObj.keyCode)
         {
             case this.keys.KEY_UP:
-                this.player.position.translate (0, -this.player.height);
-                return true;
+                if (this.level.tileAt (mapX, mapY - 1) != wall)
+                {
+                    this.player.position.translate (0, -this.player.height);
+                    return true;
+                }
+                break;
 
             case this.keys.KEY_DOWN:
-                this.player.position.translate (0, this.player.height);
-                return true;
+                if (this.level.tileAt (mapX, mapY + 1) != wall)
+                {
+                    this.player.position.translate (0, this.player.height);
+                    return true;
+                }
+                break;
 
             case this.keys.KEY_LEFT:
-                this.player.position.translate (-this.player.width, 0);
-                return true;
+                if (this.level.tileAt (mapX - 1, mapY) != wall)
+                {
+                    this.player.position.translate (-this.player.width, 0);
+                    return true;
+                }
+                break;
 
             case this.keys.KEY_RIGHT:
-                this.player.position.translate (this.player.width, 0);
-                return true;
+                if (this.level.tileAt (mapX + 1, mapY) != wall)
+                {
+                    this.player.position.translate (this.player.width, 0);
+                    return true;
+                }
+                break;
         }
         return false;
     }
