@@ -380,7 +380,8 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
      */
     var keyDownEvent = function (evt)
     {
-        currentScene.inputKeyDown (evt);
+        if (currentScene.inputKeyDown (evt))
+            evt.preventDefault ();
     };
 
     /**
@@ -390,7 +391,8 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
      */
     var keyUpEvent = function (evt)
     {
-        currentScene.inputKeyUp (evt);
+        if (currentScene.inputKeyUp (evt))
+            evt.preventDefault ();
     };
 
     /**

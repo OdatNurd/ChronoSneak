@@ -126,26 +126,36 @@ nurdz.game.Scene = function (name, stage)
         return "[Scene: " + this.name + "]";
     };
 
+    //noinspection JSUnusedLocalSymbols
     /**
      * This gets triggered while the game is running, this scene is the current scene, and a key has been
      * pressed down.
      *
+     * The method should return true if the key event was handled or false if it was not. The Stage will
+     * prevent the default handling for all key events that are handled.
+     *
      * @param {Event} eventObj the event object
+     * @returns {Boolean} true if the key event was handled, false otherwise
      */
     nurdz.game.Scene.prototype.inputKeyDown = function (eventObj)
     {
-
+        return false;
     };
 
+    //noinspection JSUnusedLocalSymbols
     /**
      * This gets triggered while the game is running, this scene is the current scene, and a key has been
      * released.
      *
+     * The method should return true if the key event was handled or false if it was not. The Stage will
+     * prevent the default handling for all key events that are handled.
+     *
      * @param {Event} eventObj the event object
+     * @returns {Boolean} true if the key event was handled, false otherwise
      */
     nurdz.game.Scene.prototype.inputKeyUp = function (eventObj)
     {
-
+        return false;
     };
 
     /**
