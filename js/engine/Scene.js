@@ -33,6 +33,13 @@ nurdz.game.Scene = function (name, stage)
      * @type {nurdz.game.Actor[]}
      */
     this.actorList = [];
+
+    /**
+     * An aliased copy of nurdz.game.keys, to make input handling easier.
+     * @see nurdz.game.keys
+     * @type {{}}
+     */
+    this.keys = nurdz.game.keys;
 };
 
 // Now define the various member functions and any static stage.
