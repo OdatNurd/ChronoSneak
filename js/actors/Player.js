@@ -9,8 +9,11 @@ nurdz.sneak.Player = function (x, y)
 {
     "use strict";
 
+    // Pull the size of tiles.
+    var tileSize = nurdz.sneak.constants.TILE_SIZE;
+
     // Call the super class constructor.
-    nurdz.game.Actor.call (this, 'PlayerActor', x, y, 64, 64, 'green');
+    nurdz.game.Actor.call (this, 'PlayerActor', x, y, tileSize, tileSize, 'green');
 };
 
 // Now define the various member functions and any static stage.

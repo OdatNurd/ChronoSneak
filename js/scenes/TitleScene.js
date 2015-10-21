@@ -26,7 +26,7 @@ nurdz.sneak.TitleScene = function (stage)
      *
      * @type {nurdz.sneak.Player}
      */
-    this.player = new nurdz.sneak.Player (80, 80);
+    this.player = new nurdz.sneak.Player (128, 128);
 
     // Stick a player onto the screen. This will make the update and render methods of the player get
     // automatically invoked every frame.
@@ -78,15 +78,31 @@ nurdz.sneak.TitleScene = function (stage)
 
 
     /**
-     * This gets triggered while the game is running, this scene is the current scene, and the mouse
-     * moves over the stage.
+     * Handle keyboard down events for the title screen scene.
      *
-     * @param {Event} eventObj the event object
-     * @see nurdz.game.Stage.calculateMousePos
+     * @param {Event} eventObj the keyboard event
+     * @returns {Boolean} true if we handle the key event, false otherwise
      */
-    nurdz.sneak.TitleScene.prototype.inputMouseMove = function (eventObj)
+    nurdz.sneak.TitleScene.prototype.inputKeyDown = function (eventObj)
     {
-        // Capture the mouse location.
-        this.mousePos = this.stage.calculateMousePos (eventObj);
-    };
+        switch (eventObj.keyCode)
+        {
+            case this.keys.KEY_UP:
+                this.player.position.translate (0, -this.player.height);
+                return true;
+
+            case this.keys.KEY_DOWN:
+                this.player.position.translate (0, this.player.height);
+                return true;
+
+            case this.keys.KEY_LEFT:
+                this.player.position.translate (-this.player.width, 0);
+                return true;
+
+            case this.keys.KEY_RIGHT:
+                this.player.position.translate (this.player.width, 0);
+                return true;
+        }
+        return false;
+    }
 } ());
