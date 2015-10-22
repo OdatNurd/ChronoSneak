@@ -104,14 +104,14 @@ nurdz.sneak.TitleScene = function (stage)
     nurdz.sneak.TitleScene.prototype.inputKeyDown = function (eventObj)
     {
         // Calculate the map location where the player is by converting from screen coordinates to map
-        // coordinates.
+        // coordinates. This is kind of nasty.
         var mapX = this.player.position.x / this.tileSize;
         var mapY = this.player.position.y / this.tileSize;
-        var wall = nurdz.sneak.tiles.WALL;
+
         switch (eventObj.keyCode)
         {
             case this.keys.KEY_UP:
-                if (this.level.tileAt (mapX, mapY - 1) != wall)
+                if (this.level.isBlockedAt (mapX, mapY - 1) == false)
                 {
                     this.player.position.translate (0, -this.player.height);
                     return true;
@@ -119,7 +119,7 @@ nurdz.sneak.TitleScene = function (stage)
                 break;
 
             case this.keys.KEY_DOWN:
-                if (this.level.tileAt (mapX, mapY + 1) != wall)
+                if (this.level.isBlockedAt (mapX, mapY + 1) == false)
                 {
                     this.player.position.translate (0, this.player.height);
                     return true;
@@ -127,7 +127,7 @@ nurdz.sneak.TitleScene = function (stage)
                 break;
 
             case this.keys.KEY_LEFT:
-                if (this.level.tileAt (mapX - 1, mapY) != wall)
+                if (this.level.isBlockedAt (mapX - 1, mapY) == false)
                 {
                     this.player.position.translate (-this.player.width, 0);
                     return true;
@@ -135,7 +135,7 @@ nurdz.sneak.TitleScene = function (stage)
                 break;
 
             case this.keys.KEY_RIGHT:
-                if (this.level.tileAt (mapX + 1, mapY) != wall)
+                if (this.level.isBlockedAt (mapX + 1, mapY) == false)
                 {
                     this.player.position.translate (this.player.width, 0);
                     return true;

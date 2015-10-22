@@ -211,7 +211,7 @@ nurdz.sneak.Level = function (levelData)
      *
      * @param {Number} x the X-coordinate to check
      * @param {Number} y the Y-coordinate to check
-     * @returns {Number}
+     * @returns {Number} the tileID of the tile at the provided location
      */
     nurdz.sneak.Level.prototype.tileAt = function (x, y)
     {
@@ -219,6 +219,21 @@ nurdz.sneak.Level = function (levelData)
             return nurdz.sneak.tiles.WALL;
 
         return this.levelData[y * this.width + x];
+    };
+
+    /**
+     * Given coordinates in the map, return back a boolean that indicates if that space is blocked or not
+     * as far as movement is concerned.
+     *
+     * @param {Number} x the X-coordinate to check
+     * @param {Number} y the Y-coordinate to check
+     * @returns {Boolean} true if the level location is blocked and cannot be moved to, or false otherwise.
+     */
+    nurdz.sneak.Level.prototype.isBlockedAt = function (x, y)
+    {
+        // Get the tile; it's blocked if it is a wall.
+        var tileID = this.tileAt (x, y);
+        return tileID == nurdz.sneak.tiles.WALL;
     };
 
     /**
