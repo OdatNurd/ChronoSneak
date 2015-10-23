@@ -34,6 +34,17 @@ nurdz.sneak.PlayerStartEntity = function (x, y)
     });
 
     /**
+     * Query whether or not this entity blocks movement of actors or not.
+     *
+     * @returns {Boolean} true if actor movement is blocked by this tile, or false otherwise
+     */
+    nurdz.sneak.PlayerStartEntity.prototype.blocksActorMovement = function ()
+    {
+        // The player start entity is just a marker, so don't make it block anything.
+        return false;
+    };
+
+    /**
      * Render this actor to the stage provided. The base class version renders a positioning box for this
      * actor using its position and size, using the debug color provided in the constructor.
      *

@@ -108,6 +108,41 @@ nurdz.game.Level = function (levelData)
     };
 
     /**
+     * Given coordinates in the map, return back a list of all entities that exist at this location, which
+     * may be 0.
+     *
+     * @param {Number} x the X-coordinate to check
+     * @param {Number} y the Y-coordinate to check
+     * @returns {nurdz.game.Entity[]|null} the entities at the provided location or null if the location is
+     * invalid
+     */
+    nurdz.game.Level.prototype.entitiesAt = function (x, y)
+    {
+        if (x < 0 || y < 0 || x >= this.width || y >= this.width)
+            return null;
+
+        // Now that we know the coordinates are valid map coordinates, multiply them by the tile size to
+        // get the pixel locations. The coordinates given are in map coordinates but entities live in
+        // screen space.
+        x *= nurdz.sneak.constants.TILE_SIZE;
+        y *= nurdz.sneak.constants.TILE_SIZE;
+
+        // Iterate over all entities to see if they are at the map location provided.
+        var retVal = [];
+        for (var i = 0 ; i < this.entities.length ; i++)
+        {
+            // Get the entity.
+            var entity = this.entities[i];
+
+            // If the location matches, add it to the array.
+            if (entity.position.x == x && entity.position.y == y)
+                retVal.push (entity);
+        }
+
+        return retVal;
+    };
+
+    /**
      * Given coordinates in the map, return back a boolean that indicates if that space is blocked or not
      * as far as movement is concerned.
      *
@@ -121,7 +156,25 @@ nurdz.game.Level = function (levelData)
         var tile = this.tileAt (x, y);
         if (tile == null)
             return true;
-        return tile.blocksActorMovement ();
+
+        // If the tile at this location blocks actor movement, then the move is blocked.
+        if (tile.blocksActorMovement())
+            return true;
+
+        // Get the list of entities that are at this location on the map. If there are any and any of them
+        // blocks actor movement, the move is blocked.
+        var entities = this.entitiesAt (x, y);
+        if (entities != null)
+        {
+            for (var i = 0 ; i < entities.length ; i++)
+            {
+                if (entities[i].blocksActorMovement())
+                    return true;
+            }
+        }
+
+        // Not blocked.
+        return false;
     };
 
     /**

@@ -37,6 +37,17 @@ nurdz.game.Entity = function (name, x, y, debugColor)
     });
 
     /**
+     * Query whether or not this entity blocks movement of actors or not.
+     *
+     * @returns {Boolean} true if actor movement is blocked by this tile, or false otherwise
+     */
+    nurdz.game.Entity.prototype.blocksActorMovement = function ()
+    {
+        // By default, all entities are solid.
+        return true;
+    };
+
+    /**
      * Entities are actors, which means tha they have an update and a render function. The update function
      * in an entity is meant to do things like visually update its appearance. The step function is used
      * to give the entity a "tick" to see if there is something that it wants to do. This might be
