@@ -6,7 +6,7 @@
  * @param {Number} internalID the numeric ID that represents this tile
  * @constructor
  */
-nurdz.sneak.Tile = function (name, internalID)
+nurdz.game.Tile = function (name, internalID)
 {
     "use strict";
 
@@ -43,7 +43,7 @@ nurdz.sneak.Tile = function (name, internalID)
      *
      * @returns {Boolean} true if actor movement is blocked by this tile, or false otherwise
      */
-    nurdz.sneak.Tile.prototype.blocksActorMovement = function ()
+    nurdz.game.Tile.prototype.blocksActorMovement = function ()
     {
         return true;
     };
@@ -55,7 +55,7 @@ nurdz.sneak.Tile = function (name, internalID)
      * @param {Number} x the X-coordinate to draw the tile at
      * @param {Number} y the Y-coordinate to draw the tile at
      */
-    nurdz.sneak.Tile.prototype.render = function (stage, x, y)
+    nurdz.game.Tile.prototype.render = function (stage, x, y)
     {
         stage.colorRect (x, y, this.size, this.size, 'yellow');
     };
@@ -65,7 +65,7 @@ nurdz.sneak.Tile = function (name, internalID)
      *
      * @returns {String}
      */
-    nurdz.sneak.Tile.prototype.toString = function ()
+    nurdz.game.Tile.prototype.toString = function ()
     {
         return "[Tile " + this.name + " id=" + this.tileID + "]";
     };

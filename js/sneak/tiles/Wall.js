@@ -8,7 +8,7 @@ nurdz.sneak.WallTile = function ()
     "use strict";
 
     // Call the super class constructor.
-    nurdz.sneak.Tile.call (this, "WALL", 2);
+    nurdz.game.Tile.call (this, "WALL", 2);
 };
 
 // Now define the various member functions and any static stage.
@@ -18,7 +18,7 @@ nurdz.sneak.WallTile = function ()
 
     // Now set our prototype to be an instance of our super class, making sure that the prototype knows to
     // use the correct constructor function.
-    nurdz.sneak.WallTile.prototype = Object.create (nurdz.sneak.Tile.prototype, {
+    nurdz.sneak.WallTile.prototype = Object.create (nurdz.game.Tile.prototype, {
         constructor: {
             configurable: true,
             enumerable:   true,

@@ -14,7 +14,7 @@ nurdz.sneak.PlayerStartTile = function ()
     // Call the super class constructor. Note that we actually subclass FloorTile (see the method area
     // below) but for purposes of the constructor we need to invoke the Tile constructor, or we will be
     // built like a floor and thus indistinguishable.
-    nurdz.sneak.Tile.call (this, "PLAYER_START", 1);
+    nurdz.game.Tile.call (this, "PLAYER_START", 1);
 };
 
 // Now define the various member functions and any static stage.
