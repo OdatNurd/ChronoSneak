@@ -1,12 +1,12 @@
 /**
- * This class represents a Tileset, which is jsut an array of 1 or more tiles that will be used to render
+ * This class represents a Tileset, which is just an array of 1 or more tiles that will be used to render
  * the level data.
  *
  * @param {String} name the name of this tileset
- * @param {Tile[]} tiles the array of tiles that are contained in this set
+ * @param {nurdz.game.Tile[]} tiles the array of tiles that are contained in this set
  * @constructor
  */
-nurdz.sneak.Tileset = function (name, tiles)
+nurdz.game.Tileset = function (name, tiles)
 {
     "use strict";
 
@@ -25,14 +25,14 @@ nurdz.sneak.Tileset = function (name, tiles)
 
     /**
      * The tiles in this tile set, keyed according to their names.
-     * @type {Object.<String, Tile>}
+     * @type {Object.<String, nurdz.game.Tile>}
      */
     this.tilesByName = {};
 
     /**
      * The tiles in this tile set, keyed by their internal numeric tile ID's.
      *
-     * @type {nurdz.sneak.Tile[]}
+     * @type {nurdz.game.Tile[]}
      */
     this.tilesByValue = [];
 
@@ -56,7 +56,7 @@ nurdz.sneak.Tileset = function (name, tiles)
      * @param {Number} tileID the tileID to check.
      * @returns {boolean} true if the tileID given corresponds to a valid tile, false otherwise
      */
-    nurdz.sneak.Tileset.prototype.isValidTileID = function (tileID)
+    nurdz.game.Tileset.prototype.isValidTileID = function (tileID)
     {
         return this.tilesByValue[tileID] != null;
     };
@@ -68,7 +68,7 @@ nurdz.sneak.Tileset = function (name, tiles)
      * @param {String} name the name of the tileID to search for
      * @returns {Tile|null} the tile with the provided name, or null if the name is invalid.
      */
-    nurdz.sneak.Tileset.prototype.tileForName = function (name)
+    nurdz.game.Tileset.prototype.tileForName = function (name)
     {
         return this.tilesByName[name];
     };
@@ -78,7 +78,7 @@ nurdz.sneak.Tileset = function (name, tiles)
      *
      * @returns {String}
      */
-    nurdz.sneak.Tileset.prototype.toString = function ()
+    nurdz.game.Tileset.prototype.toString = function ()
     {
         return "[Tileset " + this.name + " tileCount=" + this.length + "]";
     };
