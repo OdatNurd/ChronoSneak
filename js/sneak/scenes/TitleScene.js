@@ -14,14 +14,6 @@ nurdz.sneak.TitleScene = function (stage)
     nurdz.game.Scene.call (this, "title screen", stage);
 
     /**
-     * The current or last known mouse position on the canvas. It's null before the mouse enters the
-     * canvas for the first time.
-     *
-     * @type {nurdz.game.Point|null}
-     */
-    this.mousePos = null;
-
-    /**
      * Load the level that we will be displaying.
      *
      * @type {nurdz.game.Level}
@@ -35,18 +27,28 @@ nurdz.sneak.TitleScene = function (stage)
      */
     this.tileSize = nurdz.sneak.constants.TILE_SIZE;
 
+    // Attempt to find the player start entity so that we know where to start the player for this run. If
+    // this does not have exactly one entity, the level is invalid.
+    var playerStartPos = this.level.entitiesWithName ("PlayerStartEntity");
+    if (playerStartPos.length != 1)
+        throw new Error ("Unable to determine player start position.");
+
     /**
      * The player in the game. We create the player at the location of the player start in our level.
      *
      * @type {nurdz.sneak.Player}
      */
-    this.player = new nurdz.sneak.Player (this.level.playerStartPos.x * this.tileSize,
-                                          this.level.playerStartPos.y * this.tileSize);
+    this.player = new nurdz.sneak.Player (playerStartPos[0].position.x,
+                                          playerStartPos[0].position.y);
 
 
     // Stick a player onto the screen. This will make the update and render methods of the player get
     // automatically invoked every frame.
     this.addActor (this.player);
+
+    // Add the list of entities in the level to the list of actors to be displayed. These come after the
+    // player, so that they render over the player.
+    this.addActorArray (this.level.entities);
 };
 
 (function ()
@@ -70,11 +72,7 @@ nurdz.sneak.TitleScene = function (stage)
      */
     nurdz.sneak.TitleScene.prototype.update = function ()
     {
-        // If we have a mouse position, warp the player to it.
-        if (this.mousePos != null)
-            this.player.setPosition (this.mousePos);
-
-        // Call the super class version now.
+        // Let the super class call update on all registered actors.
         nurdz.game.Scene.prototype.update.call (this);
     };
 
@@ -87,13 +85,13 @@ nurdz.sneak.TitleScene = function (stage)
      */
     nurdz.sneak.TitleScene.prototype.render = function ()
     {
-        // Clear the screen, display the level, then get the super to render. Since the player is
-        // registered as an actor on the stage, it will get drawn by the super.
+        // Clear the screen and render the level.
         this.stage.clear ();
         this.level.render (this.stage);
+
+        // Call the super to display all actors registered with the stage. This includes the player.
         nurdz.game.Scene.prototype.render.call (this);
     };
-
 
     /**
      * Handle keyboard down events for the title screen scene.
@@ -108,13 +106,16 @@ nurdz.sneak.TitleScene = function (stage)
         var mapX = this.player.position.x / this.tileSize;
         var mapY = this.player.position.y / this.tileSize;
 
+        // This will be set to true if the player actually took an action.
+        var actionTaken = false;
+
         switch (eventObj.keyCode)
         {
             case this.keys.KEY_UP:
                 if (this.level.isBlockedAt (mapX, mapY - 1) == false)
                 {
                     this.player.position.translate (0, -this.player.height);
-                    return true;
+                    actionTaken = true;
                 }
                 break;
 
@@ -122,7 +123,7 @@ nurdz.sneak.TitleScene = function (stage)
                 if (this.level.isBlockedAt (mapX, mapY + 1) == false)
                 {
                     this.player.position.translate (0, this.player.height);
-                    return true;
+                    actionTaken = true;
                 }
                 break;
 
@@ -130,7 +131,7 @@ nurdz.sneak.TitleScene = function (stage)
                 if (this.level.isBlockedAt (mapX - 1, mapY) == false)
                 {
                     this.player.position.translate (-this.player.width, 0);
-                    return true;
+                    actionTaken = true;
                 }
                 break;
 
@@ -138,10 +139,20 @@ nurdz.sneak.TitleScene = function (stage)
                 if (this.level.isBlockedAt (mapX + 1, mapY) == false)
                 {
                     this.player.position.translate (this.player.width, 0);
-                    return true;
+                    actionTaken = true;
                 }
                 break;
         }
+
+        // If an action was taken, then we handled the input, but we also need to make sure that we give
+        // all entities a logic tick, too.
+        if (actionTaken)
+        {
+            this.level.stepAllEntities ();
+            return true;
+        }
+
+        // We ignored the key
         return false;
     }
 } ());

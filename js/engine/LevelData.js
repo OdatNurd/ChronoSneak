@@ -8,21 +8,14 @@
  * @param {Number} width width of the level, in tiles
  * @param {Number} height height of the level, in tiles
  * @param {Number[]} levelData the actual data that represents the level
+ * @param {nurdz.game.Entity[]} entityList the list of entities contained in the map (may be 0).
  * @param {nurdz.game.Tileset} tileset the tileset that this level is using
  * @throws {Error} if the level data is not valid
  * @constructor
  */
-nurdz.game.LevelData = function (name, width, height, levelData, tileset)
+nurdz.game.LevelData = function (name, width, height, levelData, entityList, tileset)
 {
     "use strict";
-
-    /**
-     * The coordinate in the level data that the player start position was found at; this is null if no
-     * player start location was found.
-     *
-     * @type {nurdz.game.Point}
-     */
-    this.playerStartPos = null;
 
     /**
      * The name of this level.
@@ -58,6 +51,13 @@ nurdz.game.LevelData = function (name, width, height, levelData, tileset)
     this.levelData = levelData;
 
     /**
+     * The list of all entities that are associated with this particular level data.
+     *
+     * @type {nurdz.game.Entity[]}
+     */
+    this.entities = entityList;
+
+    /**
      * The tileset that is associated with this level data.
      *
      * @type {nurdz.sneak.Tileset}
@@ -84,11 +84,6 @@ nurdz.game.LevelData = function (name, width, height, levelData, tileset)
      */
     nurdz.game.LevelData.prototype.validateData = function ()
     {
-        // Ask the tileset for the tile that is the player start; If this is not found, that's bad.
-        var startTile = this.tileset.tileForName ("PLAYER_START");
-        if (startTile == null)
-            error ("Level data '" + this.name + "'; unable to determine start tile: tileset invalid");
-
         // Ensure that the length of the level data agrees with the dimensions that we were given, to make
         // sure we didn't get sorted.
         if (this.levelData.length != this.width * this.height)
@@ -112,25 +107,8 @@ nurdz.game.LevelData = function (name, width, height, levelData, tileset)
                 var tileID = this.levelData[y * this.width + x];
                 if (this.tileset.isValidTileID(tileID) == false)
                     error ("Invalid tileID '" + tileID + "' found at [" + x + "," + y + "] in level" + this.name);
-
-                // Is this a player start?
-                if (tileID == startTile.tileID)
-                {
-                    // If we already have a player start, we're mad.
-                    if (this.playerStartPos != null)
-                        error ("Duplicate PlayerStart found in level '" + this.name + "' at pos [" +
-                               x + ", " + y + "]; first found at [" +
-                               this.playerStartPos.x + ", " + this.playerStartPos.y + "]");
-
-                    // Create the player start position.
-                    this.playerStartPos = new nurdz.game.Point (x, y);
-                }
             }
         }
-
-        // If there is no player start position, this level is invalid.
-        if (this.playerStartPos == null)
-            error ("No player start position found in level '" + this.name + "'");
     };
 
     /**

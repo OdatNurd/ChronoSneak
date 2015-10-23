@@ -31,6 +31,13 @@ nurdz.game.Level = function (levelData)
     this.levelData = levelData.levelData;
 
     /**
+     * The list of entities that are in this level data.
+     *
+     * @type {nurdz.game.Entity[]}
+     */
+    this.entities = levelData.entities;
+
+    /**
      * The tileset that is associated with this level.
      *
      * @type {nurdz.game.Tileset}
@@ -49,6 +56,38 @@ nurdz.game.Level = function (levelData)
 (function ()
 {
     "use strict";
+
+    /**
+     * Given the name of an entity type, return back a list of all such entities that this level data
+     * contains. There could be 0 or more such entities.
+     *
+     * @param {String} entityName the entity name to search for
+     * @returns {nurdz.game.Entity[]}
+     */
+    nurdz.game.Level.prototype.entitiesWithName = function (entityName)
+    {
+        // The return value.
+        var retVal = [];
+        for (var i = 0; i < this.entities.length; i++)
+        {
+            var entity = this.entities[i];
+            if (entity.name == entityName)
+                retVal.push (entity);
+        }
+
+        return retVal;
+    };
+
+    /**
+     * This method will invoke the step method on all entities that currently exist on the map. In
+     * ChronoSneak, this gets invoked every time we move the player, so that all entities can get a logic
+     * step whenever the player takes an action.
+     */
+    nurdz.game.Level.prototype.stepAllEntities = function ()
+    {
+        for (var i = 0 ; i < this.entities.length ; i++)
+            this.entities[i].step ();
+    };
 
     /**
      * Given coordinates in the map, return back the tile at that location. This will be represented as

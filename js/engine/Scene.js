@@ -110,10 +110,25 @@ nurdz.game.Scene = function (name, stage)
      * automatically invoke the update and render methods on this actor while this scene is active.
      *
      * @param {nurdz.game.Actor} actor the actor to add to the scene
+     * @see nurdz.game.Scene.addActorArray
      */
     nurdz.game.Scene.prototype.addActor = function (actor)
     {
         this.actorList.push (actor);
+    };
+
+    /**
+     * Add all of the actors from the passed in array to the list of actors that exist in this scene. This
+     * will cause the scene to automatically invoke the update and render methods on these actors while
+     * the scene is active.
+     *
+     * @param {nurdz.game.Actor[]} actorArray the list of actors to add
+     * @see nurdz.game.Scene.addActorArray
+     */
+    nurdz.game.Scene.prototype.addActorArray = function (actorArray)
+    {
+        for (var i = 0 ; i < actorArray.length ; i++)
+            this.addActor (actorArray[i]);
     };
 
     /**
