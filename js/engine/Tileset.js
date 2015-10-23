@@ -66,7 +66,7 @@ nurdz.game.Tileset = function (name, tiles)
      * the tile name provided is not recognized.
      *
      * @param {String} name the name of the tileID to search for
-     * @returns {Tile|null} the tile with the provided name, or null if the name is invalid.
+     * @returns {nurdz.game.Tile|null} the tile with the provided name, or null if the name is invalid.
      */
     nurdz.game.Tileset.prototype.tileForName = function (name)
     {
