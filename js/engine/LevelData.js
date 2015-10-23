@@ -1,14 +1,6 @@
 /**
- * This sub-namespace contains all of the JSON objects that are built in levels in the ChronoSneak web
- * prototype.
- *
- * @alias nurdz.sneak.levels
- * @type {Object.<String,nurdz.sneak.Level>}
- */
-nurdz.createNamespace ("nurdz.sneak.levels");
-
-/**
- * Objects of this type represent actual levels in the game.
+ * Objects of this type represent actual levels in a game. Level data is just a series of integer tile
+ * ID's that associate with a Tileset that has been provided.
  *
  * Various simple checks are done to ensure that the level data provided is actually valid.
  *
@@ -20,7 +12,7 @@ nurdz.createNamespace ("nurdz.sneak.levels");
  * @throws {Error} if the level data is not valid
  * @constructor
  */
-nurdz.sneak.LevelData = function (name, width, height, levelData, tileset)
+nurdz.game.LevelData = function (name, width, height, levelData, tileset)
 {
     "use strict";
 
@@ -90,7 +82,7 @@ nurdz.sneak.LevelData = function (name, width, height, levelData, tileset)
     /**
      * This method does a thing.
      */
-    nurdz.sneak.LevelData.prototype.validateData = function ()
+    nurdz.game.LevelData.prototype.validateData = function ()
     {
         // Ask the tileset for the tile that is the player start; If this is not found, that's bad.
         var startTile = this.tileset.tileForName ("PLAYER_START");
@@ -146,7 +138,7 @@ nurdz.sneak.LevelData = function (name, width, height, levelData, tileset)
      *
      * @returns {String}
      */
-    nurdz.sneak.LevelData.prototype.toString = function ()
+    nurdz.game.LevelData.prototype.toString = function ()
     {
         return "[LevelData tileset=" + this.tileset.name + " size=" + this.width + "x" + this.height + "]";
     };
