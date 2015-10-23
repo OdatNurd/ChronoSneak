@@ -3,7 +3,7 @@
  * prototype.
  *
  * @alias nurdz.sneak.levels
- * @type {Object.<String,nurdz.game.Level>}
+ * @type {Object.<String,nurdz.sneak.Level>}
  */
 nurdz.createNamespace ("nurdz.sneak.levels");
 

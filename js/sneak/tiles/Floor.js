@@ -16,13 +16,6 @@ nurdz.sneak.FloorTile = function ()
 {
     "use strict";
 
-    /**
-     * The size of tiles, cached here for clarity.
-     *
-     * @type {Number}
-     */
-    var size = nurdz.sneak.constants.TILE_SIZE;
-
     // Now set our prototype to be an instance of our super class, making sure that the prototype knows to
     // use the correct constructor function.
     nurdz.sneak.FloorTile.prototype = Object.create (nurdz.sneak.Tile.prototype, {
@@ -53,7 +46,7 @@ nurdz.sneak.FloorTile = function ()
      */
     nurdz.sneak.FloorTile.prototype.render = function (stage, x, y)
     {
-        stage.colorRect (x, y, size, size, '#c0c0c0');
-        stage.colorRect (x + 1, y + 1, size - 2, size - 2, '#c8c8c8');
+        stage.colorRect (x, y, this.size, this.size, '#b0b0c0');
+        stage.colorRect (x + 1, y + 1, this.size - 2, this.size - 2, '#c8c8c8');
     };
 } ());

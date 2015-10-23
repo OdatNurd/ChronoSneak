@@ -23,6 +23,13 @@ nurdz.sneak.Tile = function (name, internalID)
      * @type {Number}
      */
     this.tileID = internalID;
+
+    /**
+     * The size of tiles, cached here for clarity.
+     *
+     * @type {Number}
+     */
+    this.size = nurdz.sneak.constants.TILE_SIZE;
 };
 
 // Now define the various member functions and any static stage.
@@ -30,12 +37,6 @@ nurdz.sneak.Tile = function (name, internalID)
 {
     "use strict";
 
-    /**
-     * The size of tiles, cached here for clarity.
-     *
-     * @type {Number}
-     */
-    var size = nurdz.sneak.constants.TILE_SIZE;
 
     /**
      * Query whether or not this tile blocks movement of actors or not.
@@ -56,7 +57,7 @@ nurdz.sneak.Tile = function (name, internalID)
      */
     nurdz.sneak.Tile.prototype.render = function (stage, x, y)
     {
-        stage.colorRect (x, y, size, size, 'yellow');
+        stage.colorRect (x, y, this.size, this.size, 'yellow');
     };
 
     /**
