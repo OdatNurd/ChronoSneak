@@ -67,3 +67,12 @@ nurdz.sneak.constants = (function ()
         SCENE_TITLE: "title"
     };
 } ());
+
+/**
+ * This sub-namespace contains all of the JSON objects that are built in levels in the ChronoSneak web
+ * prototype.
+ *
+ * @alias nurdz.sneak.levels
+ * @type {Object.<String,nurdz.game.Level>}
+ */
+nurdz.createNamespace ("nurdz.sneak.levels");

@@ -8,7 +8,7 @@
  * @param {Number} width width of the level, in tiles
  * @param {Number} height height of the level, in tiles
  * @param {Number[]} levelData the actual data that represents the level
- * @param {nurdz.sneak.Tileset} tileset the tileset that this level is using
+ * @param {nurdz.game.Tileset} tileset the tileset that this level is using
  * @throws {Error} if the level data is not valid
  * @constructor
  */

@@ -24,9 +24,9 @@ nurdz.sneak.TitleScene = function (stage)
     /**
      * Load the level that we will be displaying.
      *
-     * @type {nurdz.sneak.LevelData}
+     * @type {nurdz.game.Level}
      */
-    this.level = new nurdz.sneak.Level (nurdz.sneak.levels.level1);
+    this.level = new nurdz.game.Level (nurdz.sneak.levels.level1);
 
     /**
      * The size of tilesin the game. Cached for quicker access.

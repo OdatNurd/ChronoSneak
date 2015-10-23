@@ -2,10 +2,10 @@
  * This class represents a single level in the game. It takes an instance of level data to know what to
  * do, and then will render the map and allow queries based on what the level data says.
  *
- * @type {nurdz.sneak.LevelData} levelData the data to display initially
+ * @type {nurdz.game.LevelData} levelData the data to display initially
  * @constructor
  */
-nurdz.sneak.Level = function (levelData)
+nurdz.game.Level = function (levelData)
 {
     "use strict";
 
@@ -33,7 +33,7 @@ nurdz.sneak.Level = function (levelData)
     /**
      * The tileset that is associated with this level.
      *
-     * @type {nurdz.sneak.Tileset}
+     * @type {nurdz.game.Tileset}
      */
     this.tileset = levelData.tileset;
 
@@ -56,9 +56,9 @@ nurdz.sneak.Level = function (levelData)
      *
      * @param {Number} x the X-coordinate to check
      * @param {Number} y the Y-coordinate to check
-     * @returns {nurdz.sneak.Tile|null} the tile at the provided location or null if the location is invalid
+     * @returns {nurdz.game.Tile|null} the tile at the provided location or null if the location is invalid
      */
-    nurdz.sneak.Level.prototype.tileAt = function (x, y)
+    nurdz.game.Level.prototype.tileAt = function (x, y)
     {
         if (x < 0 || y < 0 || x >= this.width || y >= this.width)
             return null;
@@ -76,7 +76,7 @@ nurdz.sneak.Level = function (levelData)
      * @param {Number} y the Y-coordinate to check
      * @returns {Boolean} true if the level location is blocked and cannot be moved to, or false otherwise.
      */
-    nurdz.sneak.Level.prototype.isBlockedAt = function (x, y)
+    nurdz.game.Level.prototype.isBlockedAt = function (x, y)
     {
         // Get the tile; it's blocked if it is a wall.
         var tile = this.tileAt (x, y);
@@ -90,10 +90,8 @@ nurdz.sneak.Level = function (levelData)
      *
      * @param {nurdz.game.Stage} stage the stage to render to
      */
-    nurdz.sneak.Level.prototype.render = function (stage)
+    nurdz.game.Level.prototype.render = function (stage)
     {
-        var tileSize = nurdz.sneak.constants.TILE_SIZE;
-
         // Iterate over the tiles.
         for (var y = 0; y < this.height; y++)
         {
@@ -103,7 +101,7 @@ nurdz.sneak.Level = function (levelData)
 
                 // Get the tile and render it.
                 if (tile != null)
-                    tile.render (stage, x * tileSize, y * tileSize);
+                    tile.render (stage, x * tile.size, y * tile.size);
             }
         }
     };
@@ -113,7 +111,7 @@ nurdz.sneak.Level = function (levelData)
      *
      * @returns {String}
      */
-    nurdz.sneak.Level.prototype.toString = function ()
+    nurdz.game.Level.prototype.toString = function ()
     {
         return "[Level " + this.levelData.width + "x" + this.levelData.height + "]";
     };
