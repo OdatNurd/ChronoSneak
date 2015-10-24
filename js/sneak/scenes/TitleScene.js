@@ -27,6 +27,31 @@ nurdz.sneak.TitleScene = function (stage)
      */
     this.tileSize = nurdz.sneak.constants.TILE_SIZE;
 
+    /**
+     * The current position of the mouse, or null if we don't know yet.
+     *
+     * @type {nurdz.game.Point|null}
+     */
+    this.mousePos = null;
+
+    /**
+     * When debugging, this is the map location that the current debug information is for, or null if
+     * there is no debug info yet.
+     *
+     * @type {nurdz.game.Point|null}
+     */
+    this.debugPos = null;
+
+    /**
+     * The debug text to render. This contains the map location the mouse is over, the tile, and any
+     * entities. When the location the mouse is over changes, this gets recalculated. It's null when there
+     * is no text yet.
+     *
+     * @type {String|null}
+     *
+     */
+    this.debugTxt = null;
+
     // Attempt to find the player start entity so that we know where to start the player for this run. If
     // this does not have exactly one entity, the level is invalid.
     var playerStartPos = this.level.entitiesWithName ("PlayerStartEntity");
@@ -67,6 +92,24 @@ nurdz.sneak.TitleScene = function (stage)
     });
 
     /**
+     * Invoked when we become active. We use this to make sure some persistent rendering properties are
+     * set the way we want them for this scene.
+     *
+     * This gets invoked after the current scene is told that it is deactivating. The parameter passed in
+     * is the scene that was previously active. This will be null if this is the first ever scene in the game.
+     *
+     * The next call made of the scene will be its update method for the next frame.
+     *
+     * @param {nurdz.game.Scene|null} previousScene
+     */
+    nurdz.sneak.TitleScene.prototype.activating = function (previousScene)
+    {
+        this.stage.canvasContext.font = "20px monospace";
+
+        nurdz.game.Scene.prototype.activating.call (this, previousScene);
+    };
+
+    /**
      * This method is invoked at the start of every game frame to allow this scene to update the state of
      * all objects that it contains.
      */
@@ -91,6 +134,62 @@ nurdz.sneak.TitleScene = function (stage)
 
         // Call the super to display all actors registered with the stage. This includes the player.
         nurdz.game.Scene.prototype.render.call (this);
+
+        // Do we know where the mouse is?
+        if (this.mousePos != null)
+        {
+            // Calculate the map positions.
+            var mX = Math.floor (this.mousePos.x / this.tileSize);
+            var mY = Math.floor (this.mousePos.y / this.tileSize);
+
+            // If there is no debug position, or there is but it is different than where the mouse is now,
+            // calculate new debug text.
+            if (this.debugPos == null || (this.debugPos.x != mX && this.debugPos.y != mY))
+            {
+                // Get the tile and any entities under the mouse.
+                var mTile = this.level.tileAt (mX, mY);
+                var entities = this.level.entitiesAt (mX, mY);
+
+                this.debugTxt = "[" + mX + ", " + mY + "]";
+                if (mTile != null)
+                    this.debugTxt += "=> " + mTile.name;
+                if (entities != null && entities.length > 0)
+                {
+                    for (var i = 0 ; i < entities.length ; i++)
+                    {
+                        this.debugTxt += ", " + entities[i].name;
+                    }
+                }
+
+                // Save the debug position now.
+                if (this.debugPos == null)
+                    this.debugPos = new nurdz.game.Point (mX, mY);
+                else
+                {
+                    this.debugPos.x = mX;
+                    this.debugPos.y = mY;
+                }
+            }
+        }
+
+        if (this.debugTxt != null)
+            this.stage.colorText (this.debugTxt, 16, this.stage.height - 6, 'white');
+    };
+
+    /**
+     * This gets triggered while the game is running, this scene is the current scene, and the mouse
+     * moves over the stage.
+     *
+     * @param {Event} eventObj the event object
+     * @see nurdz.game.Stage.calculateMousePos
+     */
+    nurdz.sneak.TitleScene.prototype.inputMouseMove = function (eventObj)
+    {
+        /**
+         * The current position of the mouse, or null if we don't know yet.
+         * @type {nurdz.game.Point|null}
+         */
+        this.mousePos = this.stage.calculateMousePos (eventObj);
     };
 
     /**
