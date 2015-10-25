@@ -24,12 +24,14 @@ nurdz.game.Entity = function (name, x, y, width, height, properties, debugColor)
 
     /**
      * The list of default properties that will get inserted into the properties object provided if they
-     * don't already exist. The Entity class sets this to an empty object if it is not already set by a
-     * base class.
+     * don't already exist.
+     *
+     * The entity base class extends this to set a default id into any entity that doesn't already have
+     * one or a default of its own.
      *
      * @type {Object}
      */
-    this.defaultProperties = this.defaultProperties || {};
+    this.defaultProperties = nurdz.copyProperties (this.defaultProperties || {}, {id: this.createDefaultID});
 
     /**
      * The entity properties that describe the specifics of this entity and how it operates.
@@ -37,6 +39,14 @@ nurdz.game.Entity = function (name, x, y, width, height, properties, debugColor)
      * @type {Object}
      */
     this.properties = nurdz.copyProperties (properties || {}, this.defaultProperties);
+
+    // Iterate over all of the properties that are local to the object. Any that have a value that is a
+    // function get their value replaced with the return value.
+    for (var prop in this.properties)
+    {
+        if (this.properties.hasOwnProperty (prop) && typeof (this.properties[prop]) == "function")
+            this.properties[prop] = this.properties[prop] ();
+    }
 
     // Call the super class constructor, then validate the properties.
     nurdz.game.Actor.call (this, name, x, y, width, height, debugColor);
@@ -58,6 +68,25 @@ nurdz.game.Entity = function (name, x, y, width, height, properties, debugColor)
             value:        nurdz.game.Entity
         }
     });
+
+    /**
+     * Every time an entity ID is automatically generated, this value is appended to it to give it a
+     * unique number.
+     *
+     * @type {Number}
+     */
+    var autoEntityID = 0;
+
+    /**
+     * Every time this function is invoked, it returns a new unique entity id.
+     *
+     * @returns {String}
+     */
+    nurdz.game.Entity.prototype.createDefaultID = function ()
+    {
+        autoEntityID++;
+        return "_ng_entity" + autoEntityID;
+    };
 
     /**
      * This is automatically invoked at the end of the constructor to validate that the properties object

@@ -10,8 +10,8 @@ nurdz.sneak.PlayerStartEntity = function (x, y, properties)
 {
     "use strict";
 
-    // Set the default properties of this property to contain an ID.
-    this.defaultProperties = {id: 'playerStart'};
+    // Set up the default properties for entities of this type.
+    this.defaultProperties = {};
 
     /**
      * Cache of the tile size that we're using.
