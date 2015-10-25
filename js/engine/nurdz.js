@@ -9,6 +9,29 @@ var nurdz = (function ()
 
     return {
         /**
+         * Copy all properties that don't already exist from the source to the destination. This is meant
+         * to be used in instances where you want to provide default values for properties that have not
+         * already been defined.
+         *
+         * The destination object is returned, to allow for on the fly extension of object literals that
+         * need to be captured into a variable.
+         *
+         * @alias nurdz.copyProperties
+         * @param {Object} destination the object to receive copied properties
+         * @param {Object} source the object to copy properties from
+         * @returns {Object} the destination object passed in
+         */
+        copyProperties:  function (destination, source)
+                         {
+                             for (var name in source)
+                             {
+                                 if (source.hasOwnProperty (name) && !destination[name])
+                                     destination[name] = source[name];
+                             }
+
+                             return destination;
+                         },
+        /**
          * Create a namespace. The namespace is a name with dots separating the different parts.
          *
          * The result is a global variable that contains the appropriate tables. Any parts of previously
@@ -30,7 +53,7 @@ var nurdz = (function ()
                              var root = window;
 
                              // Loop over all of the parts of the requested namespace.
-                             for (var i = 0; i < nsParts.length; i++)
+                             for (var i = 0 ; i < nsParts.length ; i++)
                              {
                                  // If the current part is not defined, then create it as a new object.
                                  if (typeof root[nsParts[i]] == "undefined")

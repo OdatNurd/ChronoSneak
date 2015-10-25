@@ -57,6 +57,8 @@ nurdz.sneak.TitleScene = function (stage)
     var playerStartPos = this.level.entitiesWithName ("PlayerStartEntity");
     if (playerStartPos.length != 1)
         throw new Error ("Unable to determine player start position.");
+    else
+        console.log ("Using entity '" + playerStartPos[0].properties.id + "' as player start location");
 
     /**
      * The player in the game. We create the player at the location of the player start in our level.

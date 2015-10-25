@@ -1,14 +1,27 @@
 /**
  * An entity whose job it is to record the location at which the player starts in a level.
  *
+ * @param {Number} x the X coordinate of the entity, in map coordinates
+ * @param {Number} y the Y coordinate of the entity, in map coordinates
+ * @param {Object|null} [properties=null] the properties specific to this entity, or null
  * @constructor
  */
-nurdz.sneak.PlayerStartEntity = function (x, y)
+nurdz.sneak.PlayerStartEntity = function (x, y, properties)
 {
     "use strict";
 
+    // Set the default properties of this property to contain an ID.
+    this.defaultProperties = {id: 'playerStart'};
+
+    /**
+     * Cache of the tile size that we're using.
+     *
+     * @type {Number}
+     */
+    this.tileSize = nurdz.sneak.constants.TILE_SIZE;
+
     // Call the super class constructor.
-    nurdz.game.Entity.call (this, "PlayerStartEntity", x, y, 'white');
+    nurdz.game.Entity.call (this, "PlayerStartEntity", x, y, this.tileSize, this.tileSize, properties || {}, 'white');
 
     // In ChronoSneak, entities are meant to be placed with map data, and so when created they take
     // coordinates in tile space and then convert to pixel space here. This makes specifying the
