@@ -20,7 +20,8 @@
             throw new ReferenceError ("No button found with ID '" + buttonID + "'");
 
         // Set up the button to toggle the stage.
-        button.addEventListener ("click", function () {
+        button.addEventListener ("click", function ()
+        {
             if (gameRunning)
                 stage.stop ();
             else
@@ -37,17 +38,25 @@
         // Alias the constant values.
         var cv = nurdz.sneak.constants;
 
-        // Set up the stage.
-        var stage = new nurdz.game.Stage (cv.STAGE_WIDTH, cv.STAGE_HEIGHT, 'gameContent');
+        try
+        {
+            // Set up the stage.
+            var stage = new nurdz.game.Stage (cv.STAGE_WIDTH, cv.STAGE_HEIGHT, 'gameContent');
 
-        // Set up the button that will stop the game if something goes wrong.
-        setupButton (stage, "controlBtn");
+            // Set up the button that will stop the game if something goes wrong.
+            setupButton (stage, "controlBtn");
 
-        // Register all of our scenes.
-        stage.addScene (cv.SCENE_TITLE, new nurdz.sneak.TitleScene (stage));
+            // Register all of our scenes.
+            stage.addScene (cv.SCENE_TITLE, new nurdz.sneak.TitleScene (stage));
 
-        // Switch to the title screen scene and run the game.
-        stage.switchToScene (cv.SCENE_TITLE);
-        stage.run ();
+            // Switch to the title screen scene and run the game.
+            stage.switchToScene (cv.SCENE_TITLE);
+            stage.run ();
+        }
+        catch (error)
+        {
+            console.log ("Error starting the game")
+        }
+
     });
 } ());
