@@ -159,7 +159,7 @@ nurdz.sneak.TitleScene = function (stage)
                 {
                     for (var i = 0 ; i < entities.length ; i++)
                     {
-                        this.debugTxt += ", " + entities[i].name;
+                        this.debugTxt += ", " + entities[i].name + "{" + (entities[i].properties.id || "?") + "}";
                     }
                 }
 
