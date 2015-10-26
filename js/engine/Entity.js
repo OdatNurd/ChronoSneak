@@ -89,6 +89,34 @@ nurdz.game.Entity = function (name, x, y, width, height, properties, debugColor)
     };
 
     /**
+     * A helper function for validating entity properties. The method checks if a property with the name
+     * given exists and is also (optionally) of an expected type. You can also specify if the property is
+     * required or not; a property that is not required only throws an error if it exists but is not of
+     * the type provided.
+     *
+     * @param {String} name the name of the property to check
+     * @param {String|null} expectedType the type expected (the result of a typoeof operator)
+     * @param {Boolean} required true if this property is required and false otherwsie.
+     * @throws {Error} if the property is not valid.
+     */
+    nurdz.game.Entity.prototype.isPropertyValid = function (name, expectedType, required)
+    {
+        // Does the property exist?
+        if (this.properties[name] == null)
+        {
+            // It does not. If it's not required, then return. Otherwise, complain that it's missing.
+            if (required)
+                throw new Error ("Entity " + this.name + ": missing property '" + name + "'");
+            else
+                return;
+        }
+
+        // If we got an expected type and it's not right, throw an error.
+        if (expectedType != null && typeof (this.properties[name]) != expectedType)
+            throw new Error ("Entity " + this.name + ": invalid property '" + name + "': expected " + expectedType);
+    };
+
+    /**
      * This is automatically invoked at the end of the constructor to validate that the properties object
      * that we have is valid as far as we can tell (i.e. needed properties exist and have a sensible value).
      *
@@ -99,9 +127,7 @@ nurdz.game.Entity = function (name, x, y, width, height, properties, debugColor)
      */
     nurdz.game.Entity.prototype.validateProperties = function ()
     {
-        // The only property that we thin is strictly needed is an id.
-        if (this.properties.id == null)
-            throw new Error ("Entity missing required property 'id'");
+        this.isPropertyValid ("id", "string", true);
     };
 
     /**

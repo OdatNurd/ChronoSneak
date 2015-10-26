@@ -45,6 +45,21 @@ nurdz.sneak.ChronoEntity = function (name, x, y, properties, debugColor)
     });
 
     /**
+     * This is automatically invoked at the end of the constructor to validate that the properties object
+     * that we have is valid as far as we can tell (i.e. needed properties exist and have a sensible value).
+     *
+     * This validates that
+     */
+    nurdz.sneak.ChronoEntity.prototype.validateProperties = function ()
+    {
+        // The visible property is not strictly required, but if it exists, it needs to be false.
+        this.isPropertyValid ("visible", "boolean", false);
+
+        // Chain to the super to check properties it might have inserted or know about.
+        nurdz.game.Entity.prototype.validateProperties.call (this);
+    };
+
+    /**
      * Render this chrono entity to the stage provided.
      *
      * This base class will render either a rectangle in the debug color (if the entity has a property
