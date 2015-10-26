@@ -146,7 +146,7 @@ nurdz.sneak.TitleScene = function (stage)
 
             // If there is no debug position, or there is but it is different than where the mouse is now,
             // calculate new debug text.
-            if (this.debugPos == null || (this.debugPos.x != mX && this.debugPos.y != mY))
+            if (this.debugPos == null || (this.debugPos.x != mX || this.debugPos.y != mY))
             {
                 // Get the tile and any entities under the mouse.
                 var mTile = this.level.tileAt (mX, mY);
