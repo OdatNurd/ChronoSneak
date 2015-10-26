@@ -61,6 +61,7 @@ nurdz.game.Tileset = function (name, tiles)
         return this.tilesByValue[tileID] != null;
     };
 
+    //noinspection JSUnusedGlobalSymbols
     /**
      * Given a tile name, return back the tile object that represents this tile. The value will be null if
      * the tile name provided is not recognized.

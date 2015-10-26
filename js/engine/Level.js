@@ -43,13 +43,6 @@ nurdz.game.Level = function (levelData)
      * @type {nurdz.game.Tileset}
      */
     this.tileset = levelData.tileset;
-
-    /**
-     * The start position of the player in the level that is currently loaded.
-     *
-     * @type {nurdz.game.Point}
-     */
-    this.playerStartPos = levelData.playerStartPos;
 };
 
 // Now define the various member functions and any static stage.
