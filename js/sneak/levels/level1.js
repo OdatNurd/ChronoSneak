@@ -27,6 +27,6 @@ nurdz.sneak.levels.level1 = new nurdz.game.LevelData ("level1", 25, 18, [
     new nurdz.sneak.PlayerStartEntity (23, 16, {id: 'playerStart', visible: false}),
     new nurdz.sneak.LevelGoal (23, 9, {id: 'winGoal'}),
     new nurdz.sneak.LevelGoal (19, 11, {id: 'loseGoal1', visible: false}),
-    new nurdz.sneak.LevelGoal (19, 15, {id: 'loadGoal2', visible: false})
+    new nurdz.sneak.LevelGoal (19, 15, {id: 'loseGoal2', visible: false})
 ], nurdz.sneak.stdTiles);
 
