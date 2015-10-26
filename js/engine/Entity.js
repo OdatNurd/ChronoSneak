@@ -106,14 +106,14 @@ nurdz.game.Entity = function (name, x, y, width, height, properties, debugColor)
         {
             // It does not. If it's not required, then return. Otherwise, complain that it's missing.
             if (required)
-                throw new Error ("Entity " + this.name + ": missing property '" + name + "'");
+                throw new ReferenceError ("Entity " + this.name + ": missing property '" + name + "'");
             else
                 return;
         }
 
         // If we got an expected type and it's not right, throw an error.
         if (expectedType != null && typeof (this.properties[name]) != expectedType)
-            throw new Error ("Entity " + this.name + ": invalid property '" + name + "': expected " + expectedType);
+            throw new TypeError ("Entity " + this.name + ": invalid property '" + name + "': expected " + expectedType);
     };
 
     /**
