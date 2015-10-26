@@ -96,7 +96,7 @@ nurdz.game.Entity = function (name, x, y, width, height, properties, debugColor)
      *
      * @param {String} name the name of the property to check
      * @param {String|null} expectedType the type expected (the result of a typoeof operator)
-     * @param {Boolean} required true if this property is required and false otherwsie.
+     * @param {Boolean} required true if this property is required and false otherwise.
      * @throws {Error} if the property is not valid.
      */
     nurdz.game.Entity.prototype.isPropertyValid = function (name, expectedType, required)
