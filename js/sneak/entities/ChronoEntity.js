@@ -19,6 +19,10 @@ nurdz.sneak.ChronoEntity = function (name, x, y, properties, debugColor)
     // The size of tiles in the game, so that we can use it for our dimensions.
     var tSize = nurdz.sneak.constants.TILE_SIZE;
 
+    // Modify the list of default properties to make sure that all entities get a visibility property that
+    // defaults to true
+    this.defaultProperties = nurdz.copyProperties (this.defaultProperties || {}, {visible: true});
+
     // Call the super class constructor. We use tile size for the dimensions and we also need to modify
     // the position passed in so that it translates to screen coordinates.
     nurdz.game.Entity.call (this, name, x * tSize, y * tSize, tSize, tSize, properties || {}, debugColor);
