@@ -25,7 +25,7 @@ var nurdz = (function ()
                          {
                              for (var name in source)
                              {
-                                 if (source.hasOwnProperty (name) && !destination[name])
+                                 if (source.hasOwnProperty (name) && destination[name] == null)
                                      destination[name] = source[name];
                              }
 
