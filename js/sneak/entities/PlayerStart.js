@@ -52,15 +52,21 @@ nurdz.sneak.PlayerStartEntity = function (x, y, properties)
      */
     nurdz.sneak.PlayerStartEntity.prototype.render = function (stage)
     {
-        var x = this.position.x;
-        var y = this.position.y;
+        // If the entity is visible, draw a target. Otherwise, chain to the superclass version.
+        if (this.properties.visible)
+        {
+            var x = this.position.x;
+            var y = this.position.y;
 
-        stage.canvasContext.fillStyle = this.debugColor;
-        stage.canvasContext.beginPath ();
-        stage.canvasContext.moveTo (x + 5, y + 5);
-        stage.canvasContext.lineTo (x + this.width - 5, y + this.height - 5);
-        stage.canvasContext.moveTo (x + 5, y + this.height - 5);
-        stage.canvasContext.lineTo (x + this.width - 5, y + 5);
-        stage.canvasContext.stroke ();
+            stage.canvasContext.fillStyle = this.debugColor;
+            stage.canvasContext.beginPath ();
+            stage.canvasContext.moveTo (x + 5, y + 5);
+            stage.canvasContext.lineTo (x + this.width - 5, y + this.height - 5);
+            stage.canvasContext.moveTo (x + 5, y + this.height - 5);
+            stage.canvasContext.lineTo (x + this.width - 5, y + 5);
+            stage.canvasContext.stroke ();
+        }
+        else
+            nurdz.sneak.ChronoEntity.prototype.render.call (this, stage);
     };
 } ());
