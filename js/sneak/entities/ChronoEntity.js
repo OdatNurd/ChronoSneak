@@ -39,4 +39,34 @@ nurdz.sneak.ChronoEntity = function (name, x, y, properties, debugColor)
             value:        nurdz.sneak.ChronoEntity
         }
     });
+
+    /**
+     * Render this chrono entity to the stage provided.
+     *
+     * This base class will render either a rectangle in the debug color (if the entity has a property
+     * that indicates that it should be visible) or a small X if the entity is not supposed to be visible.
+     *
+     * This allows for tracking during initial debugging of the engine by allowing some visible recognition
+     * of otherwise invisible entities without having to see their actual representations.
+     *
+     * @param {nurdz.game.Stage} stage the stage to render to
+     */
+    nurdz.sneak.ChronoEntity.prototype.render = function (stage)
+    {
+        if (this.properties.visible)
+            stage.colorRect (this.position.x, this.position.y, this.width, this.height, this.debugColor);
+        else
+        {
+            var x = this.position.x;
+            var y = this.position.y;
+
+            stage.canvasContext.fillStyle = this.debugColor;
+            stage.canvasContext.beginPath ();
+            stage.canvasContext.moveTo (x + 10, y + 10);
+            stage.canvasContext.lineTo (x + this.width - 10, y + this.height - 10);
+            stage.canvasContext.moveTo (x + 10, y + this.height - 10);
+            stage.canvasContext.lineTo (x + this.width - 10, y + 10);
+            stage.canvasContext.stroke ();
+        }
+    };
 } ());
