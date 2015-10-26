@@ -3,7 +3,7 @@
  *
  * @param {Number} x the X coordinate of the entity, in map coordinates
  * @param {Number} y the Y coordinate of the entity, in map coordinates
- * @param {Object|null} [properties=null] the properties specific to this entity, or null
+ * @param {Object|null} [properties={}] the properties specific to this entity, or null for none
  * @constructor
  */
 nurdz.sneak.PlayerStartEntity = function (x, y, properties)
@@ -13,21 +13,8 @@ nurdz.sneak.PlayerStartEntity = function (x, y, properties)
     // Set up the default properties for entities of this type.
     this.defaultProperties = {};
 
-    /**
-     * Cache of the tile size that we're using.
-     *
-     * @type {Number}
-     */
-    this.tileSize = nurdz.sneak.constants.TILE_SIZE;
-
     // Call the super class constructor.
-    nurdz.game.Entity.call (this, "PlayerStartEntity", x, y, this.tileSize, this.tileSize, properties || {}, 'white');
-
-    // In ChronoSneak, entities are meant to be placed with map data, and so when created they take
-    // coordinates in tile space and then convert to pixel space here. This makes specifying the
-    // coordinates for the data when hand creating levels easier.
-    this.position.x *= this.width;
-    this.position.y *= this.height;
+    nurdz.sneak.ChronoEntity.call (this, "PlayerStartEntity", x, y, properties, 'white');
 };
 
 // Now define the various member functions and any static stage.
@@ -37,7 +24,7 @@ nurdz.sneak.PlayerStartEntity = function (x, y, properties)
 
     // Now set our prototype to be an instance of our super class, making sure that the prototype knows to
     // use the correct constructor function.
-    nurdz.sneak.PlayerStartEntity.prototype = Object.create (nurdz.game.Entity.prototype, {
+    nurdz.sneak.PlayerStartEntity.prototype = Object.create (nurdz.sneak.ChronoEntity.prototype, {
         constructor: {
             configurable: true,
             enumerable:   true,
