@@ -5,6 +5,10 @@
  * grid. To that end this class does not take a width or a height and instead assumes that the width and
  * height of the entity are the size of tiles in ChronoSneak.
  *
+ * This entity supports the following properties:
+ *    - 'visible': true or false (default: true)
+ *       - controls whether the entity is visible in the map or not
+ *
  * @param {String} name the internal name of this actor instance, for debugging
  * @param {nurdz.game.Stage|null} stage the stage that will manage this entity or null if it is not known yet
  * @param {Number} x x location for this entity, in map coordinates
@@ -53,8 +57,8 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, debugColor)
      */
     nurdz.sneak.ChronoEntity.prototype.validateProperties = function ()
     {
-        // The visible property is not strictly required, but if it exists, it needs to be false.
-        this.isPropertyValid ("visible", "boolean", false);
+        // The visible property needs to exist and be a boolean
+        this.isPropertyValid ("visible", "boolean", true);
 
         // Chain to the super to check properties it might have inserted or know about.
         nurdz.game.Entity.prototype.validateProperties.call (this);
