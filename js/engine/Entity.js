@@ -9,6 +9,10 @@
  * The properties provided may be extended with default values, depending on the subclass. Subclasses can
  * set this.defaultProperties to a set of properties that should be applied directly to the
  *
+ * This entity supports the following properties:
+ *    - 'id': string (default: auto generated if not set)
+ *       - specifies the id of this entity
+ *
  * @param {String} name the internal name of this actor instance, for debugging
  * @param {nurdz.game.Stage|null} stage the stage that will manage this entity or null if it is not known yet
  * @param {Number} x x location for this actor
