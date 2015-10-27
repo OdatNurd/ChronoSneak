@@ -94,15 +94,17 @@ nurdz.sneak.LevelGoal = function (x, y, properties)
     };
 
     /**
-     * This method is invoked whenever this entity gets triggered by another entity. This can happen
-     * programmatically or in response to interactions with other entities.
+     * This method is invoked whenever this entity gets triggered by another entity as a result of a
+     * direct collision (touch). This can happen programmatically or in response to interactions with other
+     * entities. This does not include non-collision interactions (see trigger() for that).
      *
      * The method gets passed the Actor that caused the trigger to happen, although this can be null
      * depending on how the trigger happened.
      *
      * @param {nurdz.game.Actor} activator the actor that triggered this entity
+     * @see nurdz.game.Entity.trigger
      */
-    nurdz.sneak.LevelGoal.prototype.trigger = function (activator)
+    nurdz.sneak.LevelGoal.prototype.triggerTouch = function (activator)
     {
         if (activator instanceof nurdz.sneak.Player)
         {

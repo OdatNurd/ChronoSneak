@@ -253,7 +253,7 @@ nurdz.sneak.TitleScene = function (stage)
             // Now find all entities at the position that the player moved to, and trigger them all.
             var entities = this.level.entitiesAt (targetPos.x, targetPos.y);
             for (var i = 0 ; i < entities.length ; i++)
-                entities[i].trigger (this.player);
+                entities[i].triggerTouch (this.player);
             return true;
         }
 

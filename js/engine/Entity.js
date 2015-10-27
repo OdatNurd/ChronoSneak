@@ -144,16 +144,34 @@ nurdz.game.Entity = function (name, x, y, width, height, properties, debugColor)
     //noinspection JSUnusedGlobalSymbols
     /**
      * This method is invoked whenever this entity gets triggered by another entity. This can happen
-     * programmatically or in response to interactions with other entities.
+     * programmatically or in response to interactions with other entities, which does not include
+     * collision (see triggerTouch() for that).
      *
      * The method gets passed the Actor that caused the trigger to happen, although this can be null
      * depending on how the trigger happened.
      *
      * @param {nurdz.game.Actor} activator the actor that triggered this entity
+     * @see nurdz.game.Entity.triggerTouch
      */
     nurdz.game.Entity.prototype.trigger = function (activator)
     {
 
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * This method is invoked whenever this entity gets triggered by another entity as a result of a
+     * direct collision (touch). This can happen programmatically or in response to interactions with other
+     * entities. This does not include non-collision interactions (see trigger() for that).
+     *
+     * The method gets passed the Actor that caused the trigger to happen, although this can be null
+     * depending on how the trigger happened.
+     *
+     * @param {nurdz.game.Actor} activator the actor that triggered this entity
+     * @see nurdz.game.Entity.trigger
+     */
+    nurdz.game.Entity.prototype.triggerTouch = function (activator)
+    {
     };
 
     /**
