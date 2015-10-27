@@ -137,43 +137,7 @@ nurdz.sneak.TitleScene = function (stage)
         // Call the super to display all actors registered with the stage. This includes the player.
         nurdz.game.Scene.prototype.render.call (this);
 
-        // Do we know where the mouse is?
-        if (this.mousePos != null)
-        {
-            // Calculate the map positions.
-            var mX = Math.floor (this.mousePos.x / this.tileSize);
-            var mY = Math.floor (this.mousePos.y / this.tileSize);
-
-            // If there is no debug position, or there is but it is different than where the mouse is now,
-            // calculate new debug text.
-            if (this.debugPos == null || (this.debugPos.x != mX || this.debugPos.y != mY))
-            {
-                // Get the tile and any entities under the mouse.
-                var mTile = this.level.tileAt (mX, mY);
-                var entities = this.level.entitiesAt (mX, mY);
-
-                this.debugTxt = "[" + mX + ", " + mY + "]";
-                if (mTile != null)
-                    this.debugTxt += "=> " + mTile.name;
-                if (entities != null && entities.length > 0)
-                {
-                    for (var i = 0 ; i < entities.length ; i++)
-                    {
-                        this.debugTxt += ", " + entities[i].name + "{" + (entities[i].properties.id || "?") + "}";
-                    }
-                }
-
-                // Save the debug position now.
-                if (this.debugPos == null)
-                    this.debugPos = new nurdz.game.Point (mX, mY);
-                else
-                {
-                    this.debugPos.x = mX;
-                    this.debugPos.y = mY;
-                }
-            }
-        }
-
+        // Display our debug text at the bottom of the screen now
         if (this.debugTxt != null)
             this.stage.colorText (this.debugTxt, 16, this.stage.height - 6, 'white');
     };
@@ -192,6 +156,39 @@ nurdz.sneak.TitleScene = function (stage)
          * @type {nurdz.game.Point|null}
          */
         this.mousePos = this.stage.calculateMousePos (eventObj);
+
+        // Calculate the map positions of where the mouse is.
+        var mX = Math.floor (this.mousePos.x / this.tileSize);
+        var mY = Math.floor (this.mousePos.y / this.tileSize);
+
+        // If there is no debug position, or there is but it is different than where the mouse is now,
+        // calculate new debug text.
+        if (this.debugPos == null || (this.debugPos.x != mX || this.debugPos.y != mY))
+        {
+            // Get the tile and any entities under the mouse.
+            var mTile = this.level.tileAt (mX, mY);
+            var entities = this.level.entitiesAt (mX, mY);
+
+            this.debugTxt = "[" + mX + ", " + mY + "]";
+            if (mTile != null)
+                this.debugTxt += "=> " + mTile.name;
+            if (entities != null && entities.length > 0)
+            {
+                for (var i = 0 ; i < entities.length ; i++)
+                {
+                    this.debugTxt += ", " + entities[i].name + "{" + (entities[i].properties.id || "?") + "}";
+                }
+            }
+
+            // Save the debug position now.
+            if (this.debugPos == null)
+                this.debugPos = new nurdz.game.Point (mX, mY);
+            else
+            {
+                this.debugPos.x = mX;
+                this.debugPos.y = mY;
+            }
+        }
     };
 
     /**
