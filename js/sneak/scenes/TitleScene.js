@@ -220,30 +220,39 @@ nurdz.sneak.TitleScene = function (stage)
         var translatePos = null;
 
         // Check for valid keys.
+        // If a valid movement key was seen, check to see if the position that was moved to is blocked.
+
         switch (eventObj.keyCode)
         {
             case this.keys.KEY_UP:
+            case this.keys.KEY_W:
                 targetPos = new nurdz.game.Point (mapX, mapY - 1);
                 translatePos = new nurdz.game.Point (0, -this.player.height);
                 break;
 
             case this.keys.KEY_DOWN:
+            case this.keys.KEY_S:
                 targetPos = new nurdz.game.Point (mapX, mapY + 1);
                 translatePos = new nurdz.game.Point (0, this.player.height);
                 break;
 
             case this.keys.KEY_LEFT:
+            case this.keys.KEY_A:
                 targetPos = new nurdz.game.Point (mapX - 1, mapY);
                 translatePos = new nurdz.game.Point (-this.player.width, 0);
                 break;
 
             case this.keys.KEY_RIGHT:
+            case this.keys.KEY_D:
                 targetPos = new nurdz.game.Point (mapX + 1, mapY);
                 translatePos = new nurdz.game.Point (this.player.width, 0);
                 break;
-        }
 
-        // If a valid movement key was seen, check to see if the position that was moved to is blocked.
+            case this.keys.KEY_SPACEBAR:
+            case this.keys.KEY_Q:
+                console.log ("Interacting with things is not implemented yet");
+                break;
+        }
         if (targetPos != null && this.level.isBlockedAt (targetPos.x, targetPos.y) == false)
         {
             // Yep, translate the player accordingly and then step all of the entities, as they have a
