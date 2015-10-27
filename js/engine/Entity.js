@@ -95,7 +95,7 @@ nurdz.game.Entity = function (name, x, y, width, height, properties, debugColor)
      * the type provided.
      *
      * @param {String} name the name of the property to check
-     * @param {String|null} expectedType the type expected (the result of a typoeof operator)
+     * @param {String|null} expectedType the type expected (the result of a typeof operator)
      * @param {Boolean} required true if this property is required and false otherwise.
      * @throws {Error} if the property is not valid.
      */
@@ -139,6 +139,21 @@ nurdz.game.Entity = function (name, x, y, width, height, properties, debugColor)
     {
         // By default, all entities are solid.
         return true;
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * This method is invoked whenever this entity gets triggered by another entity. This can happen
+     * programmatically or in response to interactions with other entities.
+     *
+     * The method gets passed the Actor that caused the trigger to happen, although this can be null
+     * depending on how the trigger happened.
+     *
+     * @param {nurdz.game.Actor} activator the actor that triggered this entity
+     */
+    nurdz.game.Entity.prototype.trigger = function (activator)
+    {
+
     };
 
     /**

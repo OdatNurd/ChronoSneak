@@ -204,49 +204,56 @@ nurdz.sneak.TitleScene = function (stage)
         var mapX = this.player.position.x / this.tileSize;
         var mapY = this.player.position.y / this.tileSize;
 
-        // This will be set to true if the player actually took an action.
-        var actionTaken = false;
+        /**
+         * When the input represents a movement key, this stores the map position the player would move to
+         * for later checking.
+         *
+         * @type {nurdz.game.Point|null} */
+        var targetPos = null;
 
+        /**
+         * When the input represents a movement key, this stores the translation to apply to the player to
+         * perform the move, if the move is valid.
+         *
+         * @type {nurdz.game.Point|null} */
+        var translatePos = null;
+
+        // Check for valid keys.
         switch (eventObj.keyCode)
         {
             case this.keys.KEY_UP:
-                if (this.level.isBlockedAt (mapX, mapY - 1) == false)
-                {
-                    this.player.position.translate (0, -this.player.height);
-                    actionTaken = true;
-                }
+                targetPos = new nurdz.game.Point (mapX, mapY - 1);
+                translatePos = new nurdz.game.Point (0, -this.player.height);
                 break;
 
             case this.keys.KEY_DOWN:
-                if (this.level.isBlockedAt (mapX, mapY + 1) == false)
-                {
-                    this.player.position.translate (0, this.player.height);
-                    actionTaken = true;
-                }
+                targetPos = new nurdz.game.Point (mapX, mapY + 1);
+                translatePos = new nurdz.game.Point (0, this.player.height);
                 break;
 
             case this.keys.KEY_LEFT:
-                if (this.level.isBlockedAt (mapX - 1, mapY) == false)
-                {
-                    this.player.position.translate (-this.player.width, 0);
-                    actionTaken = true;
-                }
+                targetPos = new nurdz.game.Point (mapX - 1, mapY);
+                translatePos = new nurdz.game.Point (-this.player.width, 0);
                 break;
 
             case this.keys.KEY_RIGHT:
-                if (this.level.isBlockedAt (mapX + 1, mapY) == false)
-                {
-                    this.player.position.translate (this.player.width, 0);
-                    actionTaken = true;
-                }
+                targetPos = new nurdz.game.Point (mapX + 1, mapY);
+                translatePos = new nurdz.game.Point (this.player.width, 0);
                 break;
         }
 
-        // If an action was taken, then we handled the input, but we also need to make sure that we give
-        // all entities a logic tick, too.
-        if (actionTaken)
+        // If a valid movement key was seen, check to see if the position that was moved to is blocked.
+        if (targetPos != null && this.level.isBlockedAt (targetPos.x, targetPos.y) == false)
         {
+            // Yep, translate the player accordingly and then step all of the entities, as they have a
+            // turn now since the player moved.
+            this.player.position.translate (translatePos.x, translatePos.y);
             this.level.stepAllEntities ();
+
+            // Now find all entities at the position that the player moved to, and trigger them all.
+            var entities = this.level.entitiesAt (targetPos.x, targetPos.y);
+            for (var i = 0 ; i < entities.length ; i++)
+                entities[i].trigger (this.player);
             return true;
         }
 

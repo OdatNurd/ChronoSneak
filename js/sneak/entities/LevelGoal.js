@@ -77,4 +77,22 @@ nurdz.sneak.LevelGoal = function (x, y, properties)
         else
             nurdz.sneak.ChronoEntity.prototype.render.call (this, stage);
     };
+
+    /**
+     * This method is invoked whenever this entity gets triggered by another entity. This can happen
+     * programmatically or in response to interactions with other entities.
+     *
+     * The method gets passed the Actor that caused the trigger to happen, although this can be null
+     * depending on how the trigger happened.
+     *
+     * @param {nurdz.game.Actor} activator the actor that triggered this entity
+     */
+    nurdz.sneak.LevelGoal.prototype.trigger = function (activator)
+    {
+        if (activator instanceof nurdz.sneak.Player)
+        {
+            console.log ("Level goal " + this.properties.id + " stepped on by the player");
+        }
+    };
+
 } ());
