@@ -22,13 +22,32 @@
         // Set up the button to toggle the stage.
         button.addEventListener ("click", function ()
         {
-            if (gameRunning)
-                stage.stop ();
-            else
-                stage.run ();
+            // Try to toggle the game state. This will only throw an error if we try to put the game into
+            // a state it is already in, which can only happen if the engine stops itself when we didn't
+            // expect it.
+            try
+            {
+                if (gameRunning)
+                    stage.stop ();
+                else
+                    stage.run ();
+            }
 
-            gameRunning = !gameRunning;
-            button.innerHTML = gameRunning ? "Stop Game" : "Restart Game";
+            // Log and then rethrow the error.
+            catch (error)
+            {
+                console.log ("Exception generated while toggling game state");
+                throw error;
+            }
+
+            // No matter what, toggle the game state. This will put the button back into sync for the next
+            // click if it got out of sync.
+            finally
+            {
+                // No matter what, toggle the state.
+                gameRunning = !gameRunning;
+                button.innerHTML = gameRunning ? "Stop Game" : "Restart Game";
+            }
         });
     }
 
