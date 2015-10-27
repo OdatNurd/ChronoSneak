@@ -2,10 +2,17 @@
  * This class represents a single level in the game. It takes an instance of level data to know what to
  * do, and then will render the map and allow queries based on what the level data says.
  *
- * @type {nurdz.game.LevelData} levelData the data to display initially
+ * A stage object can optionally be passed in. If this is done, all of the entities in the level data
+ * provided will have that stage set as their stage object if they don't have a stage object set.
+ *
+ * This allows for entities that are carried with the map data to be constructed and stored prior to level
+ * being loaded and yet still have the stage.
+ *
+ * @param {nurdz.game.LevelData} levelData the data to display initially
+ * @param {nurdz.game.Stage|null} stage the stage that owns the level
  * @constructor
  */
-nurdz.game.Level = function (levelData)
+nurdz.game.Level = function (levelData, stage)
 {
     "use strict";
 
@@ -43,6 +50,19 @@ nurdz.game.Level = function (levelData)
      * @type {nurdz.game.Tileset}
      */
     this.tileset = levelData.tileset;
+
+    // Iterate over all of the entities and tell them their stage if they don't already have one. We assume
+    // that entities in the level data don't have the stage attached to them because it's not known when
+    // the entity objects are created.
+    if (stage != null)
+    {
+        for (var i = 0; i < this.entities.length; i++)
+        {
+            var entity = this.entities[i];
+            if (entity.stage == null)
+                entity.stage = stage;
+        }
+    }
 };
 
 // Now define the various member functions and any static stage.
@@ -78,7 +98,7 @@ nurdz.game.Level = function (levelData)
      */
     nurdz.game.Level.prototype.stepAllEntities = function ()
     {
-        for (var i = 0 ; i < this.entities.length ; i++)
+        for (var i = 0; i < this.entities.length; i++)
             this.entities[i].step ();
     };
 
@@ -122,7 +142,7 @@ nurdz.game.Level = function (levelData)
 
         // Iterate over all entities to see if they are at the map location provided.
         var retVal = [];
-        for (var i = 0 ; i < this.entities.length ; i++)
+        for (var i = 0; i < this.entities.length; i++)
         {
             // Get the entity.
             var entity = this.entities[i];
@@ -151,7 +171,7 @@ nurdz.game.Level = function (levelData)
             return true;
 
         // If the tile at this location blocks actor movement, then the move is blocked.
-        if (tile.blocksActorMovement())
+        if (tile.blocksActorMovement ())
             return true;
 
         // Get the list of entities that are at this location on the map. If there are any and any of them
@@ -159,9 +179,9 @@ nurdz.game.Level = function (levelData)
         var entities = this.entitiesAt (x, y);
         if (entities != null)
         {
-            for (var i = 0 ; i < entities.length ; i++)
+            for (var i = 0; i < entities.length; i++)
             {
-                if (entities[i].blocksActorMovement())
+                if (entities[i].blocksActorMovement ())
                     return true;
             }
         }

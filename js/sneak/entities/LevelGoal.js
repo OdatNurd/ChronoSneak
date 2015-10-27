@@ -20,7 +20,7 @@ nurdz.sneak.LevelGoal = function (x, y, properties)
     this.defaultProperties = {visible: true, winLevel: true};
 
     // Call the super class constructor.
-    nurdz.sneak.ChronoEntity.call (this, "LevelGoal", x, y, properties, 'yellow');
+    nurdz.sneak.ChronoEntity.call (this, "LevelGoal", null, x, y, properties, 'yellow');
 };
 
 // Now define the various member functions and any static stage.

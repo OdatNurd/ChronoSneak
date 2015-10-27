@@ -10,6 +10,7 @@
  * set this.defaultProperties to a set of properties that should be applied directly to the
  *
  * @param {String} name the internal name of this actor instance, for debugging
+ * @param {nurdz.game.Stage|null} stage the stage that will manage this entity or null if it is not known yet
  * @param {Number} x x location for this actor
  * @param {Number} y y location for this actor
  * @param {Number} width the width of this entity
@@ -18,7 +19,7 @@
  * @param {String} [debugColor='white'] the color specification to use in debug rendering for this actor
  * @constructor
  */
-nurdz.game.Entity = function (name, x, y, width, height, properties, debugColor)
+nurdz.game.Entity = function (name, stage, x, y, width, height, properties, debugColor)
 {
     "use strict";
 
@@ -49,7 +50,7 @@ nurdz.game.Entity = function (name, x, y, width, height, properties, debugColor)
     }
 
     // Call the super class constructor, then validate the properties.
-    nurdz.game.Actor.call (this, name, x, y, width, height, debugColor);
+    nurdz.game.Actor.call (this, name, stage, x, y, width, height, debugColor);
     this.validateProperties ();
 };
 

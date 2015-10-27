@@ -18,7 +18,7 @@ nurdz.sneak.TitleScene = function (stage)
      *
      * @type {nurdz.game.Level}
      */
-    this.level = new nurdz.game.Level (nurdz.sneak.levels.level1);
+    this.level = new nurdz.game.Level (nurdz.sneak.levels.level1, stage);
 
     /**
      * The size of tiles in the game. Cached for quicker access.
@@ -65,7 +65,8 @@ nurdz.sneak.TitleScene = function (stage)
      *
      * @type {nurdz.sneak.Player}
      */
-    this.player = new nurdz.sneak.Player (playerStartPos[0].position.x,
+    this.player = new nurdz.sneak.Player (stage,
+                                          playerStartPos[0].position.x,
                                           playerStartPos[0].position.y);
 
 

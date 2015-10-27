@@ -2,6 +2,7 @@
  * This class represents the base class for simple actors that know how to position and render themselves.
  *
  * @param {String} name the internal name of this actor instance, for debugging
+ * @param {nurdz.game.Stage|null} stage the stage that will manage this entity or null if it is not known yet
  * @param {Number} x x location for this actor
  * @param {Number} y y location for this actor
  * @param {Number} width width for this actor
@@ -9,7 +10,7 @@
  * @param {String} [debugColor='white'] the color specification to use in debug rendering for this actor
  * @constructor
  */
-nurdz.game.Actor = function (name, x, y, width, height, debugColor)
+nurdz.game.Actor = function (name, stage, x, y, width, height, debugColor)
 {
     "use strict";
 
@@ -19,6 +20,13 @@ nurdz.game.Actor = function (name, x, y, width, height, debugColor)
      * @type {String}
      */
     this.name = name;
+
+    /**
+     * The stage that this entity is being managed by or null if that information is not known yet.
+     *
+     * @type {nurdz.game.Stage|null}
+     */
+    this.stage = stage;
 
     /**
      * The position of this actor.

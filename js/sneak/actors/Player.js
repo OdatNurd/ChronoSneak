@@ -1,11 +1,13 @@
 /**
+ * The actor that
  * Description of class and its parameters
  *
+ * @param {nurdz.game.Stage|null} stage the stage that will manage this entity or null if it is not known yet
  * @param {Number} x the initial X location for this player actor
  * @param {Number} y the initial Y location for this player actor
  * @constructor
  */
-nurdz.sneak.Player = function (x, y)
+nurdz.sneak.Player = function (stage, x, y)
 {
     "use strict";
 
@@ -13,7 +15,7 @@ nurdz.sneak.Player = function (x, y)
     var tileSize = nurdz.sneak.constants.TILE_SIZE;
 
     // Call the super class constructor.
-    nurdz.game.Actor.call (this, 'PlayerActor', x, y, tileSize, tileSize, 'green');
+    nurdz.game.Actor.call (this, 'PlayerActor', stage, x, y, tileSize, tileSize, 'green');
 };
 
 // Now define the various member functions and any static stage.
