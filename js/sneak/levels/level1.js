@@ -24,9 +24,12 @@ nurdz.sneak.levels.level1 = new nurdz.game.LevelData ("level1", 25, 18, [
     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
 ], [
     // The location the player will start at.
-    new nurdz.sneak.PlayerStartEntity (23, 16, {id: 'playerStart', visible: false}),
-    new nurdz.sneak.LevelGoal (23, 9, {id: 'winGoal'}),
-    new nurdz.sneak.LevelGoal (19, 11, {id: 'loseGoal1', visible: false, winLevel: false}),
-    new nurdz.sneak.LevelGoal (19, 15, {id: 'loseGoal2', visible: false, winLevel: false})
+    new nurdz.sneak.PlayerStartEntity (23, 11, {id: 'playerStart', visible: false}),
+    new nurdz.sneak.LevelGoal (1, 5, {id: 'winGoal'}),
+    new nurdz.sneak.Door (4, 8, {open: false, closeTime: 20}),
+    new nurdz.sneak.Door (19, 11, {open: true, openTime: 3}),
+    new nurdz.sneak.Door (19, 15, {open: false, openTime: 2, closeTime: 2}),
+    new nurdz.sneak.Door (11, 4, {open: true, horizontal: true}),
+    new nurdz.sneak.Door (14, 4, {open: false, horizontal: true})
 ], nurdz.sneak.stdTiles);
 
