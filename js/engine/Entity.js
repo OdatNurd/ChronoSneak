@@ -102,9 +102,10 @@ nurdz.game.Entity = function (name, stage, x, y, width, height, properties, debu
      * @param {String} name the name of the property to check
      * @param {String|null} expectedType the type expected (the result of a typeof operator)
      * @param {Boolean} required true if this property is required and false otherwise.
+     * @param {Array} [values=null] if given, a list that contains all possible valid values
      * @throws {Error} if the property is not valid.
      */
-    nurdz.game.Entity.prototype.isPropertyValid = function (name, expectedType, required)
+    nurdz.game.Entity.prototype.isPropertyValid = function (name, expectedType, required, values)
     {
         // Does the property exist?
         if (this.properties[name] == null)
@@ -119,6 +120,21 @@ nurdz.game.Entity = function (name, stage, x, y, width, height, properties, debu
         // If we got an expected type and it's not right, throw an error.
         if (expectedType != null && typeof (this.properties[name]) != expectedType)
             throw new TypeError ("Entity " + this.name + ": invalid property '" + name + "': expected " + expectedType);
+
+        // If we got a list of possible values and this property actually exists, make sure that the value is
+        // one of them.
+        if (values != null && this.properties[name] != null)
+        {
+            var propValue = this.properties[name];
+            for (var i = 0; i < values.length; i++)
+            {
+                if (propValue == values[i])
+                    return;
+            }
+
+            // If we get here, we did not find the value in the list of valid values.
+            throw new RangeError ("Entity " + this.name + ": invalid value for property '" + name + "': not in allowable list");
+        }
     };
 
     /**
