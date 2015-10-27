@@ -120,22 +120,32 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
      */
     var sceneLoop = function ()
     {
-        // If there is a scene change scheduled, change it now.
-        if (nextScene != null && nextScene !== currentScene)
+        try
         {
-            // Notify the current scene that it is deactivating, then notify the new scene that it is
-            // activating.
-            currentScene.deactivating (nextScene);
-            nextScene.activating (currentScene);
+            // If there is a scene change scheduled, change it now.
+            if (nextScene != null && nextScene !== currentScene)
+            {
+                // Notify the current scene that it is deactivating, then notify the new scene that it is
+                // activating.
+                currentScene.deactivating (nextScene);
+                nextScene.activating (currentScene);
 
-            // Now do the swap and clear the flag.
-            currentScene = nextScene;
-            nextScene = null;
+                // Now do the swap and clear the flag.
+                currentScene = nextScene;
+                nextScene = null;
+            }
+
+            // Do the frame update now
+            currentScene.update ();
+            currentScene.render ();
         }
-
-        // Do the frame update now
-        currentScene.update ();
-        currentScene.render ();
+        catch (error)
+        {
+            console.log ("Caught exception in sceneLoop(), stopping the game");
+            clearInterval (gameTimerID);
+            gameTimerID = null;
+            throw error;
+        }
     };
 
     /**
