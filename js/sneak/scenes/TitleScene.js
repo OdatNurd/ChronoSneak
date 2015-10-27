@@ -252,7 +252,18 @@ nurdz.sneak.TitleScene = function (stage)
             case this.keys.KEY_Q:
                 console.log ("Interacting with things is not implemented yet");
                 break;
+
+            // This key causes a "wait" action, which allows all entities to have a turn without the
+            // player doing anything.
+            case this.keys.KEY_E:
+            case this.keys.KEY_ENTER:
+                this.level.stepAllEntities ();
+                break;
         }
+
+        // If a movement happened, then move the player and allow all entities a turn. This also makes
+        // sure to check if the player is currently standing on an entity, which will trigger them for a
+        // touch if they support that.
         if (targetPos != null && this.level.isBlockedAt (targetPos.x, targetPos.y) == false)
         {
             // Yep, translate the player accordingly and then step all of the entities, as they have a
@@ -261,6 +272,9 @@ nurdz.sneak.TitleScene = function (stage)
             this.level.stepAllEntities ();
 
             // Now find all entities at the position that the player moved to, and trigger them all.
+            //
+            // This happens after the move and the entity gets a turn so that the entities have a chance
+            // to move during their step such that they are no longer where the player might have ended up.
             var entities = this.level.entitiesAt (targetPos.x, targetPos.y);
             for (var i = 0 ; i < entities.length ; i++)
                 entities[i].triggerTouch (this.player);

@@ -18,6 +18,14 @@
     nurdz.game.keys =
     {
         /**
+         * The enter/return key (both of them).
+         *
+         * @const
+         * @type {Number}
+         */
+        KEY_ENTER: 13,
+
+        /**
          * The spacebar.
          *
          * @const
