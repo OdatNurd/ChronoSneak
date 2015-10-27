@@ -35,15 +35,24 @@ nurdz.sneak.Player = function (stage, x, y)
     });
 
     /**
-     * Called every frame to update the player object. We make sure it never leaves the bounds of the screen.
+     * The size (in pixels) of border to apply on all edges of the cell that the player is in when
+     * rendering it.
      *
-     * @param {nurdz.game.Stage} stage the stage the player is on
+     * @const
+     * @type {number}
      */
-    nurdz.sneak.Player.prototype.update = function (stage)
+    var MARGIN = 5;
+
+    /**
+     * Render this actor to the stage provided. We simply render a box using the debug color.
+     *
+     * @param {nurdz.game.Stage} stage the stage to render to
+     */
+    nurdz.sneak.Player.prototype.render = function (stage)
     {
-        // Make sure the player does not leave the stage.
-        this.position.clampX (0, stage.width - this.width);
-        this.position.clampY (0, stage.height - this.height);
+        stage.colorRect (this.position.x + MARGIN, this.position.y + MARGIN,
+                         this.width - (2 * MARGIN), this.height - (2 * MARGIN),
+                         this.debugColor);
     };
 
     /**
