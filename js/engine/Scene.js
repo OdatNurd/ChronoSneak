@@ -132,6 +132,36 @@ nurdz.game.Scene = function (name, stage)
     };
 
     /**
+     * Return the complete list of actors that are currently registered with this scene.
+     *
+     * @returns {nurdz.game.Actor[]}
+     */
+    nurdz.game.Scene.prototype.actors = function ()
+    {
+        return this.actorList;
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Return a list of actors whose position matches the position passed in.
+     *
+     * @param {Number} x the X coordinate to search for actors at
+     * @param {Number} y the Y coordinate to search for actors at
+     * @returns {nurdz.game.Actor[]}
+     */
+    nurdz.game.Scene.prototype.actorsAt = function (x, y)
+    {
+       var retVal = [];
+        for (var i = 0 ; i < this.actorList.length ; i++)
+        {
+            var actor = this.actorList[i];
+            if (actor.position.x == x && actor.position.y == y)
+                retVal.push (actor);
+        }
+        return retVal;
+    };
+
+    /**
      * Return a string representation of the object, for debugging purposes.
      *
      * @returns {String}
