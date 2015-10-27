@@ -30,6 +30,7 @@ nurdz.sneak.levels.level1 = new nurdz.game.LevelData ("level1", 25, 18, [
     new nurdz.sneak.Door (19, 11, {open: true, openTime: 3}),
     new nurdz.sneak.Door (19, 15, {open: false, openTime: 2}),
     new nurdz.sneak.Door (11, 4, {open: true, horizontal: true}),
-    new nurdz.sneak.Door (14, 4, {open: false, horizontal: true})
+    new nurdz.sneak.Door (14, 4, {open: false, horizontal: true}),
+    new nurdz.sneak.Button(20, 13, {orientation: "left"})
 ], nurdz.sneak.stdTiles);
 
