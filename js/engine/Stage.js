@@ -242,6 +242,17 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
         nextScene = newScene;
     };
 
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Determine what scene is the current scene on this stage.
+     *
+     * @returns {nurdz.game.Scene}
+     */
+    nurdz.game.Stage.prototype.currentScene = function ()
+    {
+        return currentScene;
+    };
+
     /**
      * Clear the entire stage with the provided color specification, or a default color if no color is
      * specified.
