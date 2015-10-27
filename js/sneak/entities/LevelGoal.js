@@ -4,8 +4,8 @@
  * console.
  *
  * This entity supports the following properties:
- *    - 'visible': true or false (default: true)
- *       - Controls whether the goal is rendered on the screen or or not.
+ *    - 'winLevel': true or false (default: true)
+ *       - Controls whether the trigger causes a level win or failure
  *
  * @param {Number} x the X coordinate of the entity, in map coordinates
  * @param {Number} y the Y coordinate of the entity, in map coordinates
@@ -17,7 +17,7 @@ nurdz.sneak.LevelGoal = function (x, y, properties)
     "use strict";
 
     // Set up the default properties for entities of this type.
-    this.defaultProperties = {visible: true, winLevel: true};
+    this.defaultProperties = {winLevel: true};
 
     // Call the super class constructor.
     nurdz.sneak.ChronoEntity.call (this, "LevelGoal", null, x, y, properties, 'yellow');
@@ -47,8 +47,8 @@ nurdz.sneak.LevelGoal = function (x, y, properties)
      */
     nurdz.sneak.LevelGoal.prototype.validateProperties = function ()
     {
-        // The visible property is not strictly required, but if it exists, it needs to be false.
-        this.isPropertyValid ("winLevel", "boolean", false);
+        // A property that indicates if this causes a level success or failure
+        this.isPropertyValid ("winLevel", "boolean", true);
 
         // Chain to the super to check properties it might have inserted or know about.
         nurdz.sneak.ChronoEntity.prototype.validateProperties.call (this);
