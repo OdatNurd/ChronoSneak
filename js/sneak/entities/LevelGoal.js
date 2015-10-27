@@ -17,7 +17,7 @@ nurdz.sneak.LevelGoal = function (x, y, properties)
     "use strict";
 
     // Set up the default properties for entities of this type.
-    this.defaultProperties = {visible: true};
+    this.defaultProperties = {visible: true, winLevel: true};
 
     // Call the super class constructor.
     nurdz.sneak.ChronoEntity.call (this, "LevelGoal", x, y, properties, 'yellow');
@@ -38,6 +38,21 @@ nurdz.sneak.LevelGoal = function (x, y, properties)
             value:        nurdz.sneak.LevelGoal
         }
     });
+
+    /**
+     * This is automatically invoked at the end of the constructor to validate that the properties object
+     * that we have is valid as far as we can tell (i.e. needed properties exist and have a sensible value).
+     *
+     * This validates that
+     */
+    nurdz.sneak.LevelGoal.prototype.validateProperties = function ()
+    {
+        // The visible property is not strictly required, but if it exists, it needs to be false.
+        this.isPropertyValid ("winLevel", "boolean", false);
+
+        // Chain to the super to check properties it might have inserted or know about.
+        nurdz.sneak.ChronoEntity.prototype.validateProperties.call (this);
+    };
 
     /**
      * Query whether or not this entity blocks movement of actors or not.
@@ -91,7 +106,10 @@ nurdz.sneak.LevelGoal = function (x, y, properties)
     {
         if (activator instanceof nurdz.sneak.Player)
         {
-            console.log ("Level goal " + this.properties.id + " stepped on by the player");
+            if (this.properties.winLevel)
+                console.log ("You have completed the level successfully!");
+            else
+                console.log ("You lose!");
         }
     };
 
