@@ -1,5 +1,5 @@
 /**
- * This is the entity which blocks player movement until it is opened. 
+ * This is the entity which blocks player movement until it is opened.
  *
  * This entity supports the following properties:
  *    - 'open': true or false (default: false)
@@ -176,6 +176,30 @@ nurdz.sneak.Door = function (x, y, properties)
      */
     nurdz.sneak.Door.prototype.toggleDoorState = function ()
     {
+        // If the door is currently open, we're going to close it. Before we do that, we need to make sure
+        // that we're not blocked. If we are, we should leave without doing anything. We don't want to
+        // close the door on anything.
+        //
+        // We can only do this when we have access to the current level information, so that we can check
+        // if anything is blocking, and to get that we need the stage.
+        if (this.properties.open && this.stage)
+        {
+            // Get the current scene.
+            var scene = this.stage.currentScene ();
+
+            // Get the list of actors in the scene and see if any of them are at our position or not. We
+            // count as an actor, so there should be exactly one item in the list (us). Any other number
+            // and we are blocked.
+            //
+            // NOTE: This only works because we bound all of our actors to tile coordinates.
+            var actors = scene.actorsAt (this.position.x, this.position.y);
+            if (actors.length != 1)
+            {
+                console.log ("Can't toggle door this step; currently blocked");
+                return;
+            }
+        }
+
         // Toggle the state of the door every time we're triggered.
         this.properties.open = !this.properties.open;
 
