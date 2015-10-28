@@ -61,6 +61,10 @@ nurdz.sneak.GameScene = function (stage)
      */
     this.debugTargetLinks = null;
 
+    // Spawn all guards now, by having them validate their waypoints and jumping to the initial waypoint
+    // where they should start.
+    this.spawnGuards ();
+
     // Attempt to find the player start entity so that we know where to start the player for this run. If
     // this does not have exactly one entity, the level is invalid.
     var playerStartPos = this.level.entitiesWithName ("PlayerStartEntity");
@@ -77,7 +81,6 @@ nurdz.sneak.GameScene = function (stage)
     this.player = new nurdz.sneak.Player (stage,
                                           playerStartPos[0].position.x,
                                           playerStartPos[0].position.y);
-
 
     // Add the player and all of the entities in the level to the list of actors in the scene, so that the
     // update and render methods of all of them will get invoked automatically.
@@ -105,6 +108,20 @@ nurdz.sneak.GameScene = function (stage)
             value:        nurdz.sneak.GameScene
         }
     });
+
+    /**
+     * Find all entities in the current level that are guards and have them jump to the start of their
+     * patrols.
+     */
+    nurdz.sneak.GameScene.prototype.spawnGuards = function ()
+    {
+        // Iterate over all entities and for every guard found, jump them to their spawn location.
+        for (var i = 0 ; i < this.level.entities.length ; i++)
+        {
+            if (this.level.entities[i] instanceof nurdz.sneak.GuardBase)
+                this.level.entities[i].jumpToSpawn (this.level);
+        }
+    };
 
     /**
      * Invoked when we become active. We use this to make sure some persistent rendering properties are
