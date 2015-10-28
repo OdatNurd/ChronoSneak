@@ -124,7 +124,9 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
             var x = this.position.x;
             var y = this.position.y;
 
-            stage.canvasContext.fillStyle = this.debugColor;
+            stage.canvasContext.strokeStyle = this.debugColor;
+            stage.canvasContext.lineWidth = 3;
+            stage.canvasContext.lineCap = 'round';
             stage.canvasContext.beginPath ();
             stage.canvasContext.moveTo (x + 10, y + 10);
             stage.canvasContext.lineTo (x + this.width - 10, y + this.height - 10);

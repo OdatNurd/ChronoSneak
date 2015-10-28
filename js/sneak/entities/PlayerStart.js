@@ -14,7 +14,7 @@ nurdz.sneak.PlayerStartEntity = function (x, y, properties)
     this.defaultProperties = {};
 
     // Call the super class constructor.
-    nurdz.sneak.ChronoEntity.call (this, "PlayerStartEntity", null, x, y, properties, 100, 'white');
+    nurdz.sneak.ChronoEntity.call (this, "PlayerStartEntity", null, x, y, properties, -10, 'white');
 };
 
 // Now define the various member functions and any static stage.
@@ -58,7 +58,9 @@ nurdz.sneak.PlayerStartEntity = function (x, y, properties)
             var x = this.position.x;
             var y = this.position.y;
 
-            stage.canvasContext.fillStyle = this.debugColor;
+            stage.canvasContext.strokeStyle = this.debugColor;
+            stage.canvasContext.lineWidth = 3;
+            stage.canvasContext.lineCap = 'round';
             stage.canvasContext.beginPath ();
             stage.canvasContext.moveTo (x + 5, y + 5);
             stage.canvasContext.lineTo (x + this.width - 5, y + this.height - 5);
