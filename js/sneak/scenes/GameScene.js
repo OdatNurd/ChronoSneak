@@ -119,7 +119,10 @@ nurdz.sneak.GameScene = function (stage)
         for (var i = 0 ; i < this.level.entities.length ; i++)
         {
             if (this.level.entities[i] instanceof nurdz.sneak.GuardBase)
+            {
+                this.level.entities[i].validateWaypoints (this.level);
                 this.level.entities[i].jumpToSpawn (this.level);
+            }
         }
     };
 
