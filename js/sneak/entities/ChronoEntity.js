@@ -8,6 +8,10 @@
  * This entity supports the following properties:
  *    - 'visible': true or false (default: true)
  *       - controls whether the entity is visible in the map or not
+ *    - 'trigger': string or array of strings (default: none)
+ *       - If specified, this is an entity ID or a list of entity ID's for which a trigger should be
+ *         invoked whenever this entity gets triggered. NOTE: Not all entity subclasses support this
+ *         functionality, but all will accept a valid trigger anyway.
  *
  * @param {String} name the internal name of this actor instance, for debugging
  * @param {nurdz.game.Stage|null} stage the stage that will manage this entity or null if it is not known yet
@@ -60,8 +64,42 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, debugColor)
         // The visible property needs to exist and be a boolean
         this.isPropertyValid ("visible", "boolean", true);
 
+        // If there is a property named trigger, it should have a type that is either a string or an
+        // array. If it's not, we will use a bogus call to isPropertyValid to cause it to generate an
+        // error for us.
+        if (this.properties.trigger != null)
+        {
+            // Cache it
+            var trigger = this.properties.trigger;
+
+            // If the trigger is not a string and not an array, that's bad. This invocation of instanceof
+            // will fail because the type given is not valid.
+            if (typeof (trigger) != "string" && Array.isArray (trigger) == false)
+                this.isPropertyValid ("trigger", "string|array", false);
+        }
+
         // Chain to the super to check properties it might have inserted or know about.
         nurdz.game.Entity.prototype.validateProperties.call (this);
+    };
+
+    /**
+     * This method finds all entities on the current level that have an ID that matches the list of ID
+     * values in the "trigger" property of this entity, and invokes their trigger methods specifying this
+     * object as the source of the trigger event.
+     *
+     * In order for this to work, the current scene needs to have a property named level that represents
+     * the current level, and this object needs to have a property named "trigger" that specifies either a
+     * string with the ID of a single entity to trigger, or an array of entity IDs to trigger.
+     *
+     * If either of these prerequisites are not fulfilled, this silently does nothing.
+     */
+    nurdz.sneak.ChronoEntity.prototype.triggerLinkedEntities = function ()
+    {
+        // Get the current stage. If it has a level, get it to trigger all entities for us based on our
+        // trigger property.
+        var scene = this.stage.currentScene ();
+        if (scene.level != null)
+            scene.level.triggerEntitiesWithIDs (/** @type {String} */ this.properties.trigger, this);
     };
 
     /**
