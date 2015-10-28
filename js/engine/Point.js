@@ -109,6 +109,34 @@ nurdz.game.Point = function (x, y)
     };
 
     /**
+     * Return a new point instance that is a copy of this point.
+     *
+     * @returns {nurdz.game.Point} a duplicate of this point
+     * @see nurdz.game.Point.copyWithTranslate
+     */
+    nurdz.game.Point.prototype.copy = function ()
+    {
+        return new nurdz.game.Point (this.x, this.y);
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Return a new point instance that is a copy of this point, with its values translated by the values
+     * passed in.
+     *
+     * @param {Number} x the amount to translate the X value by
+     * @param {Number} y the amount to translate the Y value by
+     * @returns {nurdz.game.Point} a duplicate of this point, translated by the value passed in
+     * @see nurdz.game.Point.copy
+     */
+    nurdz.game.Point.prototype.copyWithTranslate = function (x, y)
+    {
+        var retVal = this.copy ();
+        retVal.translate (x, y);
+        return retVal;
+    };
+
+    /**
      * Return a string representation of the object, for debugging purposes.
      *
      * @returns {String}
