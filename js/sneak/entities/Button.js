@@ -24,7 +24,7 @@ nurdz.sneak.Button = function (x, y, properties)
     this.defaultProperties = {pressed: false, cycleTime: -1, orientation: "right"};
 
     // Call the super class constructor.
-    nurdz.sneak.ChronoEntity.call (this, "Button", null, x, y, properties, '#cA0000');
+    nurdz.sneak.ChronoEntity.call (this, "Button", null, x, y, properties, 100, '#cA0000');
 
     // NOTE: The code below is below the constructor call because it is the super constructor that will
     // apply the defaults to the properties given, so it's not until that call returns that we can access

@@ -20,10 +20,11 @@
  * @param {Number} width the width of this entity
  * @param {Number} height the height of this entity
  * @param {Object} properties entity specific properties to apply to this entity
+ * @param {Number} [zOrder=1] the Z-Order of this actor when rendered (smaller numbers go below larger ones)
  * @param {String} [debugColor='white'] the color specification to use in debug rendering for this actor
  * @constructor
  */
-nurdz.game.Entity = function (name, stage, x, y, width, height, properties, debugColor)
+nurdz.game.Entity = function (name, stage, x, y, width, height, properties, zOrder, debugColor)
 {
     "use strict";
 
@@ -54,7 +55,7 @@ nurdz.game.Entity = function (name, stage, x, y, width, height, properties, debu
     }
 
     // Call the super class constructor, then validate the properties.
-    nurdz.game.Actor.call (this, name, stage, x, y, width, height, debugColor);
+    nurdz.game.Actor.call (this, name, stage, x, y, width, height, zOrder, debugColor);
     this.validateProperties ();
 };
 

@@ -14,7 +14,7 @@ nurdz.sneak.PlayerStartEntity = function (x, y, properties)
     this.defaultProperties = {};
 
     // Call the super class constructor.
-    nurdz.sneak.ChronoEntity.call (this, "PlayerStartEntity", null, x, y, properties, 'white');
+    nurdz.sneak.ChronoEntity.call (this, "PlayerStartEntity", null, x, y, properties, 100, 'white');
 };
 
 // Now define the various member functions and any static stage.

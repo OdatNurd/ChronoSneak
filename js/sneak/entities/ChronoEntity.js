@@ -18,10 +18,11 @@
  * @param {Number} x x location for this entity, in map coordinates
  * @param {Number} y y location for this entity, in map coordinates
  * @param {Object} [properties={}] entity specific properties to apply to this entity, or null for none
+ * @param {Number} [zOrder=1] the Z-Order of this actor when rendered (smaller numbers go below larger ones)
  * @param {String} [debugColor='white'] the color specification to use in debug rendering for this actor
  * @constructor
  */
-nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, debugColor)
+nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debugColor)
 {
     "use strict";
 
@@ -34,7 +35,8 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, debugColor)
 
     // Call the super class constructor. We use tile size for the dimensions and we also need to modify
     // the position passed in so that it translates to screen coordinates.
-    nurdz.game.Entity.call (this, name, stage, x * tSize, y * tSize, tSize, tSize, properties || {}, debugColor);
+    nurdz.game.Entity.call (this, name, stage, x * tSize, y * tSize, tSize, tSize, properties || {}, zOrder,
+                            debugColor);
 };
 
 // Now define the various member functions and any static stage.

@@ -161,6 +161,19 @@ nurdz.game.Scene = function (name, stage)
         return retVal;
     };
 
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * This method will sort all of the actors that are currently attached to the scene by their current
+     * internal Z-Order value, so that when they are iterated for rendering/updates, they get handled in
+     * an appropriate order.
+     *
+     * Note that the sort used is not stable.
+     */
+    nurdz.game.Scene.prototype.sortActors = function ()
+    {
+        this.actorList.sort (function (left, right) { return left.zOrder - right.zOrder; });
+    };
+
     /**
      * Return a string representation of the object, for debugging purposes.
      *

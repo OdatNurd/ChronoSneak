@@ -26,7 +26,7 @@ nurdz.sneak.Door = function (x, y, properties)
     this.defaultProperties = {open: true, horizontal: false, openTime: -1, closeTime: -1};
 
     // Call the super class constructor.
-    nurdz.sneak.ChronoEntity.call (this, "Door", null, x, y, properties, '#5030ff');
+    nurdz.sneak.ChronoEntity.call (this, "Door", null, x, y, properties, 100, '#5030ff');
 
     // NOTE: The code below is below the constructor call because it is the super constructor that will
     // apply the defaults to the properties given, so it's not until that call returns that we can access

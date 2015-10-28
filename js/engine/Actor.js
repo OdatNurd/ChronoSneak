@@ -7,10 +7,11 @@
  * @param {Number} y y location for this actor
  * @param {Number} width width for this actor
  * @param {Number} height height for this actor
+ * @param {Number} [zOrder=1] the Z-Order of this actor when rendered (smaller numbers go below larger ones)
  * @param {String} [debugColor='white'] the color specification to use in debug rendering for this actor
  * @constructor
  */
-nurdz.game.Actor = function (name, stage, x, y, width, height, debugColor)
+nurdz.game.Actor = function (name, stage, x, y, width, height, zOrder, debugColor)
 {
     "use strict";
 
@@ -48,6 +49,14 @@ nurdz.game.Actor = function (name, stage, x, y, width, height, debugColor)
      * @type {Number}
      */
     this.height = height;
+
+    /**
+     * The Z-Order of this actor. When rendered, actors with a lower Z-Order are rendered before actors
+     * with a higher Z-Order, allowing some to appear over others.
+     *
+     * @type {Number}
+     */
+    this.zOrder = zOrder || 1;
 
     /**
      * The color to render debug markings for this actor with.

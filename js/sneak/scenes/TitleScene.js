@@ -11,7 +11,7 @@ nurdz.sneak.TitleScene = function (stage)
     "use strict";
 
     // Call the super constructor.
-    nurdz.game.Scene.call (this, "title screen", stage);
+    nurdz.game.Scene.call (this, "Title Screen", stage);
 
     /**
      * Load the level that we will be displaying.
@@ -70,13 +70,16 @@ nurdz.sneak.TitleScene = function (stage)
                                           playerStartPos[0].position.y);
 
 
-    // Stick a player onto the screen. This will make the update and render methods of the player get
-    // automatically invoked every frame.
+    // Add the player and all of the entities in the level to the list of actors in the scene, so that the
+    // update and render methods of all of them will get invoked automatically.
+    //
+    // NOTE: Since this is supposed to be a turn based game, the "update" method can be used to change the
+    // visual appearance of an actor/entity, but all of the internal logic regarding updates, position
+    // changes etc should happen in the step() method. This only gets invoked by the scene when the player
+    // actually takes a turn or does something that burns time (like waiting).
     this.addActor (this.player);
-
-    // Add the list of entities in the level to the list of actors to be displayed. These come after the
-    // player, so that they render over the player.
     this.addActorArray (this.level.entities);
+    this.sortActors ();
 };
 
 (function ()
