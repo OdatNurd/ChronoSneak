@@ -239,7 +239,6 @@ nurdz.sneak.Button = function (x, y, properties)
             this.properties.pressed = false;
     };
 
-    //noinspection JSUnusedLocalSymbols
     /**
      * This method is invoked whenever this entity gets triggered by another entity. This can happen
      * programmatically or in response to interactions with other entities, which does not include
@@ -260,6 +259,13 @@ nurdz.sneak.Button = function (x, y, properties)
             this.properties.pressed = true;
             this.turnsUntilToggle = this.properties.cycleTime;
         }
+        else
+        {
+            // The button is currently visually pressed in. If the actor that initiated the trigger is not
+            // the player, then handle the trigger by swapping back to the unpressed state. The player is
+            // not allowed to reset a button, but other entities (e.g. other buttons) are.
+            if (activator instanceof nurdz.sneak.Player == false)
+                this.properties.pressed = false;
+        }
     };
-
 } ());
