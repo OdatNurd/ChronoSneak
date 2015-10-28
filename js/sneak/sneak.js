@@ -59,12 +59,12 @@ nurdz.sneak.constants = (function ()
         VIEW_HEIGHT: Math.floor (height / tileSize),
 
         /**
-         * The title page scene in the game.
+         * The game scene in the game. This is where the game is actually played.
          *
          * @const
          * @type {String}
          */
-        SCENE_TITLE: "title"
+        SCENE_GAME: "game"
     };
 } ());
 

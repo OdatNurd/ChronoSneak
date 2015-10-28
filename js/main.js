@@ -66,10 +66,10 @@
             setupButton (stage, "controlBtn");
 
             // Register all of our scenes.
-            stage.addScene (cv.SCENE_TITLE, new nurdz.sneak.TitleScene (stage));
+            stage.addScene (cv.SCENE_GAME, new nurdz.sneak.GameScene (stage));
 
             // Switch to the title screen scene and run the game.
-            stage.switchToScene (cv.SCENE_TITLE);
+            stage.switchToScene (cv.SCENE_GAME);
             stage.run ();
         }
         catch (error)

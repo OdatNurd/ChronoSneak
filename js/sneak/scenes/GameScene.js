@@ -6,12 +6,12 @@
  * @extends nurdz.game.Scene
  * @constructor
  */
-nurdz.sneak.TitleScene = function (stage)
+nurdz.sneak.GameScene = function (stage)
 {
     "use strict";
 
     // Call the super constructor.
-    nurdz.game.Scene.call (this, "Title Screen", stage);
+    nurdz.game.Scene.call (this, "Game Screen", stage);
 
     /**
      * Load the level that we will be displaying.
@@ -88,12 +88,12 @@ nurdz.sneak.TitleScene = function (stage)
 
     // Now set our prototype to be an instance of our super class, making sure that the prototype knows to
     // use the correct constructor function.
-    nurdz.sneak.TitleScene.prototype = Object.create (nurdz.game.Scene.prototype, {
+    nurdz.sneak.GameScene.prototype = Object.create (nurdz.game.Scene.prototype, {
         constructor: {
             configurable: true,
             enumerable:   true,
             writable:     true,
-            value:        nurdz.sneak.TitleScene
+            value:        nurdz.sneak.GameScene
         }
     });
 
@@ -108,7 +108,7 @@ nurdz.sneak.TitleScene = function (stage)
      *
      * @param {nurdz.game.Scene|null} previousScene
      */
-    nurdz.sneak.TitleScene.prototype.activating = function (previousScene)
+    nurdz.sneak.GameScene.prototype.activating = function (previousScene)
     {
         this.stage.canvasContext.font = "20px monospace";
 
@@ -119,7 +119,7 @@ nurdz.sneak.TitleScene = function (stage)
      * This method is invoked at the start of every game frame to allow this scene to update the state of
      * all objects that it contains.
      */
-    nurdz.sneak.TitleScene.prototype.update = function ()
+    nurdz.sneak.GameScene.prototype.update = function ()
     {
         // Let the super class call update on all registered actors.
         nurdz.game.Scene.prototype.update.call (this);
@@ -132,7 +132,7 @@ nurdz.sneak.TitleScene = function (stage)
      * This base version invokes the render method for all actors that are currently registered with the
      * stage.
      */
-    nurdz.sneak.TitleScene.prototype.render = function ()
+    nurdz.sneak.GameScene.prototype.render = function ()
     {
         // Clear the screen and render the level.
         this.stage.clear ();
@@ -153,7 +153,7 @@ nurdz.sneak.TitleScene = function (stage)
      * @param {Event} eventObj the event object
      * @see nurdz.game.Stage.calculateMousePos
      */
-    nurdz.sneak.TitleScene.prototype.inputMouseMove = function (eventObj)
+    nurdz.sneak.GameScene.prototype.inputMouseMove = function (eventObj)
     {
         /**
          * The current position of the mouse, or null if we don't know yet.
@@ -201,7 +201,7 @@ nurdz.sneak.TitleScene = function (stage)
      * @param {Event} eventObj the keyboard event
      * @returns {Boolean} true if we handle the key event, false otherwise
      */
-    nurdz.sneak.TitleScene.prototype.inputKeyDown = function (eventObj)
+    nurdz.sneak.GameScene.prototype.inputKeyDown = function (eventObj)
     {
         var entities,i;
 
