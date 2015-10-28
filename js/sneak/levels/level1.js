@@ -48,6 +48,6 @@ nurdz.sneak.levels.level1 = new nurdz.game.LevelData ("level1", 25, 18, [
     new nurdz.sneak.Waypoint (12, 15, {visible: true, id: "way3"}),
     new nurdz.sneak.Waypoint (12, 8, {visible: true, id: "way4"}),
 
-    new nurdz.sneak.GuardBase ("gStart1")
+    new nurdz.sneak.GuardBase ("gStart1", {patrol: ["pStart1", "way2", "way3", "way4", "way1"]})
 ], nurdz.sneak.stdTiles);
 
