@@ -25,6 +25,19 @@ nurdz.sneak.Button = function (x, y, properties)
 
     // Call the super class constructor.
     nurdz.sneak.ChronoEntity.call (this, "Button", null, x, y, properties, '#cA0000');
+
+    // NOTE: The code below is below the constructor call because it is the super constructor that will
+    // apply the defaults to the properties given, so it's not until that call returns that we can access
+    // the values in the properties safely.
+
+    /**
+     * This value counts the number of turns until the door should automatically swap states. When the
+     * door is open, this counts down turns until it should close and vice-versa. A value of -1 indicates
+     * that the state is stable until triggered by outside forces.
+     *
+     * @type {Number}
+     */
+    this.turnsUntilToggle = (this.properties.pressed ? this.properties.cycleTime : -1);
 };
 
 // Now define the various member functions and any static stage.
@@ -131,7 +144,7 @@ nurdz.sneak.Button = function (x, y, properties)
             stage.colorRect (this.position.x + this.width - BUTTON_IN_SIZE, renderY,
                              BUTTON_IN_SIZE, BUTTON_WIDTH, this.debugColor);
         else
-            stage.colorRect (this.position.x + this.width -  BUTTON_OUT_SIZE, renderY,
+            stage.colorRect (this.position.x + this.width - BUTTON_OUT_SIZE, renderY,
                              BUTTON_OUT_SIZE, BUTTON_WIDTH, this.debugColor);
 
     };
@@ -207,4 +220,46 @@ nurdz.sneak.Button = function (x, y, properties)
         else
             nurdz.sneak.ChronoEntity.prototype.render.call (this, stage);
     };
+
+    /**
+     * Entities are actors, which means tha they have an update and a render function. The update function
+     * in an entity is meant to do things like visually update its appearance. The step function is used
+     * to give the entity a "tick" to see if there is something that it wants to do. This might be
+     * initiate a chase, decide a door needs to close, etc.
+     */
+    nurdz.sneak.Button.prototype.step = function ()
+    {
+        // A step during a pressed state might cause the button to be released. If We are pressed and
+        // there are any turns left until the reset happens, then count down.
+        if (this.properties.pressed && this.turnsUntilToggle > 0)
+            this.turnsUntilToggle--;
+
+        // If there are any turns, toggle the button now.
+        if (this.turnsUntilToggle == 0)
+            this.properties.pressed = false;
+    };
+
+    //noinspection JSUnusedLocalSymbols
+    /**
+     * This method is invoked whenever this entity gets triggered by another entity. This can happen
+     * programmatically or in response to interactions with other entities, which does not include
+     * collision (see triggerTouch() for that).
+     *
+     * The method gets passed the Actor that caused the trigger to happen, although this can be null
+     * depending on how the trigger happened.
+     *
+     * @param {nurdz.game.Actor} activator the actor that triggered this entity
+     * @see nurdz.game.Entity.triggerTouch
+     */
+    nurdz.sneak.Button.prototype.trigger = function (activator)
+    {
+        // If the button is not pressed, this counts as a press for it.
+        if (this.properties.pressed == false)
+        {
+            // Flip the state and set the counter for when it should unpress.
+            this.properties.pressed = true;
+            this.turnsUntilToggle = this.properties.cycleTime;
+        }
+    };
+
 } ());

@@ -200,6 +200,8 @@ nurdz.sneak.TitleScene = function (stage)
      */
     nurdz.sneak.TitleScene.prototype.inputKeyDown = function (eventObj)
     {
+        var entities,i;
+
         // Calculate the map location where the player is by converting from screen coordinates to map
         // coordinates. This is kind of nasty.
         var mapX = this.player.position.x / this.tileSize;
@@ -248,9 +250,21 @@ nurdz.sneak.TitleScene = function (stage)
                 translatePos = new nurdz.game.Point (this.player.width, 0);
                 break;
 
+            // These keys finds all entities where the player is currently standing and tries to trigger
+            // them. If there are any to attempt to trigger, this counts as an action even if it has no
+            // effect on anything, so other entities get a step.
             case this.keys.KEY_SPACEBAR:
             case this.keys.KEY_Q:
-                console.log ("Interacting with things is not implemented yet");
+                // Step all entities.
+                this.level.stepAllEntities ();
+
+                // Now trigger everything on this tile.
+                entities = this.level.entitiesAt (mapX, mapY);
+                if (entities.length > 0)
+                {
+                    for (i = 0 ; i < entities.length ; i++)
+                        entities[i].trigger (this.player);
+                }
                 break;
 
             // This key causes a "wait" action, which allows all entities to have a turn without the
@@ -275,8 +289,8 @@ nurdz.sneak.TitleScene = function (stage)
             //
             // This happens after the move and the entity gets a turn so that the entities have a chance
             // to move during their step such that they are no longer where the player might have ended up.
-            var entities = this.level.entitiesAt (targetPos.x, targetPos.y);
-            for (var i = 0 ; i < entities.length ; i++)
+            entities = this.level.entitiesAt (targetPos.x, targetPos.y);
+            for (i = 0 ; i < entities.length ; i++)
                 entities[i].triggerTouch (this.player);
             return true;
         }
