@@ -1,6 +1,5 @@
 /**
- * The actor that
- * Description of class and its parameters
+ * The actor that represents the player.
  *
  * @param {nurdz.game.Stage|null} stage the stage that will manage this entity or null if it is not known yet
  * @param {Number} x the initial X location for this player actor
