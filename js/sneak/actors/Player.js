@@ -50,9 +50,9 @@ nurdz.sneak.Player = function (stage, x, y)
      */
     nurdz.sneak.Player.prototype.render = function (stage)
     {
-        stage.colorRect (this.position.x + MARGIN, this.position.y + MARGIN,
-                         this.width - (2 * MARGIN), this.height - (2 * MARGIN),
-                         this.debugColor);
+        stage.fillRect (this.position.x + MARGIN, this.position.y + MARGIN,
+                        this.width - (2 * MARGIN), this.height - (2 * MARGIN),
+                        this.debugColor);
     };
 
     /**

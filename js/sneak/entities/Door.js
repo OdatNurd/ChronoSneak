@@ -119,12 +119,12 @@ nurdz.sneak.Door = function (x, y, properties)
         if (open)
         {
             // Render a left and right side.
-            stage.colorRect (this.position.x, renderY, DOOR_STUB, DOOR_THICKNESS, this.debugColor);
-            stage.colorRect (this.position.x + this.width - DOOR_STUB, renderY,
-                             DOOR_STUB, DOOR_THICKNESS, this.debugColor);
+            stage.fillRect (this.position.x, renderY, DOOR_STUB, DOOR_THICKNESS, this.debugColor);
+            stage.fillRect (this.position.x + this.width - DOOR_STUB, renderY,
+                            DOOR_STUB, DOOR_THICKNESS, this.debugColor);
         }
         else
-            stage.colorRect (this.position.x, renderY, this.width, DOOR_THICKNESS, this.debugColor);
+            stage.fillRect (this.position.x, renderY, this.width, DOOR_THICKNESS, this.debugColor);
     };
 
     /**
@@ -142,12 +142,12 @@ nurdz.sneak.Door = function (x, y, properties)
         if (open)
         {
             // Render a top and bottom side.
-            stage.colorRect (renderX, this.position.y, DOOR_THICKNESS, DOOR_STUB, this.debugColor);
-            stage.colorRect (renderX, this.position.y + this.height - DOOR_STUB,
-                             DOOR_THICKNESS, DOOR_STUB, this.debugColor);
+            stage.fillRect (renderX, this.position.y, DOOR_THICKNESS, DOOR_STUB, this.debugColor);
+            stage.fillRect (renderX, this.position.y + this.height - DOOR_STUB,
+                            DOOR_THICKNESS, DOOR_STUB, this.debugColor);
         }
         else
-            stage.colorRect (renderX, this.position.y, DOOR_THICKNESS, this.height, this.debugColor);
+            stage.fillRect (renderX, this.position.y, DOOR_THICKNESS, this.height, this.debugColor);
     };
 
     /**

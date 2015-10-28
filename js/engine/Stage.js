@@ -262,7 +262,7 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
     nurdz.game.Stage.prototype.clear = function (color)
     {
         color = color || 'black';
-        this.colorRect (0, 0, this.width, this.height, color);
+        this.fillRect (0, 0, this.width, this.height, color);
     };
 
     /**
@@ -275,7 +275,7 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
      * @param {Number} height height of the rectangle to render
      * @param {String} fillColor the color to fill the rectangle with
      */
-    nurdz.game.Stage.prototype.colorRect = function (x, y, width, height, fillColor)
+    nurdz.game.Stage.prototype.fillRect = function (x, y, width, height, fillColor)
     {
         this.canvasContext.fillStyle = fillColor;
         this.canvasContext.fillRect (x, y, width, height);
@@ -290,7 +290,7 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
      * @param {Number} radius radius of the circle to draw
      * @param {String} fillColor the color to fill the circle with
      */
-    nurdz.game.Stage.prototype.colorCircle = function (x, y, radius, fillColor)
+    nurdz.game.Stage.prototype.fillCircle = function (x, y, radius, fillColor)
     {
         this.canvasContext.fillStyle = fillColor;
         this.canvasContext.beginPath ();
@@ -311,7 +311,7 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
      * @param {Number} y Y location of the text
      * @param {String} fillColor the color to draw the text with
      */
-    nurdz.game.Stage.prototype.colorText = function (text, x, y, fillColor)
+    nurdz.game.Stage.prototype.drawTxt = function (text, x, y, fillColor)
     {
         this.canvasContext.fillStyle = fillColor;
         this.canvasContext.fillText (text, x, y);
@@ -324,9 +324,9 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
      * @param {Image} bitmap the bitmap to display
      * @param {Number} x X location to display the bitmap at
      * @param {Number} y Y location to display the bitmap at
-     * @see drawBitmapCentered
+     * @see drawBmpCentered
      */
-    nurdz.game.Stage.prototype.drawBitmap = function (bitmap, x, y)
+    nurdz.game.Stage.prototype.drawBmp = function (bitmap, x, y)
     {
         this.canvasContext.drawImage (bitmap, x, y);
     };
@@ -338,9 +338,9 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
      * @param {Image} bitmap the bitmap to display
      * @param {Number} x X location to display the center of the bitmap at
      * @param {Number} y Y location to display the center of the bitmap at
-     * @see drawBitmapCentered
+     * @see drawBmpCentered
      */
-    nurdz.game.Stage.prototype.drawBitmapCentered = function (bitmap, x, y)
+    nurdz.game.Stage.prototype.drawBmpCentered = function (bitmap, x, y)
     {
         this.canvasContext.save ();
         this.canvasContext.translate (x, y);
@@ -357,9 +357,9 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
      * @param {Number} x X location to display the center of the bitmap at
      * @param {Number} y Y location to display the center of the bitmap at
      * @param {Number} angle the angle to rotate the bitmap to (in radians)
-     * @see drawBitmapCentered
+     * @see drawBmpCentered
      */
-    nurdz.game.Stage.prototype.drawBitmapCenteredWithRotation = function (bitmap, x, y, angle)
+    nurdz.game.Stage.prototype.drawBmpCenteredRotated = function (bitmap, x, y, angle)
     {
         this.canvasContext.save ();
         this.canvasContext.translate (x, y);

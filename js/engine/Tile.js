@@ -57,7 +57,7 @@ nurdz.game.Tile = function (name, internalID)
      */
     nurdz.game.Tile.prototype.render = function (stage, x, y)
     {
-        stage.colorRect (x, y, this.size, this.size, 'yellow');
+        stage.fillRect (x, y, this.size, this.size, 'yellow');
     };
 
     /**

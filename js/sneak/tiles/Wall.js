@@ -46,6 +46,6 @@ nurdz.sneak.WallTile = function ()
      */
     nurdz.sneak.WallTile.prototype.render = function (stage, x, y)
     {
-        stage.colorRect (x, y, this.size, this.size, '#5030ff');
+        stage.fillRect (x, y, this.size, this.size, '#5030ff');
     };
 } ());

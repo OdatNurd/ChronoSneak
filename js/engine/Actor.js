@@ -88,7 +88,7 @@ nurdz.game.Actor = function (name, stage, x, y, width, height, zOrder, debugColo
      */
     nurdz.game.Actor.prototype.render = function (stage)
     {
-        stage.colorRect (this.position.x, this.position.y, this.width, this.height, this.debugColor);
+        stage.fillRect (this.position.x, this.position.y, this.width, this.height, this.debugColor);
     };
 
     /**

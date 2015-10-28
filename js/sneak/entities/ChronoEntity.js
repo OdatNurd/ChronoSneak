@@ -118,7 +118,7 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
     nurdz.sneak.ChronoEntity.prototype.render = function (stage)
     {
         if (this.properties.visible)
-            stage.colorRect (this.position.x, this.position.y, this.width, this.height, this.debugColor);
+            stage.fillRect (this.position.x, this.position.y, this.width, this.height, this.debugColor);
         else
         {
             var x = this.position.x;

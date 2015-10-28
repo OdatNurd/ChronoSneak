@@ -85,9 +85,9 @@ nurdz.sneak.LevelGoal = function (x, y, properties)
             // This is redundant, but it turns out that for our purposes here, I don't care. It renders a
             // target as three circles when it could conceivably use only two with a hole in the center of the
             // second one or some such. Life is too short.
-            stage.colorCircle (x, y, r - 2, 'red');
-            stage.colorCircle (x, y, r - 7, 'white');
-            stage.colorCircle (x, y, r - 10, 'red');
+            stage.fillCircle (x, y, r - 2, 'red');
+            stage.fillCircle (x, y, r - 7, 'white');
+            stage.fillCircle (x, y, r - 10, 'red');
         }
         else
             nurdz.sneak.ChronoEntity.prototype.render.call (this, stage);

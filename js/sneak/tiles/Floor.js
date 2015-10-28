@@ -46,7 +46,7 @@ nurdz.sneak.FloorTile = function ()
      */
     nurdz.sneak.FloorTile.prototype.render = function (stage, x, y)
     {
-        stage.colorRect (x, y, this.size, this.size, '#b0b0c0');
-        stage.colorRect (x + 1, y + 1, this.size - 2, this.size - 2, '#c8c8c8');
+        stage.fillRect (x, y, this.size, this.size, '#b0b0c0');
+        stage.fillRect (x + 1, y + 1, this.size - 2, this.size - 2, '#c8c8c8');
     };
 } ());

@@ -143,7 +143,7 @@ nurdz.sneak.GameScene = function (stage)
 
         // Display our debug text at the bottom of the screen now
         if (this.debugTxt != null)
-            this.stage.colorText (this.debugTxt, 16, this.stage.height - 6, 'white');
+            this.stage.drawTxt (this.debugTxt, 16, this.stage.height - 6, 'white');
     };
 
     /**

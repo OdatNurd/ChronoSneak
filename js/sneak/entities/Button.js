@@ -122,9 +122,9 @@ nurdz.sneak.Button = function (x, y, properties)
 
         // Render for pressed or released
         if (pressed)
-            stage.colorRect (this.position.x, renderY, BUTTON_IN_SIZE, BUTTON_WIDTH, this.debugColor);
+            stage.fillRect (this.position.x, renderY, BUTTON_IN_SIZE, BUTTON_WIDTH, this.debugColor);
         else
-            stage.colorRect (this.position.x, renderY, BUTTON_OUT_SIZE, BUTTON_WIDTH, this.debugColor);
+            stage.fillRect (this.position.x, renderY, BUTTON_OUT_SIZE, BUTTON_WIDTH, this.debugColor);
     };
 
     /**
@@ -141,11 +141,11 @@ nurdz.sneak.Button = function (x, y, properties)
 
         // Render for pressed or released
         if (pressed)
-            stage.colorRect (this.position.x + this.width - BUTTON_IN_SIZE, renderY,
-                             BUTTON_IN_SIZE, BUTTON_WIDTH, this.debugColor);
+            stage.fillRect (this.position.x + this.width - BUTTON_IN_SIZE, renderY,
+                            BUTTON_IN_SIZE, BUTTON_WIDTH, this.debugColor);
         else
-            stage.colorRect (this.position.x + this.width - BUTTON_OUT_SIZE, renderY,
-                             BUTTON_OUT_SIZE, BUTTON_WIDTH, this.debugColor);
+            stage.fillRect (this.position.x + this.width - BUTTON_OUT_SIZE, renderY,
+                            BUTTON_OUT_SIZE, BUTTON_WIDTH, this.debugColor);
 
     };
 
@@ -163,9 +163,9 @@ nurdz.sneak.Button = function (x, y, properties)
 
         // Render for pressed or released
         if (pressed)
-            stage.colorRect (renderX, this.position.y, BUTTON_WIDTH, BUTTON_IN_SIZE, this.debugColor);
+            stage.fillRect (renderX, this.position.y, BUTTON_WIDTH, BUTTON_IN_SIZE, this.debugColor);
         else
-            stage.colorRect (renderX, this.position.y, BUTTON_WIDTH, BUTTON_OUT_SIZE, this.debugColor);
+            stage.fillRect (renderX, this.position.y, BUTTON_WIDTH, BUTTON_OUT_SIZE, this.debugColor);
     };
 
     /**
@@ -182,11 +182,11 @@ nurdz.sneak.Button = function (x, y, properties)
 
         // Render for pressed or released
         if (pressed)
-            stage.colorRect (renderX, this.position.y + this.height - BUTTON_IN_SIZE,
-                             BUTTON_WIDTH, BUTTON_IN_SIZE, this.debugColor);
+            stage.fillRect (renderX, this.position.y + this.height - BUTTON_IN_SIZE,
+                            BUTTON_WIDTH, BUTTON_IN_SIZE, this.debugColor);
         else
-            stage.colorRect (renderX, this.position.y + this.height - BUTTON_OUT_SIZE,
-                             BUTTON_WIDTH, BUTTON_OUT_SIZE, this.debugColor);
+            stage.fillRect (renderX, this.position.y + this.height - BUTTON_OUT_SIZE,
+                            BUTTON_WIDTH, BUTTON_OUT_SIZE, this.debugColor);
     };
 
     /**
