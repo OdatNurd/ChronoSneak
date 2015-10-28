@@ -74,7 +74,8 @@
         }
         catch (error)
         {
-            console.log ("Error starting the game")
+            console.log ("Error starting the game");
+            throw error;
         }
 
     });
