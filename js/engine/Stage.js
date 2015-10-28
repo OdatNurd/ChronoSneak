@@ -300,6 +300,263 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
 
     //noinspection JSUnusedGlobalSymbols
     /**
+     * This helper method sets all of the styles necessary for rendering lines to the stage. This can be
+     * called before drawing operations as a convenience to set all desired values in one call.
+     *
+     * NOTE: The values set here *do not* persist unless you never change them anywhere else. This
+     * includes setting arrow styles.
+     *
+     * @param {String} color the color to draw lines with
+     * @param {String} [lineWidth=3] the pixel width of rendered lines
+     * @param {String} [lineCap="round"] the line cap style to use for rendering lines
+     * @see nurdz.game.Stage.setArrowStyle
+     */
+    nurdz.game.Stage.prototype.setLineStyle = function (color, lineWidth, lineCap)
+    {
+        this.canvasContext.strokeStyle = color;
+        this.canvasContext.lineWidth = lineWidth || 3;
+        this.canvasContext.lineCap = lineCap || 'round';
+    };
+
+    /**
+     * This helper function draws the actual arrow head onto the canvas for a line. It assumes that all
+     * styles have been set.
+     *
+     * The original drawArrow code allows its style parameter to be an instance of a function with this
+     * signature to allow for custom arrow drawing, but that was removed.
+     *
+     * The function takes three sets of coordinates, which represent the endpoint of the line that the
+     * arrow head is being drawn for (which is where the tip of the arrow should be), and the two
+     * endpoints for the ends of the arrow head. These three points connected together form the arrow
+     * head, though you are free to join them in any way you like (lines, arcs, etc).
+     *
+     * @param {CanvasRenderingContext2D} ctx the context to render to
+     * @param {Number} x0 the X coordinate of the left end of the arrow head line
+     * @param {Number} y0 the Y coordinate of the left end of the arrow head line
+     * @param {Number} x1 the X coordinate of the end of the line
+     * @param {Number} y1 the Y coordinate of the end of the line
+     * @param {Number} x2 the X coordinate of the right end of the arrow head line
+     * @param {Number} y2 the Y coordinate of the right end of the arrow head line
+     * @param {Number} style the style of arrow to drw
+     */
+    var drawHead = function (ctx, x0, y0, x1, y1, x2, y2, style)
+    {
+        var backDistance;
+
+        // First, the common drawing operations. Generate a line from the left of the arrow head to the
+        // point of the arrow and then down the other side.
+        ctx.save ();
+        ctx.beginPath ();
+        ctx.moveTo (x0, y0);
+        ctx.lineTo (x1, y1);
+        ctx.lineTo (x2, y2);
+
+        // Now use the style to finish the arrow head.
+        switch (style)
+        {
+            // The arrow head has a curved line that connects the two sides together.
+            case 0:
+                backDistance = Math.sqrt (((x2 - x0) * (x2 - x0)) + ((y2 - y0) * (y2 - y0)));
+                ctx.arcTo (x1, y1, x0, y0, .55 * backDistance);
+                ctx.fill ();
+                break;
+
+            // The arrow head has a straight line that connects the two sides together.
+            case 1:
+                ctx.beginPath ();
+                ctx.moveTo (x0, y0);
+                ctx.lineTo (x1, y1);
+                ctx.lineTo (x2, y2);
+                ctx.lineTo (x0, y0);
+                ctx.fill ();
+                break;
+
+            // The arrow head is unfilled, so we're already done.
+            case 2:
+                ctx.stroke ();
+                break;
+
+            // The arrow head has a curved line, but the arc is a quadratic curve instead of just a
+            // simple arc.
+            case 3:
+                var cpx = (x0 + x1 + x2) / 3;
+                var cpy = (y0 + y1 + y2) / 3;
+                ctx.quadraticCurveTo (cpx, cpy, x0, y0);
+                ctx.fill ();
+                break;
+
+            // The arrow has a curved line, but the arc is a bezier curve instead of just a simple arc.
+            case 4:
+                var cp1x, cp1y, cp2x, cp2y;
+                var shiftAmt = 5;
+                if (x2 == x0)
+                {
+                    // Avoid a divide by zero if x2==x0
+                    backDistance = y2 - y0;
+                    cp1x = (x1 + x0) / 2;
+                    cp2x = (x1 + x0) / 2;
+                    cp1y = y1 + backDistance / shiftAmt;
+                    cp2y = y1 - backDistance / shiftAmt;
+                }
+                else
+                {
+                    backDistance = Math.sqrt (((x2 - x0) * (x2 - x0)) + ((y2 - y0) * (y2 - y0)));
+                    var xBack = (x0 + x2) / 2;
+                    var yBack = (y0 + y2) / 2;
+                    var xMid = (xBack + x1) / 2;
+                    var yMid = (yBack + y1) / 2;
+
+                    var m = (y2 - y0) / (x2 - x0);
+                    var dX = (backDistance / (2 * Math.sqrt (m * m + 1))) / shiftAmt;
+                    var dY = m * dX;
+                    cp1x = xMid - dX;
+                    cp1y = yMid - dY;
+                    cp2x = xMid + dX;
+                    cp2y = yMid + dY;
+                }
+
+                ctx.bezierCurveTo (cp1x, cp1y, cp2x, cp2y, x0, y0);
+                ctx.fill ();
+                break;
+        }
+        ctx.restore ();
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Set the style for all subsequent drawArrow() calls to use when drawing arrows. This needs to be
+     * called prior to drawing any arrows to ensure that the canvas style used to draw arrows is updated;
+     * the value does not persist. In particular, changing line styles will also change this.
+     *
+     * @param {String} color the color to draw an arrow with
+     * @param {Number} [lineWidth=2} the width of the arrow line
+     * @see nurdz.game.Stage.setLineStyle
+     */
+    nurdz.game.Stage.prototype.setArrowStyle = function (color, lineWidth)
+    {
+        this.canvasContext.strokeStyle = color;
+        this.canvasContext.fillStyle = color;
+        this.canvasContext.lineWidth = lineWidth || 2;
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * The basis of this code comes from:
+     *     http://www.dbp-consulting.com/tutorials/canvas/CanvasArrow.html
+     *
+     * It has been modified to fit here, which includes things like assuming nobody is going to pass
+     * strings, different method for specifying defaults, etc.
+     *
+     * This will render a line from x1,y1 to x2,y2 and then draw an arrow head on one or both ends of the
+     * line in a few different styles.
+     *
+     * The style parameter can be one of the following values:
+     *   0: Arrowhead with an arc end
+     *   1: Arrowhead with a straight line end
+     *   2: Arrowhead that is unfilled with no end (looks like a V)
+     *   3: Arrowhead with a quadratic curve end
+     *   4: Arrowhead with a bezier curve end
+     *
+     * The which parameter indicates which end of the line gets an arrow head. This is a bit field where
+     * the first bit indicates the end of the line and the second bit indicates the start of the line.
+     *
+     * It is also possible to specify the angle that the arrow head makes from the end of the line and the
+     * length of the sides of the arrow head.
+     *
+     * The arrow is drawn using the style set by setArrowStyle(), which is a combination of a stoke and
+     * fill color and a line width.
+     *
+     * @param {Number} x1 the X coordinate of the start of the line
+     * @param {Number} y1 the Y coordinate of the start of the line
+     * @param {Number} x2 the X coordinate of the end of the line
+     * @param {Number} y2 the Y coordinate of the end of the line
+     * @param {Number} [style=3] the style of the arrowhead
+     * @param {Number} [which=1] the end of the line that gets the arrow head(s)
+     * @param {Number} [angle=Math.PI/8} the angle the arrow head makes from the end of the line
+     * @param {Number} [d=16] the length (in pixels) of the edges of the arrow head
+     * @see nurdz.game.Stage.setArrowStyle
+     */
+    nurdz.game.Stage.prototype.drawArrow = function (x1, y1, x2, y2, style, which, angle, d)
+    {
+        // Set defaults
+        style = style || 3;
+        which = which || 1; // end point gets arrow
+        angle = angle || Math.PI / 8;
+        d = d || 16;
+
+        // For ends with arrow we actually want to stop before we get to the arrow so that wide lines won't
+        // put a flat end on the arrow caused by the rendered line end cap.
+        var dist = Math.sqrt ((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+        var ratio = (dist - d / 3) / dist;
+        var toX, toY, fromX, fromY;
+
+        // When the first bit is set, the end point of the line gets an arrow.
+        if ((which & 1) != 0)
+        {
+            toX = Math.round (x1 + (x2 - x1) * ratio);
+            toY = Math.round (y1 + (y2 - y1) * ratio);
+        }
+        else
+        {
+            toX = x2;
+            toY = y2;
+        }
+
+        // When the second bit is set, the start point of the line gets an arrow.
+        if ((which & 2) != 0)
+        {
+            fromX = x1 + (x2 - x1) * (1 - ratio);
+            fromY = y1 + (y2 - y1) * (1 - ratio);
+        }
+        else
+        {
+            fromX = x1;
+            fromY = y1;
+        }
+
+        // Draw the shaft of the arrow
+        this.canvasContext.beginPath ();
+        this.canvasContext.moveTo (fromX, fromY);
+        this.canvasContext.lineTo (toX, toY);
+        this.canvasContext.stroke ();
+
+        // Calculate the angle that the line is going so that we can align the arrow head properly.
+        var lineAngle = Math.atan2 (y2 - y1, x2 - x1);
+
+        // Calculate the line length of the side of the arrow head. We know the length if the line was
+        // straight, so we need to have its length when it's rotated to the angle that it is to be drawn at.
+        // h is the line length of a side of the arrow head
+        var h = Math.abs (d / Math.cos (angle));
+
+        var angle1, angle2, topX, topY, botX, botY;
+
+        // When the first bit is set, we want to draw an arrow head at the end of the line.
+        if ((which & 1) != 0)
+        {
+            angle1 = lineAngle + Math.PI + angle;
+            topX = x2 + Math.cos (angle1) * h;
+            topY = y2 + Math.sin (angle1) * h;
+            angle2 = lineAngle + Math.PI - angle;
+            botX = x2 + Math.cos (angle2) * h;
+            botY = y2 + Math.sin (angle2) * h;
+            drawHead (this.canvasContext, topX, topY, x2, y2, botX, botY, style);
+        }
+
+        // WHen the second bit is set, we want to draw an arrow head at the start of the line.
+        if ((which & 2) != 0)
+        {
+            angle1 = lineAngle + angle;
+            topX = x1 + Math.cos (angle1) * h;
+            topY = y1 + Math.sin (angle1) * h;
+            angle2 = lineAngle - angle;
+            botX = x1 + Math.cos (angle2) * h;
+            botY = y1 + Math.sin (angle2) * h;
+            drawHead (this.canvasContext, topX, topY, x1, y1, botX, botY, style);
+        }
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
      * Display text to the stage at the position provided. How the the text anchors to the point provided
      * needs to be set by you prior to calling. By default, the location specified is the top left corner.
      *
