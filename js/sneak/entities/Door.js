@@ -231,7 +231,7 @@ nurdz.sneak.Door = function (x, y, properties)
      * The method gets passed the Actor that caused the trigger to happen, although this can be null
      * depending on how the trigger happened.
      *
-     * @param {nurdz.game.Actor} activator the actor that triggered this entity
+     * @param {nurdz.game.Actor|null} activator the actor that triggered this entity, or null if unknown
      * @see nurdz.game.Entity.triggerTouch
      */
     nurdz.sneak.Door.prototype.trigger = function (activator)

@@ -171,7 +171,7 @@ nurdz.game.Entity = function (name, stage, x, y, width, height, properties, debu
      * The method gets passed the Actor that caused the trigger to happen, although this can be null
      * depending on how the trigger happened.
      *
-     * @param {nurdz.game.Actor} activator the actor that triggered this entity
+     * @param {nurdz.game.Actor|null} activator the actor that triggered this entity, or null if unknown
      * @see nurdz.game.Entity.triggerTouch
      */
     nurdz.game.Entity.prototype.trigger = function (activator)
