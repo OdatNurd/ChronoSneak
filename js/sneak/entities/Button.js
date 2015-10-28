@@ -247,7 +247,7 @@ nurdz.sneak.Button = function (x, y, properties)
      * The method gets passed the Actor that caused the trigger to happen, although this can be null
      * depending on how the trigger happened.
      *
-     * @param {nurdz.game.Actor} activator the actor that triggered this entity
+     * @param {nurdz.game.Actor|null} activator the actor that triggered this entity, or null if unknown
      * @see nurdz.game.Entity.triggerTouch
      */
     nurdz.sneak.Button.prototype.trigger = function (activator)
@@ -255,9 +255,12 @@ nurdz.sneak.Button = function (x, y, properties)
         // If the button is not pressed, this counts as a press for it.
         if (this.properties.pressed == false)
         {
-            // Flip the state and set the counter for when it should unpress.
+            // Flip the state and set the counter for when it should release.
             this.properties.pressed = true;
             this.turnsUntilToggle = this.properties.cycleTime;
+
+            // Trigger all of the entities that have an ID that matches an ID in our trigger list.
+            this.triggerLinkedEntities ();
         }
         else
         {
