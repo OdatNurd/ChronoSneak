@@ -52,6 +52,15 @@ nurdz.sneak.GameScene = function (stage)
      */
     this.debugTxt = null;
 
+    /**
+     * When the debugging key is pressed, this will be filled with information that allows the render
+     * method to draw arrows that connect all entities at the debugPos with the entities that their
+     * properties will trigger. This allows you to visually see what affects what.
+     *
+     * @type {nurdz.game.Point[][]|null}
+     */
+    this.debugTargetLinks = null;
+
     // Attempt to find the player start entity so that we know where to start the player for this run. If
     // this does not have exactly one entity, the level is invalid.
     var playerStartPos = this.level.entitiesWithName ("PlayerStartEntity");
@@ -144,6 +153,32 @@ nurdz.sneak.GameScene = function (stage)
         // Display our debug text at the bottom of the screen now
         if (this.debugTxt != null)
             this.stage.drawTxt (this.debugTxt, 16, this.stage.height - 6, 'white');
+
+        // If there are debug target links, render them now.
+        if (this.debugTargetLinks != null)
+        {
+            // Set the arrow style for the arrows that we are going to draw.
+            this.stage.setArrowStyle ("red", 2);
+
+            // The value of debugTargetLinks is an array that contains information about each entity that
+            // has targets. Iterate over them.
+            for (var i = 0; i < this.debugTargetLinks.length; i++)
+            {
+                // Get the info out for this set of entity links.
+                var info = this.debugTargetLinks[i];
+
+                // The first element in the info array is the position that the actual entity is at. This
+                // will be the location where the link arrow starts, and is an array of two numbers.
+                var startPos = info[0];
+
+                // All other elements are arrays that specify the end point of a link arrow
+                for (var j = 1; j < info.length; j++)
+                {
+                    var endPos = info[j];
+                    this.stage.drawArrow (startPos.x, startPos.y, endPos.x, endPos.y);
+                }
+            }
+        }
     };
 
     /**
@@ -178,7 +213,7 @@ nurdz.sneak.GameScene = function (stage)
                 this.debugTxt += "=> " + mTile.name;
             if (entities != null && entities.length > 0)
             {
-                for (var i = 0 ; i < entities.length ; i++)
+                for (var i = 0; i < entities.length; i++)
                 {
                     this.debugTxt += ", " + entities[i].name + "{" + (entities[i].properties.id || "?") + "}";
                 }
@@ -192,6 +227,101 @@ nurdz.sneak.GameScene = function (stage)
                 this.debugPos.x = mX;
                 this.debugPos.y = mY;
             }
+
+            // Remove the target links now because the position has changed. The user can press the button
+            // to calculate new ones.
+            this.debugTargetLinks = null;
+        }
+    };
+
+    /**
+     * Given an entity, this checks to see if the entity contains any triggers that would trigger another
+     * entity. If it does not, null is returned.
+     *
+     * Otherwise, the return value is an array of points, where the first element is the point that
+     * represents the entity passed in and the rest of the elements are the points for each of the linked
+     * entities.
+     *
+     * @param {nurdz.game.Entity} entity the entity to calculate trigger links for
+     * @returns {nurdz.game.Point[]|null}
+     */
+    nurdz.sneak.GameScene.prototype.calculateEntityTriggerLinks = function (entity)
+    {
+        // If this entity does not have a trigger property, there's nothing to doo.
+        if (entity.properties.trigger == null)
+            return null;
+
+        // Get the list of entities that this entity will trigger. If the list is empty, we still have
+        // nothing to do.
+        var links = this.level.entitiesWithIDs (/** @type {String} */ entity.properties.trigger);
+        if (links.length == 0)
+            return null;
+
+        // Create our return value. This will hold points. The first element is the location of the entity
+        // we were given, and the rest of the elements are the positions of the entities that will be
+        // triggered. We offset all positions by half a tile so that the arrows render pointing at the
+        // center of the associated tiles and not at the corner.
+        /** @type nurdz.game.Point[] */
+        var retVal = [];
+        var offset = nurdz.sneak.constants.TILE_SIZE / 2;
+
+        // Store the location of this entity, and then the positions of all of the linked entities.
+        retVal.push (entity.position.copyWithTranslate (offset, offset));
+        for (var i = 0; i < links.length; i++)
+            retVal.push (links[i].position.copyWithTranslate (offset, offset));
+
+        return retVal;
+    };
+
+    /**
+     * When this is invoked, the complete entity information for all entities at the current debug
+     * location (where the mouse is currently positioned) will be displayed to the console.
+     *
+     * Additionally, for all entities at the current debug location that have triggers, this will set up
+     * the instance variable that allows the rendering function to display the links visually.
+     */
+    nurdz.sneak.GameScene.prototype.displayEntityInfo = function ()
+    {
+        // If there is not a debug position right now, there's no information to display.
+        if (this.debugPos == null)
+            return;
+
+        // Collect all of the entities at the debug location. If there are any, we can display some
+        // information about them.
+        var entities = this.level.entitiesAt (this.debugPos.x, this.debugPos.y);
+        if (entities != null && entities.length > 0)
+        {
+            // As we display entities, we check to see if they have any targets. If they do, we put
+            // information here to render them. At the end, if we put anything here, we set up the
+            // instance variable that will use the data to actually render the links.
+            var links = [];
+
+            // Iterate all entities now.
+            for (var i = 0; i < entities.length; i++)
+            {
+                var entity = entities[i];
+
+                // Log this entity and then all of its properties. We single out the id property for
+                // easier reading.
+                console.log (entity.name + ":", entity.properties.id);
+                for (var name in entity.properties)
+                {
+                    // Check if this entity has any triggers and if so, add then to our links array.
+                    var triggerLinks = this.calculateEntityTriggerLinks (entity);
+                    if (triggerLinks)
+                        links.push (triggerLinks);
+
+                    // Now display all properties except for the ID property, which we already displayed.
+                    if (entity.properties.hasOwnProperty (name) && name != "id")
+                        console.log ("\t" + name + ":", entity.properties[name]);
+                }
+            }
+
+            // If we got any links, set up the value to display them. This entity might not have any triggers.
+            if (links.length > 0)
+                this.debugTargetLinks = links;
+
+            console.log ("=-=-=-=-=-=-=-=-=-=-")
         }
     };
 
@@ -203,7 +333,7 @@ nurdz.sneak.GameScene = function (stage)
      */
     nurdz.sneak.GameScene.prototype.inputKeyDown = function (eventObj)
     {
-        var entities,i;
+        var entities, i;
 
         // Calculate the map location where the player is by converting from screen coordinates to map
         // coordinates. This is kind of nasty.
@@ -229,6 +359,12 @@ nurdz.sneak.GameScene = function (stage)
 
         switch (eventObj.keyCode)
         {
+            // This key will display information about all entities at the current mouse position to the
+            // console and turn on visual arrows that show where the triggers on the entities point (if any).
+            case this.keys.KEY_F1:
+                this.displayEntityInfo ();
+                return true;
+
             case this.keys.KEY_UP:
             case this.keys.KEY_W:
                 targetPos = new nurdz.game.Point (mapX, mapY - 1);
@@ -265,17 +401,17 @@ nurdz.sneak.GameScene = function (stage)
                 entities = this.level.entitiesAt (mapX, mapY);
                 if (entities.length > 0)
                 {
-                    for (i = 0 ; i < entities.length ; i++)
+                    for (i = 0; i < entities.length; i++)
                         entities[i].trigger (this.player);
                 }
-                break;
+                return true;
 
             // This key causes a "wait" action, which allows all entities to have a turn without the
             // player doing anything.
             case this.keys.KEY_E:
             case this.keys.KEY_ENTER:
                 this.level.stepAllEntities ();
-                break;
+                return true;
         }
 
         // If a movement happened, then move the player and allow all entities a turn. This also makes
@@ -293,7 +429,7 @@ nurdz.sneak.GameScene = function (stage)
             // This happens after the move and the entity gets a turn so that the entities have a chance
             // to move during their step such that they are no longer where the player might have ended up.
             entities = this.level.entitiesAt (targetPos.x, targetPos.y);
-            for (i = 0 ; i < entities.length ; i++)
+            for (i = 0; i < entities.length; i++)
                 entities[i].triggerTouch (this.player);
             return true;
         }
