@@ -38,11 +38,17 @@ nurdz.game.Level = function (levelData, stage)
     this.levelData = levelData.levelData;
 
     /**
-     * The list of entities that are in this level data.
+     * The list of entities that are in this level data, in the order they appeared in the level data.
      *
      * @type {nurdz.game.Entity[]}
      */
     this.entities = levelData.entities;
+
+    /**
+     * The list of entities that are in this level data, keyed by their ID values for faster lookup.
+     * @type {Object.<String,nurdz.game.Entity>}
+     */
+    this.entitiesByID = {};
 
     /**
      * The tileset that is associated with this level.
@@ -51,17 +57,17 @@ nurdz.game.Level = function (levelData, stage)
      */
     this.tileset = levelData.tileset;
 
-    // Iterate over all of the entities and tell them their stage if they don't already have one. We assume
-    // that entities in the level data don't have the stage attached to them because it's not known when
-    // the entity objects are created.
-    if (stage != null)
+    // Iterate over all entities. For each one, insert it into the entitiesByID table, and then set in the
+    // current stage.
+    for (var i = 0; i < this.entities.length; i++)
     {
-        for (var i = 0; i < this.entities.length; i++)
-        {
-            var entity = this.entities[i];
-            if (entity.stage == null)
-                entity.stage = stage;
-        }
+        // Give the entity the stage.
+        var entity = this.entities[i];
+        entity.stage = stage;
+
+        // If there is an ID property (there should be), use it to cross reference the entity.
+        if (entity.properties.id)
+            this.entitiesByID[entity.properties.id] = entity;
     }
 };
 
@@ -153,6 +159,66 @@ nurdz.game.Level = function (levelData, stage)
         }
 
         return retVal;
+    };
+
+    /**
+     * Scan over all entities in the level and return back a list of all entities with the id or ids
+     * given, which may be an empty array.
+     *
+     * The parameter may be a string representing a single entity ID or it may be an array of such IDs.
+     *
+     * NOTE: No care is taken to not include duplicate entities if the entity list provided contains the
+     * same entity ID more than once. It's also not an error if no such entity exists, although a warning
+     * will be generated to the console in this case.
+     *
+     * @param {String[]|String} idSpec the id or ids of entities to find
+     * @returns {nurdz.game.Entity[]} list of matching entities (may be an empty array)
+     */
+    nurdz.game.Level.prototype.entitiesWithIDs = function (idSpec)
+    {
+        var retVal = [];
+
+        // If the spec given is a string, turn it into an array of itself.
+        if (typeof (idSpec) == "string")
+            idSpec = [idSpec];
+
+        for (var i = 0 ; i < idSpec.length ; i++)
+        {
+            var entity = this.entitiesByID[idSpec[i]];
+            if (entity)
+                retVal.push (entity);
+        }
+
+        // This is just for debugging. We should get exactly as many things as were asked for. Less means
+        // IDs were given that do not exist, more means that some objects have duplicate ID values, which
+        // is also bad.
+        if (retVal.length != idSpec.length)
+            console.log ("Warning: entitiesWithIDs entity count mismatch. Broken level?");
+
+        return retVal;
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Find all entities that match the id spec passed in (see entitiesWithIDs) and then, for each such
+     * entity found, fire their trigger method using the provided activator as the source of the trigger.
+     *
+     * As a convenience, if the idSpec provided is null, nothing happens. This allows for entities to use
+     * this method without having to first verify that they actually have a trigger.
+     *
+     * @param {String[]|String|null} idSpec the id or ids of entities to find or null too do nothing
+     * @param {nurdz.game.Actor|null} activator the actor that is activating the entities, or null
+     */
+    nurdz.game.Level.prototype.triggerEntitiesWithIDs = function (idSpec, activator)
+    {
+        // If there is not an idSpec, do nothing.
+        if (idSpec == null)
+            return;
+
+        // Get the list of entities that match the idSpec provided and trigger them all.
+        var entities = this.entitiesWithIDs (idSpec);
+        for (var i = 0; i < entities.length; i++)
+            entities[i].trigger (activator);
     };
 
     /**
