@@ -58,9 +58,7 @@ nurdz.sneak.PlayerStartEntity = function (x, y, properties)
             var x = this.position.x;
             var y = this.position.y;
 
-            stage.canvasContext.strokeStyle = this.debugColor;
-            stage.canvasContext.lineWidth = 3;
-            stage.canvasContext.lineCap = 'round';
+            stage.setLineStyle (this.debugColor);
             stage.canvasContext.beginPath ();
             stage.canvasContext.moveTo (x + 5, y + 5);
             stage.canvasContext.lineTo (x + this.width - 5, y + this.height - 5);
