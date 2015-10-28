@@ -271,6 +271,103 @@
          * @const
          * @type {Number}
          */
-        KEY_Z: 90
+        KEY_Z: 90,
+
+
+        /**
+         * The F1 key
+         *
+         * @const
+         * @type {Number}
+         */
+        KEY_F1: 112,
+
+        /**
+         * The F2 key
+         *
+         * @const
+         * @type {Number}
+         */
+        KEY_F2: 113,
+
+        /**
+         * The F3 key
+         *
+         * @const
+         * @type {Number}
+         */
+        KEY_F3: 114,
+
+        /**
+         * The F4 key
+         *
+         * @const
+         * @type {Number}
+         */
+        KEY_F4: 115,
+
+        /**
+         * The F5 key
+         *
+         * @const
+         * @type {Number}
+         */
+        KEY_F5: 116,
+
+        /**
+         * The F6 key
+         *
+         * @const
+         * @type {Number}
+         */
+        KEY_F6: 117,
+
+        /**
+         * The F7 key
+         *
+         * @const
+         * @type {Number}
+         */
+        KEY_F7: 118,
+
+        /**
+         * The F8 key
+         *
+         * @const
+         * @type {Number}
+         */
+        KEY_F8: 119,
+
+        /**
+         * The F9 key
+         *
+         * @const
+         * @type {Number}
+         */
+        KEY_F9: 120,
+
+        /**
+         * The F10 key
+         *
+         * @const
+         * @type {Number}
+         */
+        KEY_F10: 121,
+
+        /**
+         * The F11 key
+         *
+         * @const
+         * @type {Number}
+         */
+        KEY_F11: 122,
+
+        /**
+         * The F12 key
+         *
+         * @const
+         * @type {Number}
+         */
+        KEY_F12: 123
     };
 } ());
