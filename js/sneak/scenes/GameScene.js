@@ -70,8 +70,8 @@ nurdz.sneak.GameScene = function (stage)
      */
     this.debugTargetPatrol = null;
 
-    // Spawn all guards now, by having them validate their waypoints and jumping to the initial waypoint
-    // where they should start.
+    // Finalize the level load by getting the guards to collect the waypoints that indicate where they
+    // start and how they patrol.
     this.spawnGuards ();
 
     // Attempt to find the player start entity so that we know where to start the player for this run. If
@@ -128,10 +128,7 @@ nurdz.sneak.GameScene = function (stage)
         for (var i = 0 ; i < this.level.entities.length ; i++)
         {
             if (this.level.entities[i] instanceof nurdz.sneak.GuardBase)
-            {
-                this.level.entities[i].validateWaypoints (this.level);
-                this.level.entities[i].jumpToSpawn (this.level);
-            }
+                this.level.entities[i].collectWaypoints (this.level);
         }
     };
 

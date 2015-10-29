@@ -27,11 +27,34 @@ nurdz.sneak.GuardBase = function (initialWaypoint, properties)
     this.defaultProperties = {patrolLoop: false};
 
     /**
-     * This represents the id of the waypoint that the guard should spawn at initially.
+     * This represents the id of the waypoint that the guard should spawn at initially. The actual entity
+     * can be found in the spawnEntity value once the map is fully loaded.
      *
      * @type {String}
+     * @see nurdz.sneak.GuardBase.spawnEntity
+     * @see nurdz.sneak.GuardBase.collectWaypoints
      */
     this.initialWaypoint = initialWaypoint;
+
+    /**
+     * The waypoint where this guard should spawn. This is null when the object is first initialized but gets
+     * set after the level is loaded.
+     *
+     * @type {nurdz.sneak.Waypoint|null}
+     * @see nurdz.sneak.GuardBase.initialWaypoint
+     * @see nurdz.sneak.GuardBase.collectWaypoints
+     */
+    this.spawnEntity = null;
+
+    /**
+     * If this guard has a patrol route specified, this lists the waypoint objects in the same order as
+     * they appear in the patrol property. The value is initially null but gets set when the map is fully
+     * loaded. It may still be null if the guard has no patrol route set.
+     *
+     * @type {nurdz.sneak.Waypoint[]|null}
+     * @see nurdz.sneak.GuardBase.collectWaypoints
+     */
+    this.patrolPoints = null;
 
     // Call the super class constructor.
     nurdz.sneak.ChronoEntity.call (this, "GuardBase", null, 0, 0, properties, 1, '#FF0A10');
@@ -52,6 +75,71 @@ nurdz.sneak.GuardBase = function (initialWaypoint, properties)
             value:        nurdz.sneak.GuardBase
         }
     });
+
+    /**
+     * The spawn location of guards as well as their patrols (if they have one) are given in the form of
+     * the id of waypoint objects in the level. As such, until the level is fully loaded, the guard does
+     * not know its starting position or how to move.
+     *
+     * This method will use the level provided to collect the waypoint entities that it needs in order to
+     * function in the game.
+     *
+     * Validation is done to ensure that all of the waypoints exist, are actually waypoint object and (as
+     * much as is possible) that the patrol path is valid.
+     *
+     * Additionally, this will set the location of the guard.
+     *
+     * @param {nurdz.game.Level} level the level that the guard is in
+     */
+    nurdz.sneak.GuardBase.prototype.collectWaypoints = function (level)
+    {
+        // This is either null or an array of entities that represent the waypoints of the patrol path of
+        // this guard.
+        var patrolEntities = null;
+
+        // Get the entity that is the spawn entity.
+        var spawnEntity = level.entitiesByID[this.initialWaypoint];
+
+        // If there is a patrol, collect the entities for the patrol points.
+        if (this.properties.patrol)
+            patrolEntities = level.entitiesWithIDs (this.properties.patrol);
+
+        // Validate that the spawn entity exists.
+        if (spawnEntity == null)
+            throw new ReferenceError ("Guard has invalid spawn location; spawn waypoint not found");
+
+        // Make sure that the collected patrol entities (if any) are also valid. We need to have found as
+        // many of them as we asked for.
+        if (patrolEntities != null &&
+            ((typeof (this.properties.patrol) == "string" && patrolEntities.length != 1) ||
+            (this.properties.patrol.length != patrolEntities.length)))
+            throw new ReferenceError ("Guard has invalid patrol list; one or more waypoints not found");
+
+        // The spawn entity needs to be a waypoint object.
+        if (spawnEntity instanceof nurdz.sneak.Waypoint == false)
+            throw new ReferenceError ("Guard has invalid spawn location; spawn entity is not a waypoint");
+
+        // If there are any patrol entities and they're not waypoints, they are invalid as well.
+        if (patrolEntities != null)
+        {
+            for (var i = 0 ; i < patrolEntities.length ; i++)
+            {
+                if (patrolEntities[i] instanceof nurdz.sneak.Waypoint == false)
+                    throw new ReferenceError ("Guard has invalid patrol; one or more entries are not waypoints");
+            }
+        }
+
+        // Attempt to validate the patrol now, if there is one.
+        if (patrolEntities != null)
+            this.validatePatrol (/** @type {nurdz.sneak.Waypoint} */ spawnEntity, patrolEntities);
+
+        // All good, store the spawn location and the locations of all of the patrol points.
+        this.spawnEntity = spawnEntity;
+        this.patrolPoints = patrolEntities;
+
+        // Set our position now.
+        this.position = this.spawnEntity.position.copy ();
+    };
 
     /**
      * This is automatically invoked at the end of the constructor to validate that the properties object
@@ -83,79 +171,55 @@ nurdz.sneak.GuardBase = function (initialWaypoint, properties)
     };
 
     /**
-     * This validates that the path between the spawn position and each of the points in the patrol are
-     * valid for the guard.
+     * Validate the path that goes from the spawn location to the first patrol point, and then from that
+     * patrol point onwards to the next, until the end of the patrol is reached. This will also loop back
+     * ground to the first patrol point if the patrol loops.
+     *
+     * The validation attempts to ensure that we can at least reasonably ensure that the guard can
+     * complete the patrol.
      *
      * @param {nurdz.sneak.Waypoint} startPoint the point the guard spawns at
      * @param {nurdz.sneak.Waypoint[]} patrolPoints the list of patrol points the guard will patrol.
      */
     nurdz.sneak.GuardBase.prototype.validatePatrol = function (startPoint, patrolPoints)
     {
-        // We iterate over all of the patrol points, comparing each point to the point that comes after
-        // it. For each comparison, either the X value or the Y value needs to be the same while the other
-        // value is different. This ensures that each waypoint is horizontally or vertically aligned with
-        // the previous one.
-        for (var i = 0 ; i < patrolPoints.length ; i++)
-        {
-            // Get the two points that we're going to compare. We compare this point to the point that
-            // comes before it. When the patrol point is the first in the list, it is compared with the
-            // start point instead, which is where the guard spawns.
-            var startPos = (i == 0 ? startPoint.position : patrolPoints[i - 1].position);
-            var endPos = patrolPoints[i].position;
 
+        /**
+         * Validate that the line that connects the two points provided is a horizontal or vertical line.
+         * @param {nurdz.game.Point} startPos first point of path to validate
+         * @param {nurdz.game.Point} endPos second point of path to validate
+         */
+        function validatePath (startPos, endPos)
+        {
+            // If both components of both points are different, the line connecting them is not horizontal
+            // or vertical. This DOES allow for the points to be coincident though, which is no big whoop.
             if (startPos.x != endPos.x && startPos.y != endPos.y)
                 throw new RangeError ("Invalid patrol for guard; waypoints are not properly aligned");
         }
-    };
 
-    /**
-     * When invoked, this ensures that all of the waypoints that are in this guards patrol list (if any)
-     * are valid. If any are not, an error is thrown.
-     *
-     * @param {nurdz.game.Level} level the level that the guard is in
-     */
-    nurdz.sneak.GuardBase.prototype.validateWaypoints = function (level)
-    {
-        // If there is no patrol list, we can leave now.
-        if (this.properties.patrol == null)
-            return;
-
-        // Get the list of all waypoints as well as the spawn location.
-        var waypoints = level.entitiesWithIDs (this.properties.patrol);
-        var spawnPos = level.entitiesByID[this.initialWaypoint];
-
-        // If the spawn location was not found OR the list of found waypoints is not the same length as the
-        // list we asked for, this waypoint list is invalid.
-        if ((spawnPos == null) ||
-            (typeof (this.properties.patrol) == "string" && waypoints.length != 1) ||
-            (this.properties.patrol.length != waypoints.length))
-            throw new ReferenceError ("Guard has invalid patrol list; one or more waypoints not found");
-
-        // If any of the entities found are not waypoints, they are invalid.
-        for (var i = 0 ; i < waypoints.length ; i++)
+        // This naive implementation of guard movement requires the guards to make only horizontal or
+        // vertical movement. As a result, the path leading from one waypoint to the next needs to be
+        // either a horizontal or vertical line.
+        //
+        // To accomplish this, we compare the X and Y of each waypoint and ensure that one component is
+        // the same. If both are different, the points are connected via a diagonal line and the path is
+        // rejected.
+        for (var i = 0 ; i < patrolPoints.length ; i++)
         {
-            if (waypoints[i] instanceof nurdz.sneak.Waypoint == false)
-                throw new ReferenceError ("Guard has invalid patrol; one or more entries are not waypoints");
+            // Compare this point with the point that comes before it in the patrol. When this is the
+            // first point on the actual patrol route, the previous point is the spawn location,
+            // validating that the guard can get from the spawn location to the first patrol location.
+            validatePath ((i == 0 ? startPoint.position : patrolPoints[i - 1].position),
+                          patrolPoints[i].position);
         }
 
-        // If the spawn location is not a waypoint, that's also bad.
-        if (spawnPos instanceof nurdz.sneak.Waypoint == false)
-            throw new ReferenceError ("Guard cannot find spawn location; no Waypoint named " + this.initialWaypoint);
-
-        // Lastly, validate that the patrol is valid in that the guard can find the points it needs to.
-        this.validatePatrol (spawnPos, waypoints);
-    };
-
-    /**
-     * When invoked, this jumps the location of this guard to the location of the initial waypoint.
-     *
-     * @param {nurdz.game.Level} level the level that the guard is in
-     */
-    nurdz.sneak.GuardBase.prototype.jumpToSpawn = function (level)
-    {
-        // Find the spawn entity and copy its location. We know this will work because we validated that
-        // Set our location to be the same location as the waypoint we found.
-        this.position = level.entitiesByID[this.initialWaypoint].position.copy ();
+        // If the patrol is supposed to loop, we need to validate that the last point on the patrol can
+        // get to the first point the same way.
+        if (this.properties.patrolLoop)
+        {
+            validatePath (patrolPoints[patrolPoints.length - 1].position,
+                          patrolPoints[0].position);
+        }
     };
 
     /**
