@@ -121,6 +121,17 @@ nurdz.game.Point = function (x, y)
 
     //noinspection JSUnusedGlobalSymbols
     /**
+     * Compares this point to the point passed in to determine if they represent the same point.
+     *
+     * @returns {Boolean} true or false depending on equality
+     */
+    nurdz.game.Point.prototype.equals = function (other)
+    {
+        return this.x == other.x && this.y == other.y;
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
      * Return a new point instance that is a copy of this point, with its values translated by the values
      * passed in.
      *

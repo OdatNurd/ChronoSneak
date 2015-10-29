@@ -56,6 +56,33 @@ nurdz.sneak.GuardBase = function (initialWaypoint, properties)
      */
     this.patrolPoints = null;
 
+    /**
+     * When this guard has a patrol route that it is following, this specifies the index in the patrol
+     * points list that represents where the current patrol point target is. Once the guard reaches this
+     * point, the index bumps up. At the end of the patrol route, this either loops around or terminates
+     * the patrol by becoming -2. The value is -1 to begin with so that the first time a patrol point is
+     * selected, things work.
+     *
+     * @type {Number}
+     */
+    this.patrolIndex = -1;
+
+    /**
+     * If this guard is actively patrolling, this specifies the point that the guard is trying to get to
+     * next. Every time the step() function is called, the guard will move one step closer to this waypoint.
+     *
+     * If the guard is not patrolling, or if the guard has reached the end of a non-looping patrol, this
+     * will be null.
+     *
+     * When the patrol reaches this point during a step, it will be updated to the next position in the
+     * patrol or null as appropriate.
+     *
+     * This is just an alias for patrolPoints[patrolIndex].
+     *
+     * @type {nurdz.sneak.Waypoint|null}
+     */
+    this.nextPatrolPoint = null;
+
     // Call the super class constructor.
     nurdz.sneak.ChronoEntity.call (this, "GuardBase", null, 0, 0, properties, 1, '#FF0A10');
 };
@@ -75,6 +102,45 @@ nurdz.sneak.GuardBase = function (initialWaypoint, properties)
             value:        nurdz.sneak.GuardBase
         }
     });
+
+    /**
+     * Every time this is invoked, it causes the guard to select the next patrol point in its patrol. If
+     * the patrol is looping and we are currently targeting the last patrol waypoint, this will loop
+     * around to the start.
+     *
+     * This maintains all internal state for patrolling, but this should only be invoked when the guard is
+     * currently at the current patrol point (or at the spawn point about to start patrolling).
+     */
+    nurdz.sneak.GuardBase.prototype.selectNextPatrolWaypoint = function ()
+    {
+        // If there is no patrol, OR the patrol index is smaller than -1, leave now. In the first case,
+        // there is no patrol, and in the second case there is but it's not looping and the loop is complete.
+        if (this.patrolPoints == null || this.patrolIndex < -1)
+        {
+            this.nextPatrolPoint = null;
+            return;
+        }
+
+        // Increment to the next patrol index. If it goes off the end of the list of patrol points, we
+        // need to either wrap around or terminate the patrol.
+        this.patrolIndex++;
+        if (this.patrolIndex == this.patrolPoints.length)
+        {
+            // If we're looping, set the patrol index back to 0. Otherwise the patrol is over, so set it
+            // to -2 and leave.
+            if (this.properties.patrolLoop == false)
+            {
+                this.patrolIndex = -2;
+                this.nextPatrolPoint = null;
+                return;
+            }
+
+            this.patrolIndex = 0;
+        }
+
+        // Cache the patrol point.
+        this.nextPatrolPoint = this.patrolPoints[this.patrolIndex];
+    };
 
     /**
      * The spawn location of guards as well as their patrols (if they have one) are given in the form of
@@ -139,6 +205,9 @@ nurdz.sneak.GuardBase = function (initialWaypoint, properties)
 
         // Set our position now.
         this.position = this.spawnEntity.position.copy ();
+
+        // Lastly, set up our patrol
+        this.selectNextPatrolWaypoint ();
     };
 
     /**
@@ -249,4 +318,42 @@ nurdz.sneak.GuardBase = function (initialWaypoint, properties)
         else
             nurdz.sneak.ChronoEntity.prototype.render.call (this, stage);
     };
+
+    /**
+     * Entities are actors, which means tha they have an update and a render function. The update function
+     * in an entity is meant to do things like visually update its appearance. The step function is used
+     * to give the entity a "tick" to see if there is something that it wants to do. This might be
+     * initiate a chase, decide a door needs to close, etc.
+     */
+    nurdz.sneak.GuardBase.prototype.step = function ()
+    {
+        // We don;'t have to do anything if we don't have a patrol point yet.
+        if (this.nextPatrolPoint == null)
+            return;
+
+        // Take a step in a direction. We can walk either horizontally or vertically, depending on the
+        // direction to the next waypoint.
+        if (this.position.x == this.nextPatrolPoint.position.x)
+        {
+            // The X is the same, so translate on Y.
+            this.position.translate (0,
+                                     (this.position.y > this.nextPatrolPoint.position.y)
+                                         ? -this.height
+                                         : this.height);
+        }
+        else
+        {
+            // The X is different, so translate on X.
+            this.position.translate ((this.position.x > this.nextPatrolPoint.position.x)
+                                         ? -this.width
+                                         : this.width,
+                                     0);
+        }
+
+        // If our current position is the position of the patrol point, it is time to move on to the next
+        // point now.
+        if (this.position.equals (this.nextPatrolPoint.position))
+            this.selectNextPatrolWaypoint ();
+    };
+
 } ());
