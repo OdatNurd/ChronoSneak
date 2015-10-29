@@ -10,6 +10,10 @@
  *       - If specified, this is an entity ID or a list of entity ID's of waypoints that this guard should
  *         follow. The guard will start walking towards the first waypoint in the list, then to the next
  *         waypoint after that, until it reaches the end of the list.
+ *    - 'patrolLoop': true or false (default: false)
+ *        - This only has an effect when a patrol is specified, but it indicates that when the last waypoint
+ *          in the patrol is reached, the patrol should walk back to the first waypoint in the patrol and
+ *          continue.
  *
  * @param {String} initialWaypoint the waypoint that the guard should spawn at
  * @param {Object|null} [properties={}] the properties specific to this entity, or null for none
@@ -20,7 +24,7 @@ nurdz.sneak.GuardBase = function (initialWaypoint, properties)
     "use strict";
 
     // Set up the default properties for entities of this type.
-    this.defaultProperties = {};
+    this.defaultProperties = {patrolLoop: false};
 
     /**
      * This represents the id of the waypoint that the guard should spawn at initially.
@@ -57,6 +61,9 @@ nurdz.sneak.GuardBase = function (initialWaypoint, properties)
      */
     nurdz.sneak.GuardBase.prototype.validateProperties = function ()
     {
+        // Validate all properties.
+        this.isPropertyValid ("patrolLoop", "boolean", false);
+
         // If there is a property named patrol, it should have a type that is either a string or an
         // array. If it's not, we will use a bogus call to isPropertyValid to cause it to generate an
         // error for us.
@@ -125,7 +132,7 @@ nurdz.sneak.GuardBase = function (initialWaypoint, properties)
             throw new ReferenceError ("Guard has invalid patrol list; one or more waypoints not found");
 
         // If any of the entities found are not waypoints, they are invalid.
-        for (var i = 0; i < waypoints.length; i++)
+        for (var i = 0 ; i < waypoints.length ; i++)
         {
             if (waypoints[i] instanceof nurdz.sneak.Waypoint == false)
                 throw new ReferenceError ("Guard has invalid patrol; one or more entries are not waypoints");

@@ -38,7 +38,8 @@ nurdz.sneak.levels.level1 = new nurdz.game.LevelData ("level1", 25, 18, [
     new nurdz.sneak.Button (20, 13, {orientation: "left", pressed: true, cycleTime: 3, trigger: "autoDoor1"}),
     new nurdz.sneak.Button (15, 6, {orientation: "right", trigger: ["door1", "door3"]}),
     new nurdz.sneak.Button (14, 1, {orientation: "top", trigger: "door2"}),
-    new nurdz.sneak.Button (10, 11, {orientation: "bottom", trigger: "exitDoor", pressed: true, id: "exitBtn"}),
+    new nurdz.sneak.Button (10, 11,
+                            {orientation: "bottom", trigger: "exitDoor", pressed: true, id: "exitBtn"}),
     new nurdz.sneak.Button (10, 15, {orientation: "top", trigger: "exitBtn"}),
 
     new nurdz.sneak.Waypoint (21, 11, {visible: true, id: "gStart1"}),
@@ -48,6 +49,9 @@ nurdz.sneak.levels.level1 = new nurdz.game.LevelData ("level1", 25, 18, [
     new nurdz.sneak.Waypoint (12, 15, {visible: true, id: "way3"}),
     new nurdz.sneak.Waypoint (12, 8, {visible: true, id: "way4"}),
 
-    new nurdz.sneak.GuardBase ("gStart1", {patrol: ["pStart1", "way2", "way3", "way4", "way1"]})
+    new nurdz.sneak.GuardBase ("gStart1", {
+        patrolLoop: true,
+        patrol:     ["pStart1", "way2", "way3", "way4", "way1"]
+    })
 ], nurdz.sneak.stdTiles);
 
