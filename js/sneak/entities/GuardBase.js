@@ -84,15 +84,21 @@ nurdz.sneak.GuardBase = function (initialWaypoint, properties)
      */
     nurdz.sneak.GuardBase.prototype.validatePatrol = function (startPoint, patrolPoints)
     {
-        // TODO make sure that the patrol is valid here
-        // This needs to make sure that it is a straight horizontal or vertical line between the start
-        // point and the first patrol point, then from the first patrol point to the second, and so on
-        // through the patrol.
-        //
-        // if the patrol loops, the last point has to be a straight shot from the first point in the
-        // patrol too.
-        //
-        // In this simple prototype, guards can only move in straight horizontal or vertical lines.
+        // We iterate over all of the patrol points, comparing each point to the point that comes after
+        // it. For each comparison, either the X value or the Y value needs to be the same while the other
+        // value is different. This ensures that each waypoint is horizontally or vertically aligned with
+        // the previous one.
+        for (var i = 0 ; i < patrolPoints.length ; i++)
+        {
+            // Get the two points that we're going to compare. We compare this point to the point that
+            // comes before it. When the patrol point is the first in the list, it is compared with the
+            // start point instead, which is where the guard spawns.
+            var startPos = (i == 0 ? startPoint.position : patrolPoints[i - 1].position);
+            var endPos = patrolPoints[i].position;
+
+            if (startPos.x != endPos.x && startPos.y != endPos.y)
+                throw new RangeError ("Invalid patrol for guard; waypoints are not properly aligned");
+        }
     };
 
     /**
