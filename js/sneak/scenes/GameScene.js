@@ -447,6 +447,11 @@ nurdz.sneak.GameScene = function (stage)
                 this.displayEntityInfo ();
                 return true;
 
+            // This key opens a new tab/window with a copy of the current frame displayed.
+            case this.keys.KEY_F5:
+                this.screenshot ("ChronoSneak_ss.png", "ChronoSneak ScreenShot");
+                return true;
+
             case this.keys.KEY_UP:
             case this.keys.KEY_W:
                 targetPos = new nurdz.game.Point (mapX, mapY - 1);

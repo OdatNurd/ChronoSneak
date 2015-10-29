@@ -238,4 +238,46 @@ nurdz.game.Scene = function (name, stage)
     {
 
     };
+
+    /**
+     * Open a new tab that displays the current contents of the stage. The generated page will display the
+     * image and is set up so that a click on the image will cause the browser to download the file.
+     *
+     * The filename you provide is the filename that is automatically suggested for the image, and the
+     * title passed in will be the title of the window opened and also the alternate text for the image on
+     * the page.
+     *
+     * This all requires support from the current browser. Some browsers may not support the notion of
+     * automatically downloading the image on a click, some might not use the filename provided.
+     *
+     * In particular, the browser in use needs to support data URI's. I assume most decent ones do.
+     *
+     * @param {String} [filename="screenshot.png"] the name of the screenshot image to create
+     * @param {String} [windowTitle="Screenshot"] the title of the window
+     */
+    nurdz.game.Scene.prototype.screenshot = function (filename, windowTitle)
+    {
+        filename = filename || "screenshot.png";
+        windowTitle = windowTitle || "Screenshot";
+
+        // Create a window to hold the screen shot.
+        var wind = window.open ("about:blank", "screenshot");
+
+        // Create a special data URI which the browser will interpret as an image to display.
+        var imageURL = this.stage.canvas.toDataURL ();
+
+        // Now we need to write some HTML into the new document. The image tag using our data URL will
+        // cause the browser to display the image. Wrapping it in the anchor tag with the same URL and a
+        // download attribute is a hint to the browser that when the image is clicked, it should download
+        // it using the name provided.
+        //
+        // This might not work in all browsers, in which case clicking the link just displays the image.
+        // You can always save via a right click.
+        wind.document.write ("<head><title>" + windowTitle + "</title></head>");
+        wind.document.write ('<a href="' + imageURL + '" download="' + filename + '">');
+        wind.document.write ('<img src="' + imageURL + '" title="' + windowTitle + '"/>');
+        wind.document.write ('</a>');
+    };
+
+
 } ());
