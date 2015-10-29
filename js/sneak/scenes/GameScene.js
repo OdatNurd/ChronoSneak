@@ -61,6 +61,15 @@ nurdz.sneak.GameScene = function (stage)
      */
     this.debugTargetLinks = null;
 
+    /**
+     * When the debugging key is pressed, if there is a guard entity in the tile, this will be filled with
+     * an array of points that specify the patrol path that the guard will take. The patrol path starts at
+     * the start position of the guard and will display all of the waypoint stops along the way.
+     *
+     * @type {nurdz.game.Point[][]|null}
+     */
+    this.debugTargetPatrol = null;
+
     // Spawn all guards now, by having them validate their waypoints and jumping to the initial waypoint
     // where they should start.
     this.spawnGuards ();
@@ -163,6 +172,8 @@ nurdz.sneak.GameScene = function (stage)
      */
     nurdz.sneak.GameScene.prototype.render = function ()
     {
+        var i, startPos, endPos;
+
         // Clear the screen and render the level.
         this.stage.clear ();
         this.level.render (this.stage);
@@ -182,21 +193,37 @@ nurdz.sneak.GameScene = function (stage)
 
             // The value of debugTargetLinks is an array that contains information about each entity that
             // has targets. Iterate over them.
-            for (var i = 0; i < this.debugTargetLinks.length; i++)
+            for (i = 0 ; i < this.debugTargetLinks.length ; i++)
             {
                 // Get the info out for this set of entity links.
                 var info = this.debugTargetLinks[i];
 
                 // The first element in the info array is the position that the actual entity is at. This
                 // will be the location where the link arrow starts, and is an array of two numbers.
-                var startPos = info[0];
+                startPos = info[0];
 
                 // All other elements are arrays that specify the end point of a link arrow
-                for (var j = 1; j < info.length; j++)
+                for (var j = 1 ; j < info.length ; j++)
                 {
-                    var endPos = info[j];
+                    endPos = info[j];
                     this.stage.drawArrow (startPos.x, startPos.y, endPos.x, endPos.y);
                 }
+            }
+        }
+
+        // If there are debug target patrols, render them now.
+        if (this.debugTargetPatrol != null)
+        {
+            // Set the arrow style for the arrows that we are goign to draw.
+            this.stage.setArrowStyle ("blue", 2);
+
+            // Connect all of the points with lines.
+            for (i = 0 ; i < this.debugTargetPatrol.length - 1; i++)
+            {
+                startPos = this.debugTargetPatrol[i];
+                endPos = this.debugTargetPatrol[i + 1];
+
+                this.stage.drawArrow (startPos.x, startPos.y, endPos.x, endPos.y);
             }
         }
     };
@@ -233,7 +260,7 @@ nurdz.sneak.GameScene = function (stage)
                 this.debugTxt += "=> " + mTile.name;
             if (entities != null && entities.length > 0)
             {
-                for (var i = 0; i < entities.length; i++)
+                for (var i = 0 ; i < entities.length ; i++)
                 {
                     this.debugTxt += ", " + entities[i].name + "{" + (entities[i].properties.id || "?") + "}";
                 }
@@ -251,6 +278,7 @@ nurdz.sneak.GameScene = function (stage)
             // Remove the target links now because the position has changed. The user can press the button
             // to calculate new ones.
             this.debugTargetLinks = null;
+            this.debugTargetPatrol = null;
         }
     };
 
@@ -287,8 +315,40 @@ nurdz.sneak.GameScene = function (stage)
 
         // Store the location of this entity, and then the positions of all of the linked entities.
         retVal.push (entity.position.copyWithTranslate (offset, offset));
-        for (var i = 0; i < links.length; i++)
+        for (var i = 0 ; i < links.length ; i++)
             retVal.push (links[i].position.copyWithTranslate (offset, offset));
+
+        return retVal;
+    };
+
+    /**
+     * Given an entity that is a guard, return back an array of points that specify all of the points on
+     * the patrol.
+     *
+     * @param {nurdz.sneak.GuardBase} guard the guard whose patrol
+     * @returns {nurdz.game.Point[]} the list of patrol waypoint locations
+     */
+    nurdz.sneak.GameScene.prototype.calculateGuardPatrol = function (guard)
+    {
+        /** @type nurdz.game.Point[] */
+        var retVal = [];
+        var offset = nurdz.sneak.constants.TILE_SIZE / 2;
+
+        // Get the list of waypoints and the spawn position of the guard.
+        var waypoints = this.level.entitiesWithIDs (guard.properties.patrol);
+        var spawnPos = this.level.entitiesByID[guard.initialWaypoint];
+
+        // Store the spawn position as the first point and the waypoints as the following positions. Each
+        // point is offset by half the tile size so that when the patrol path is displayed, it centers in
+        // the tiles instead of pointing at the corners of the tiles.
+        retVal.push (spawnPos.position.copyWithTranslate (offset, offset));
+        for (var i = 0 ; i < waypoints.length ; i++)
+            retVal.push (waypoints[i].position.copyWithTranslate (offset, offset));
+
+        // If the guard is supposed to loop its patrol, add the first waypoint again to cycle the path
+        // back to where it started.
+        if (guard.properties.patrolLoop)
+            retVal.push (waypoints[0].position.copyWithTranslate (offset, offset));
 
         return retVal;
     };
@@ -317,7 +377,7 @@ nurdz.sneak.GameScene = function (stage)
             var links = [];
 
             // Iterate all entities now.
-            for (var i = 0; i < entities.length; i++)
+            for (var i = 0 ; i < entities.length ; i++)
             {
                 var entity = entities[i];
 
@@ -334,6 +394,11 @@ nurdz.sneak.GameScene = function (stage)
                     // Now display all properties except for the ID property, which we already displayed.
                     if (entity.properties.hasOwnProperty (name) && name != "id")
                         console.log ("\t" + name + ":", entity.properties[name]);
+
+                    // If this entity is a guard and has a patrol and we don't already have a patrol to
+                    // display, calculate it now.
+                    if (entity instanceof nurdz.sneak.GuardBase && entity.properties.patrol && this.debugTargetPatrol == null)
+                        this.debugTargetPatrol = this.calculateGuardPatrol (entity);
                 }
             }
 
@@ -421,7 +486,7 @@ nurdz.sneak.GameScene = function (stage)
                 entities = this.level.entitiesAt (mapX, mapY);
                 if (entities.length > 0)
                 {
-                    for (i = 0; i < entities.length; i++)
+                    for (i = 0 ; i < entities.length ; i++)
                         entities[i].trigger (this.player);
                 }
                 return true;
@@ -449,7 +514,7 @@ nurdz.sneak.GameScene = function (stage)
             // This happens after the move and the entity gets a turn so that the entities have a chance
             // to move during their step such that they are no longer where the player might have ended up.
             entities = this.level.entitiesAt (targetPos.x, targetPos.y);
-            for (i = 0; i < entities.length; i++)
+            for (i = 0 ; i < entities.length ; i++)
                 entities[i].triggerTouch (this.player);
             return true;
         }
