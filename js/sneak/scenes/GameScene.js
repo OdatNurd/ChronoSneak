@@ -87,9 +87,8 @@ nurdz.sneak.GameScene = function (stage)
      *
      * @type {nurdz.sneak.Player}
      */
-    this.player = new nurdz.sneak.Player (stage,
-                                          playerStartPos[0].position.x,
-                                          playerStartPos[0].position.y);
+    this.player = new nurdz.sneak.Player (stage, 0, 0);
+    this.player.position = playerStartPos[0].position.copy ();
 
     // Insert the player into the list of entities that exist in the level. This allows other entities
     // that query entities on the map to know about the player.

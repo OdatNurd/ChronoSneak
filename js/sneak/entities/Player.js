@@ -10,12 +10,8 @@ nurdz.sneak.Player = function (stage, x, y)
 {
     "use strict";
 
-    // Pull the size of tiles.
-    var tileSize = nurdz.game.TILE_SIZE;
-
     // Call the super class constructor.
-    nurdz.game.Entity.call (this, 'PlayerActor', stage, x, y, tileSize, tileSize, {id: "player"}, 10,
-                            'green');
+    nurdz.sneak.ChronoEntity.call (this, 'PlayerActor', stage, x, y, {id: "player"}, 10, 'green');
 };
 
 // Now define the various member functions and any static stage.
@@ -25,7 +21,7 @@ nurdz.sneak.Player = function (stage, x, y)
 
     // Now set our prototype to be an instance of our super class, making sure that the prototype knows to
     // use the correct constructor function.
-    nurdz.sneak.Player.prototype = Object.create (nurdz.game.Entity.prototype, {
+    nurdz.sneak.Player.prototype = Object.create (nurdz.sneak.ChronoEntity.prototype, {
         constructor: {
             configurable: true,
             enumerable:   true,
