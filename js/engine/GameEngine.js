@@ -37,20 +37,20 @@
     nurdz.game.STAGE_HEIGHT = 600;
 
     /**
-     * The width of the viewport, in tiles.
+     * The width of the game stage (canvas), in tiles.
      *
      * @const
      * @type {Number}
      */
-    nurdz.game.VIEW_WIDTH = Math.floor (nurdz.game.STAGE_WIDTH / nurdz.game.TILE_SIZE);
+    nurdz.game.STAGE_TILE_WIDTH = Math.floor (nurdz.game.STAGE_WIDTH / nurdz.game.TILE_SIZE);
 
     /**
-     * The height of the viewport, in tiles.
+     * The height of the game stage (canvas), in tiles.
      *
      * @const
      * @type {Number}
      */
-    nurdz.game.VIEW_HEIGHT = Math.floor (nurdz.game.STAGE_HEIGHT / nurdz.game.TILE_SIZE);
+    nurdz.game.STAGE_TILE_HEIGHT = Math.floor (nurdz.game.STAGE_HEIGHT / nurdz.game.TILE_SIZE);
 
     /**
      * This sub-namespace contains definitions for key codes in key events, for use in input handling.
