@@ -313,9 +313,9 @@ nurdz.sneak.GameScene = function (stage)
         var offset = nurdz.game.TILE_SIZE / 2;
 
         // Store the location of this entity, and then the positions of all of the linked entities.
-        retVal.push (entity.position.copyWithTranslate (offset, offset));
+        retVal.push (entity.position.copyTranslatedXY (offset, offset));
         for (var i = 0 ; i < links.length ; i++)
-            retVal.push (links[i].position.copyWithTranslate (offset, offset));
+            retVal.push (links[i].position.copyTranslatedXY (offset, offset));
 
         return retVal;
     };
@@ -340,14 +340,14 @@ nurdz.sneak.GameScene = function (stage)
         // Store the spawn position as the first point and the waypoints as the following positions. Each
         // point is offset by half the tile size so that when the patrol path is displayed, it centers in
         // the tiles instead of pointing at the corners of the tiles.
-        retVal.push (spawnPos.position.copyWithTranslate (offset, offset));
+        retVal.push (spawnPos.position.copyTranslatedXY (offset, offset));
         for (var i = 0 ; i < waypoints.length ; i++)
-            retVal.push (waypoints[i].position.copyWithTranslate (offset, offset));
+            retVal.push (waypoints[i].position.copyTranslatedXY (offset, offset));
 
         // If the guard is supposed to loop its patrol, add the first waypoint again to cycle the path
         // back to where it started.
         if (guard.properties.patrolLoop)
-            retVal.push (waypoints[0].position.copyWithTranslate (offset, offset));
+            retVal.push (waypoints[0].position.copyTranslatedXY (offset, offset));
 
         return retVal;
     };
@@ -510,7 +510,7 @@ nurdz.sneak.GameScene = function (stage)
         {
             // Yep, translate the player accordingly and then step all of the entities, as they have a
             // turn now since the player moved.
-            this.player.position.translate (translatePos.x, translatePos.y);
+            this.player.position.translate (translatePos);
             this.level.stepAllEntities ();
 
             // Now find all entities at the position that the player moved to, and trigger them all.

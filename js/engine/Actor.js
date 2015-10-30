@@ -99,7 +99,7 @@ nurdz.game.Actor = function (name, stage, x, y, width, height, zOrder, debugColo
      */
     nurdz.game.Actor.prototype.setPosition = function (position)
     {
-        this.position.setToPoint (position);
+        this.position.setTo (position);
     };
 
     /**
@@ -111,7 +111,7 @@ nurdz.game.Actor = function (name, stage, x, y, width, height, zOrder, debugColo
      */
     nurdz.game.Actor.prototype.setPositionXY = function (x, y)
     {
-        this.position.setPos (x, y);
+        this.position.setToXY (x, y);
     };
 
     /**

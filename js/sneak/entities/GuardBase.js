@@ -357,18 +357,18 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
         if (this.position.x == this.nextPatrolPoint.position.x)
         {
             // The X is the same, so translate on Y.
-            movePos.translate (0,
-                               (this.position.y > this.nextPatrolPoint.position.y)
-                                   ? -this.height
-                                   : this.height);
+            movePos.translateXY (0,
+                                 (this.position.y > this.nextPatrolPoint.position.y)
+                                     ? -this.height
+                                     : this.height);
         }
         else
         {
             // The X is different, so translate on X.
-            movePos.translate ((this.position.x > this.nextPatrolPoint.position.x)
-                                   ? -this.width
-                                   : this.width,
-                               0);
+            movePos.translateXY ((this.position.x > this.nextPatrolPoint.position.x)
+                                     ? -this.width
+                                     : this.width,
+                                 0);
         }
 
         // Create a duplicate of the move position that is converted from world coordinates to map
