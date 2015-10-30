@@ -68,20 +68,20 @@ nurdz.game.Level = function (stage, levelData)
     "use strict";
 
     /**
-     * Given the name of an entity type, return back a list of all such entities that this level data
-     * contains. There could be 0 or more such entities.
+     * Given an entity type, return back a list of all entities of that type that the level data contains.
+     * There could be 0 or more such entries.
      *
-     * @param {String} entityName the entity name to search for
-     * @returns {nurdz.game.Entity[]}
+     * @param {Function} type the entity type to search for
+     * @returns {nurdz.game.Entity[]} an array of entities of this type, which might be empty
      */
-    nurdz.game.Level.prototype.entitiesWithName = function (entityName)
+    nurdz.game.Level.prototype.entitiesWithType = function (type)
     {
         // The return value.
         var retVal = [];
-        for (var i = 0; i < this.entities.length; i++)
+        for (var i = 0 ; i < this.entities.length ; i++)
         {
             var entity = this.entities[i];
-            if (entity.name == entityName)
+            if (entity instanceof type)
                 retVal.push (entity);
         }
 
@@ -89,67 +89,52 @@ nurdz.game.Level = function (stage, levelData)
     };
 
     /**
-     * This method will invoke the step method on all entities that currently exist on the map. In
-     * ChronoSneak, this gets invoked every time we move the player, so that all entities can get a logic
-     * step whenever the player takes an action.
-     */
-    nurdz.game.Level.prototype.stepAllEntities = function ()
-    {
-        for (var i = 0; i < this.entities.length; i++)
-            this.entities[i].step (this);
-    };
-
-    /**
-     * Given coordinates in the map, return back the tile at that location. This will be represented as
-     * null if the coordinates are not valid.
+     * Given coordinates in the map (e.g. tile based) domain, return back a list of all entities in the
+     * level that exist at this location, which might be 0. This also detects when the coordinates are
+     * outside of the world.
      *
-     * @param {Number} x the X-coordinate to check
-     * @param {Number} y the Y-coordinate to check
-     * @returns {nurdz.game.Tile|null} the tile at the provided location or null if the location is invalid
-     */
-    nurdz.game.Level.prototype.tileAt = function (x, y)
-    {
-        if (x < 0 || y < 0 || x >= this.width || y >= this.width)
-            return null;
-
-        // This is safe because the level data validates that all of the tiles in its data are also
-        // represented in its tileset.
-        return this.tileset.tilesByValue[this.levelData[y * this.width + x]];
-    };
-
-    /**
-     * Given coordinates in the map, return back a list of all entities that exist at this location, which
-     * may be 0.
-     *
-     * @param {Number} x the X-coordinate to check
-     * @param {Number} y the Y-coordinate to check
+     * @param {Number} x the X coordinate to search
+     * @param {Number} y the Y coordinate to search
      * @returns {nurdz.game.Entity[]|null} the entities at the provided location or null if the location is
      * invalid
      */
-    nurdz.game.Level.prototype.entitiesAt = function (x, y)
+    nurdz.game.Level.prototype.entitiesAtXY = function (x, y)
     {
+        // Return null if the coordinate is out of bounds.
         if (x < 0 || y < 0 || x >= this.width || y >= this.width)
             return null;
 
-        // Now that we know the coordinates are valid map coordinates, multiply them by the tile size to
-        // get the pixel locations. The coordinates given are in map coordinates but entities live in
-        // screen space.
+        // The location passed in is in map coordinates, so scale it to be in map (tile) space.
         x *= nurdz.game.TILE_SIZE;
         y *= nurdz.game.TILE_SIZE;
 
         // Iterate over all entities to see if they are at the map location provided.
         var retVal = [];
-        for (var i = 0; i < this.entities.length; i++)
+        for (var i = 0 ; i < this.entities.length ; i++)
         {
             // Get the entity.
             var entity = this.entities[i];
 
             // If the location matches, add it to the array.
-            if (entity.position.x == x && entity.position.y == y)
+            if (entity.position.equalsXY (x, y))
                 retVal.push (entity);
         }
 
         return retVal;
+    };
+
+    /**
+     * Given coordinates in the map (e.g. tile based) domain, return back a list of all entities in the
+     * level that exist at this location, which might be 0. This also detects when the coordinates are
+     * outside of the world.
+     *
+     * @param {nurdz.game.Point} location the location in the map to check
+     * @returns {nurdz.game.Entity[]|null} the entities at the provided location or null if the location is
+     * invalid
+     */
+    nurdz.game.Level.prototype.entitiesAt = function (location)
+    {
+        return this.entitiesAtXY (location.x, location.y);
     };
 
     /**
@@ -189,6 +174,18 @@ nurdz.game.Level = function (stage, levelData)
         return retVal;
     };
 
+    // TODO Move this to a custom subclass; there is no step in entities any longer
+    /**
+     * This method will invoke the step method on all entities that currently exist on the map. In
+     * ChronoSneak, this gets invoked every time we move the player, so that all entities can get a logic
+     * step whenever the player takes an action.
+     */
+    nurdz.game.Level.prototype.stepAllEntities = function ()
+    {
+        for (var i = 0 ; i < this.entities.length ; i++)
+            this.entities[i].step (this);
+    };
+
     //noinspection JSUnusedGlobalSymbols
     /**
      * Find all entities that match the id spec passed in (see entitiesWithIDs) and then, for each such
@@ -208,8 +205,51 @@ nurdz.game.Level = function (stage, levelData)
 
         // Get the list of entities that match the idSpec provided and trigger them all.
         var entities = this.entitiesWithIDs (idSpec);
-        for (var i = 0; i < entities.length; i++)
+        for (var i = 0 ; i < entities.length ; i++)
             entities[i].trigger (activator);
+    };
+
+    /**
+     * Given coordinates in the map (e.g. tile based) domain, return back the tile at that location. If
+     * the coordinates are outside of the world, this is detected and null is returned back.
+     *
+     * @param {nurdz.game.Point} location the location to check
+     * @returns {nurdz.game.Tile|null} the tile at the provided location or null if the location is invalid
+     */
+    nurdz.game.Level.prototype.tileAt = function (location)
+    {
+        return this.tileAtXY (location.x, location.y);
+    };
+
+    /**
+     * Given coordinates in the map (e.g. tile based) domain, return back the tile at that location. If
+     * the coordinates are outside of the world, this is detected and null is returned back.
+     *
+     * @param {Number} x the X-coordinate to check
+     * @param {Number} y the Y-coordinate to check
+     * @returns {nurdz.game.Tile|null} the tile at the provided location or null if the location is invalid
+     */
+    nurdz.game.Level.prototype.tileAtXY = function (x, y)
+    {
+        // Bounds check the location.
+        if (x < 0 || y < 0 || x >= this.width || y >= this.width)
+            return null;
+
+        // This is safe because the level data validates that all of the tiles in its data are also
+        // represented in its tileset.
+        return this.tileset.tilesByValue[this.levelData[y * this.width + x]];
+    };
+
+    /**
+     * Given coordinates in the map, return back a boolean that indicates if that space is blocked or not
+     * as far as movement is concerned.
+     *
+     * @param {nurdz.game.Point} location the location to check
+     * @returns {Boolean} true if the level location is blocked and cannot be moved to, or false otherwise.
+     */
+    nurdz.game.Level.prototype.isBlockedAt = function (location)
+    {
+        return this.isBlockedAtXY (location.x, location.y);
     };
 
     /**
@@ -220,10 +260,10 @@ nurdz.game.Level = function (stage, levelData)
      * @param {Number} y the Y-coordinate to check
      * @returns {Boolean} true if the level location is blocked and cannot be moved to, or false otherwise.
      */
-    nurdz.game.Level.prototype.isBlockedAt = function (x, y)
+    nurdz.game.Level.prototype.isBlockedAtXY = function (x, y)
     {
         // Get the tile; it's blocked if it is a wall.
-        var tile = this.tileAt (x, y);
+        var tile = this.tileAtXY (x, y);
         if (tile == null)
             return true;
 
@@ -233,10 +273,10 @@ nurdz.game.Level = function (stage, levelData)
 
         // Get the list of entities that are at this location on the map. If there are any and any of them
         // blocks actor movement, the move is blocked.
-        var entities = this.entitiesAt (x, y);
+        var entities = this.entitiesAtXY (x, y);
         if (entities != null)
         {
-            for (var i = 0; i < entities.length; i++)
+            for (var i = 0 ; i < entities.length ; i++)
             {
                 if (entities[i].blocksActorMovement ())
                     return true;
@@ -255,11 +295,11 @@ nurdz.game.Level = function (stage, levelData)
     nurdz.game.Level.prototype.render = function (stage)
     {
         // Iterate over the tiles.
-        for (var y = 0; y < this.height; y++)
+        for (var y = 0 ; y < this.height ; y++)
         {
-            for (var x = 0; x < this.width; x++)
+            for (var x = 0 ; x < this.width ; x++)
             {
-                var tile = this.tileAt (x, y);
+                var tile = this.tileAtXY (x, y);
 
                 // Get the tile and render it.
                 if (tile != null)

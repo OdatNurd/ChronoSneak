@@ -374,7 +374,7 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
         // Create a duplicate of the move position that is converted from world coordinates to map
         // coordinates, then get the tile at the position that we want to move to.
         var mapPos = movePos.reduce (this.width);
-        var dTile = level.tileAt (mapPos.x, mapPos.y);
+        var dTile = level.tileAt (mapPos);
 
         // If we did not find a tile or we did but it blocks movement, that's bad for us and we can't move.
         if (dTile == null || dTile.blocksActorMovement ())
@@ -388,7 +388,7 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
         // There is not a world block. Check to see if there are any entities that block movement on the
         // target square. Note that we know that the entities will never be null because if the location
         // was invalid, the movement test would have blocked the move already.
-        var entities = level.entitiesAt (mapPos.x, mapPos.y);
+        var entities = level.entitiesAt (mapPos);
         if (entities.length > 0)
         {
             // TODO Opening of doors should be deferred

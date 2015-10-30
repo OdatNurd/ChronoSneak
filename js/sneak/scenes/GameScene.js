@@ -18,7 +18,7 @@ nurdz.sneak.GameScene = function (stage)
      *
      * @type {nurdz.game.Level}
      */
-    this.level = new nurdz.game.Level (stage, nurdz.sneak.levels.getLevelOne(stage));
+    this.level = new nurdz.game.Level (stage, nurdz.sneak.levels.getLevelOne (stage));
 
     /**
      * The size of tiles in the game. Cached for quicker access.
@@ -76,7 +76,7 @@ nurdz.sneak.GameScene = function (stage)
 
     // Attempt to find the player start entity so that we know where to start the player for this run. If
     // this does not have exactly one entity, the level is invalid.
-    var playerStartPos = this.level.entitiesWithName ("PlayerStartEntity");
+    var playerStartPos = this.level.entitiesWithType (nurdz.sneak.PlayerStartEntity);
     if (playerStartPos.length != 1)
         throw new Error ("Unable to determine player start position.");
     else
@@ -217,7 +217,7 @@ nurdz.sneak.GameScene = function (stage)
             this.stage.setArrowStyle ("blue", 2);
 
             // Connect all of the points with lines.
-            for (i = 0 ; i < this.debugTargetPatrol.length - 1; i++)
+            for (i = 0 ; i < this.debugTargetPatrol.length - 1 ; i++)
             {
                 startPos = this.debugTargetPatrol[i];
                 endPos = this.debugTargetPatrol[i + 1];
@@ -251,8 +251,8 @@ nurdz.sneak.GameScene = function (stage)
         if (this.debugPos == null || (this.debugPos.x != mX || this.debugPos.y != mY))
         {
             // Get the tile and any entities under the mouse.
-            var mTile = this.level.tileAt (mX, mY);
-            var entities = this.level.entitiesAt (mX, mY);
+            var mTile = this.level.tileAtXY (mX, mY);
+            var entities = this.level.entitiesAtXY (mX, mY);
 
             this.debugTxt = "[" + mX + ", " + mY + "]";
             if (mTile != null)
@@ -367,7 +367,7 @@ nurdz.sneak.GameScene = function (stage)
 
         // Collect all of the entities at the debug location. If there are any, we can display some
         // information about them.
-        var entities = this.level.entitiesAt (this.debugPos.x, this.debugPos.y);
+        var entities = this.level.entitiesAt (this.debugPos);
         if (entities != null && entities.length > 0)
         {
             // As we display entities, we check to see if they have any targets. If they do, we put
@@ -487,7 +487,7 @@ nurdz.sneak.GameScene = function (stage)
                 this.level.stepAllEntities ();
 
                 // Now trigger everything on this tile.
-                entities = this.level.entitiesAt (mapX, mapY);
+                entities = this.level.entitiesAtXY (mapX, mapY);
                 if (entities.length > 0)
                 {
                     for (i = 0 ; i < entities.length ; i++)
@@ -506,7 +506,7 @@ nurdz.sneak.GameScene = function (stage)
         // If a movement happened, then move the player and allow all entities a turn. This also makes
         // sure to check if the player is currently standing on an entity, which will trigger them for a
         // touch if they support that.
-        if (targetPos != null && this.level.isBlockedAt (targetPos.x, targetPos.y) == false)
+        if (targetPos != null && this.level.isBlockedAt (targetPos) == false)
         {
             // Yep, translate the player accordingly and then step all of the entities, as they have a
             // turn now since the player moved.
@@ -517,7 +517,7 @@ nurdz.sneak.GameScene = function (stage)
             //
             // This happens after the move and the entity gets a turn so that the entities have a chance
             // to move during their step such that they are no longer where the player might have ended up.
-            entities = this.level.entitiesAt (targetPos.x, targetPos.y);
+            entities = this.level.entitiesAt (targetPos);
             for (i = 0 ; i < entities.length ; i++)
                 entities[i].triggerTouch (this.player);
             return true;
