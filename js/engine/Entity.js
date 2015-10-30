@@ -2,16 +2,14 @@
  * An Entity is a specific subclass of Actor that is designed to be interactive with other actors and
  * entities. An entity contains properties that can help define it's runtime behaviour.
  *
- * Entities have a step function which can be used to provide finer control over their logic. In an
- * entity, the update loop is designed to be used to modify the visual appearance of the entity, while the
- * step function is invoked to determine what the next logical action for the entity is.
- *
  * The properties provided may be extended with default values, depending on the subclass. Subclasses can
- * set this.defaultProperties to a set of properties that should be applied directly to the
+ * set this.defaultProperties to a set of properties that should be applied if they do not already exist.
+ * Each subclass of ChronoEntity is responsible for making sure to blend the defaults with those of their
+ * parent class, so that the chained constructor calls set up the properties as appropriate.
  *
  * This entity supports the following properties:
  *    - 'id': string (default: auto generated if not set)
- *       - specifies the id of this entity
+ *       - specifies the id of this entity for use in identifying/finding/triggering this entity.
  *
  * @param {String} name the internal name of this actor instance, for debugging
  * @param {nurdz.game.Stage|null} stage the stage that will manage this entity or null if it is not known yet
@@ -20,7 +18,7 @@
  * @param {Number} width the width of this entity
  * @param {Number} height the height of this entity
  * @param {Object} properties entity specific properties to apply to this entity
- * @param {Number} [zOrder=1] the Z-Order of this actor when rendered (smaller numbers go below larger ones)
+ * @param {Number} [zOrder=1] the Z-Order of this entity when rendered (smaller numbers go below larger ones)
  * @param {String} [debugColor='white'] the color specification to use in debug rendering for this actor
  * @constructor
  */
@@ -190,20 +188,6 @@ nurdz.game.Entity = function (name, stage, x, y, width, height, properties, zOrd
      * @see nurdz.game.Entity.trigger
      */
     nurdz.game.Entity.prototype.triggerTouch = function (activator)
-    {
-    };
-
-    /**
-     * Entities are actors, which means tha they have an update and a render function. The update function
-     * in an entity is meant to do things like visually update its appearance. The step function is used
-     * to give the entity a "tick" to see if there is something that it wants to do. This might be
-     * initiate a chase, decide a door needs to close, etc.
-     *
-     * The entity is given a reference to the level that contains it to assist in this.
-     *
-     * @param {nurdz.game.Level} level the level the entity is contained in
-     */
-    nurdz.game.Entity.prototype.step = function (level)
     {
     };
 

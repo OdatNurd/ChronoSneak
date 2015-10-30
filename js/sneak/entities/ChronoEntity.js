@@ -1,16 +1,20 @@
 /**
  * A simple subclass of Entity that is meant to be used in ChronoSneak.
  *
- * Here we almost always want entities to be sized like a tile so that they can appear nicely on the level
- * grid. To that end this class does not take a width or a height and instead assumes that the width and
- * height of the entity are the size of tiles in ChronoSneak.
+ * Here we want entities to be sized like a tile so that they can appear nicely on the level grid. To that
+ * end this class does not take a width or a height and instead assumes that the width and height of the
+ * entity are the size of tiles.
+ *
+ * ChronoEntities assume that the coordinates you give them when you create them are in map (tile based)
+ * coordinates and not world coordinates. This makes creating them as part of level data easier.
  *
  * This entity supports the following properties:
  *    - 'visible': true or false (default: true)
- *       - controls whether the entity is visible in the map or not
+ *       - controls whether the entity is visible in the map or not; When this property is set to false,
+ *         the entity does not render visibly, although it still operates as normal otherwise.
  *    - 'trigger': string or array of strings (default: none)
  *       - If specified, this is an entity ID or a list of entity ID's for which a trigger should be
- *         invoked whenever this entity gets triggered. NOTE: Not all entity subclasses support this
+ *         invoked whenever this entity gets triggered itself. NOTE: Not all entity subclasses support this
  *         functionality, but all will accept a valid trigger anyway.
  *
  * @param {String} name the internal name of this actor instance, for debugging
@@ -18,7 +22,7 @@
  * @param {Number} x x location for this entity, in map coordinates
  * @param {Number} y y location for this entity, in map coordinates
  * @param {Object} [properties={}] entity specific properties to apply to this entity, or null for none
- * @param {Number} [zOrder=1] the Z-Order of this actor when rendered (smaller numbers go below larger ones)
+ * @param {Number} [zOrder=1] the Z-Order of this entity when rendered (smaller numbers go below larger ones)
  * @param {String} [debugColor='white'] the color specification to use in debug rendering for this actor
  * @constructor
  */
@@ -105,6 +109,22 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
     };
 
     /**
+     * ChronoEntity instances are actors, which means tha they have an update and a render function. The
+     * update function in a ChronoEntity is meant to do things like visually update its appearance. The step
+     * function is used to give the entity a "tick" to see if there is something that it wants to do. This
+     * might be initiate a chase, decide a door needs to close, etc.
+     *
+     * This is a conceit of ChronoSneak, which strictly controls when entities get a chance to update
+     * their current state due to its turn based nature.
+     *
+     * @param {nurdz.game.Level} level the level the entity is contained in
+     */
+    nurdz.sneak.ChronoEntity.prototype.step = function (level)
+    {
+    };
+
+
+    /**
      * Render this chrono entity to the stage provided.
      *
      * This base class will render either a rectangle in the debug color (if the entity has a property
@@ -132,5 +152,15 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
             stage.canvasContext.lineTo (x + this.width - 10, y + 10);
             stage.canvasContext.stroke ();
         }
+    };
+
+    /**
+     * Return a string representation of the object, for debugging purposes.
+     *
+     * @returns {String}
+     */
+    nurdz.sneak.ChronoEntity.prototype.toString = function ()
+    {
+        return "[ChronoEntity " + this.name + "]";
     };
 } ());
