@@ -37,7 +37,7 @@ nurdz.game.Entity = function (name, stage, x, y, width, height, properties, zOrd
      *
      * @type {Object}
      */
-    this.defaultProperties = nurdz.copyProperties (this.defaultProperties || {}, {id: this.createDefaultID});
+    this.defaultProperties = this.defaultProperties || {};
 
     /**
      * The entity properties that describe the specifics of this entity and how it operates.
@@ -45,14 +45,6 @@ nurdz.game.Entity = function (name, stage, x, y, width, height, properties, zOrd
      * @type {Object}
      */
     this.properties = nurdz.copyProperties (properties || {}, this.defaultProperties);
-
-    // Iterate over all of the properties that are local to the object. Any that have a value that is a
-    // function get their value replaced with the return value.
-    for (var prop in this.properties)
-    {
-        if (this.properties.hasOwnProperty (prop) && typeof (this.properties[prop]) == "function")
-            this.properties[prop] = this.properties[prop] ();
-    }
 
     // Call the super class constructor, then validate the properties.
     nurdz.game.Actor.call (this, name, stage, x, y, width, height, zOrder, debugColor);
@@ -88,7 +80,7 @@ nurdz.game.Entity = function (name, stage, x, y, width, height, properties, zOrd
      *
      * @returns {String}
      */
-    nurdz.game.Entity.prototype.createDefaultID = function ()
+    var createDefaultID = function ()
     {
         autoEntityID++;
         return "_ng_entity" + autoEntityID;
@@ -149,6 +141,11 @@ nurdz.game.Entity = function (name, stage, x, y, width, height, properties, zOrd
      */
     nurdz.game.Entity.prototype.validateProperties = function ()
     {
+        // If there is not an id property, install one.
+        if (this.properties.id == null)
+            this.properties.id = createDefaultID ();
+
+        // Validate the ID property (in case it was already there).
         this.isPropertyValid ("id", "string", true);
     };
 
