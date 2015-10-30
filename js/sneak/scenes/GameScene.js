@@ -91,6 +91,10 @@ nurdz.sneak.GameScene = function (stage)
                                           playerStartPos[0].position.x,
                                           playerStartPos[0].position.y);
 
+    // Insert the player into the list of entities that exist in the level. This allows other entities
+    // that query entities on the map to know about the player.
+    this.level.entities.push (this.player);
+
     // Add the player and all of the entities in the level to the list of actors in the scene, so that the
     // update and render methods of all of them will get invoked automatically.
     //
@@ -98,7 +102,6 @@ nurdz.sneak.GameScene = function (stage)
     // visual appearance of an actor/entity, but all of the internal logic regarding updates, position
     // changes etc should happen in the step() method. This only gets invoked by the scene when the player
     // actually takes a turn or does something that burns time (like waiting).
-    this.addActor (this.player);
     this.addActorArray (this.level.entities);
     this.sortActors ();
 };
