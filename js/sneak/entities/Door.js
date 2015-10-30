@@ -207,10 +207,18 @@ nurdz.sneak.Door = function (x, y, properties)
         this.turnsUntilToggle = (this.properties.open ? this.properties.openTime : this.properties.closeTime);
     };
 
+    //noinspection JSUnusedLocalSymbols
     /**
-     * This gets triggered every time the player takes an action.
+     * Entities are actors, which means tha they have an update and a render function. The update function
+     * in an entity is meant to do things like visually update its appearance. The step function is used
+     * to give the entity a "tick" to see if there is something that it wants to do. This might be
+     * initiate a chase, decide a door needs to close, etc.
+     *
+     * The entity is given a reference to the level that contains it to assist in this.
+     *
+     * @param {nurdz.game.Level} level the level the entity is contained in
      */
-    nurdz.sneak.Door.prototype.step = function ()
+    nurdz.sneak.Door.prototype.step = function (level)
     {
         // If we are timing when the door should toggle, count this as a turn.
         if (this.turnsUntilToggle > 0)

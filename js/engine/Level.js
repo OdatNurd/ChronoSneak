@@ -105,7 +105,7 @@ nurdz.game.Level = function (levelData, stage)
     nurdz.game.Level.prototype.stepAllEntities = function ()
     {
         for (var i = 0; i < this.entities.length; i++)
-            this.entities[i].step ();
+            this.entities[i].step (this);
     };
 
     /**
