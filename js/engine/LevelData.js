@@ -6,6 +6,9 @@
  *
  * Various simple checks are done to ensure that the level data provided is actually valid.
  *
+ * This sets the stage of all of the entities in the entity list provided to the stage provided/
+ *
+ * @param {nurdz.game.Stage} stage the stage that will own the data
  * @param {String} name the name of this level
  * @param {Number} width width of the level, in tiles
  * @param {Number} height height of the level, in tiles
@@ -15,7 +18,7 @@
  * @throws {Error} if the level data is not valid
  * @constructor
  */
-nurdz.game.LevelData = function (name, width, height, levelData, entityList, tileset)
+nurdz.game.LevelData = function (stage, name, width, height, levelData, entityList, tileset)
 {
     "use strict";
 
@@ -60,11 +63,41 @@ nurdz.game.LevelData = function (name, width, height, levelData, entityList, til
     this.entities = entityList;
 
     /**
+     * This is a representation of the entities from the entity list, keyed by their ID values so that
+     * they can be looked up at runtime by id.
+     *
+     * @type {Object.<String,nurdz.game.Entity>}
+     */
+    this.entitiesByID = {};
+
+    /**
      * The tileset that is associated with this level data.
      *
      * @type {nurdz.sneak.Tileset}
      */
     this.tileset = tileset;
+
+    // Iterate over all entities. For each one, insert it into the entitiesByID table, and then set in the
+    // current stage.
+    for (var i = 0 ; i < this.entities.length ; i++)
+    {
+        // Get the entity and it's ID property. If there is no ID property, generate an error.
+        var entity = this.entities[i];
+        var entityID = entity.properties.id;
+
+        if (entityID == null)
+            throw new Error ("LevelData passed an entity with no 'id' property");
+
+        // Give the entity the stage
+        entity.stage = stage;
+
+        // Now store this entity in the lookup table; generate a warning if such an ID already exists, as
+        // it will clobber.
+        if (this.entitiesByID[entityID])
+            console.log ("LevelData has an entity with a duplicate 'id' property: " + entityID);
+
+        this.entitiesByID[entityID] = entity;
+    }
 
     // Attempt to validate the data now. This will throw an error if the data is invalid.
     this.validateData ();
