@@ -27,7 +27,7 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
     "use strict";
 
     // The size of tiles in the game, so that we can use it for our dimensions.
-    var tSize = nurdz.sneak.constants.TILE_SIZE;
+    var tSize = nurdz.game.TILE_SIZE;
 
     // Modify the list of default properties to make sure that all entities get a visibility property that
     // defaults to true

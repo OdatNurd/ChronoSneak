@@ -143,8 +143,8 @@ nurdz.game.Level = function (levelData, stage)
         // Now that we know the coordinates are valid map coordinates, multiply them by the tile size to
         // get the pixel locations. The coordinates given are in map coordinates but entities live in
         // screen space.
-        x *= nurdz.sneak.constants.TILE_SIZE;
-        y *= nurdz.sneak.constants.TILE_SIZE;
+        x *= nurdz.game.TILE_SIZE;
+        y *= nurdz.game.TILE_SIZE;
 
         // Iterate over all entities to see if they are at the map location provided.
         var retVal = [];

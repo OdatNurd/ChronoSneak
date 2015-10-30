@@ -62,7 +62,7 @@ nurdz.sneak.Button = function (x, y, properties)
      * @const
      * @type {Number}
      */
-    var BUTTON_WIDTH = Math.floor (nurdz.sneak.constants.TILE_SIZE / 2);
+    var BUTTON_WIDTH = Math.floor (nurdz.game.TILE_SIZE / 2);
 
     /**
      * How thick a button is when it is pressed.

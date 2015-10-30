@@ -64,7 +64,7 @@ nurdz.sneak.Door = function (x, y, properties)
      * @const
      * @type {Number}
      */
-    var DOOR_THICKNESS = Math.floor (nurdz.sneak.constants.TILE_SIZE / 4);
+    var DOOR_THICKNESS = Math.floor (nurdz.game.TILE_SIZE / 4);
 
     /**
      * When doors are open, this specifies how much of the door remains sticking out of the wall to let

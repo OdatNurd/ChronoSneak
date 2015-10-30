@@ -11,7 +11,7 @@ nurdz.sneak.Player = function (stage, x, y)
     "use strict";
 
     // Pull the size of tiles.
-    var tileSize = nurdz.sneak.constants.TILE_SIZE;
+    var tileSize = nurdz.game.TILE_SIZE;
 
     // Call the super class constructor.
     nurdz.game.Entity.call (this, 'PlayerActor', stage, x, y, tileSize, tileSize, {id: "player"}, 10,

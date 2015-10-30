@@ -25,7 +25,7 @@ nurdz.sneak.GameScene = function (stage)
      *
      * @type {Number}
      */
-    this.tileSize = nurdz.sneak.constants.TILE_SIZE;
+    this.tileSize = nurdz.game.TILE_SIZE;
 
     /**
      * The current position of the mouse, or null if we don't know yet.
@@ -311,7 +311,7 @@ nurdz.sneak.GameScene = function (stage)
         // center of the associated tiles and not at the corner.
         /** @type nurdz.game.Point[] */
         var retVal = [];
-        var offset = nurdz.sneak.constants.TILE_SIZE / 2;
+        var offset = nurdz.game.TILE_SIZE / 2;
 
         // Store the location of this entity, and then the positions of all of the linked entities.
         retVal.push (entity.position.copyWithTranslate (offset, offset));
@@ -332,7 +332,7 @@ nurdz.sneak.GameScene = function (stage)
     {
         /** @type nurdz.game.Point[] */
         var retVal = [];
-        var offset = nurdz.sneak.constants.TILE_SIZE / 2;
+        var offset = nurdz.game.TILE_SIZE / 2;
 
         // Get the list of waypoints and the spawn position of the guard.
         var waypoints = this.level.entitiesWithIDs (guard.properties.patrol);

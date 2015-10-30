@@ -91,7 +91,7 @@ nurdz.game.LevelData = function (name, width, height, levelData, entityList, til
 
         // For now, there is no scrolling of levels, so it is important that the dimensions be the same as the
         // constant for the viewport.
-        if (this.width != nurdz.sneak.constants.VIEW_WIDTH || this.height != nurdz.sneak.constants.VIEW_HEIGHT)
+        if (this.width != nurdz.game.VIEW_WIDTH || this.height != nurdz.game.VIEW_HEIGHT)
             error ("Scrolling is not implemented; level '" + this.name + "'must be the same size as the viewport");
 
         // Iterate over the tile data now. When we find a player start, store the location in X,Y values as

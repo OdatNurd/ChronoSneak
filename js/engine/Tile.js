@@ -29,7 +29,7 @@ nurdz.game.Tile = function (name, internalID)
      *
      * @type {Number}
      */
-    this.size = nurdz.sneak.constants.TILE_SIZE;
+    this.size = nurdz.game.TILE_SIZE;
 };
 
 // Now define the various member functions and any static stage.

@@ -60,7 +60,7 @@
         try
         {
             // Set up the stage.
-            var stage = new nurdz.game.Stage (cv.STAGE_WIDTH, cv.STAGE_HEIGHT, 'gameContent');
+            var stage = new nurdz.game.Stage (nurdz.game.STAGE_WIDTH, nurdz.game.STAGE_HEIGHT, 'gameContent');
 
             // Set up the button that will stop the game if something goes wrong.
             setupButton (stage, "controlBtn");

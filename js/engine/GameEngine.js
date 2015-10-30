@@ -12,6 +12,47 @@
     nurdz.createNamespace ("nurdz.game");
 
     /**
+     * The aspects of the engine that deal in tiles instead of pixels assume that this is the size of
+     * tiles.
+     *
+     * @const
+     * @type {Number}
+     */
+    nurdz.game.TILE_SIZE = 32;
+
+    /**
+     * The width of the game stage (canvas), in pixels.
+     *
+     * @const
+     * @type {Number}
+     */
+    nurdz.game.STAGE_WIDTH = 800;
+
+    /**
+     * The height of the game stage (canvas), in pixels.
+     *
+     * @const
+     * @type {Number}
+     */
+    nurdz.game.STAGE_HEIGHT = 600;
+
+    /**
+     * The width of the viewport, in tiles.
+     *
+     * @const
+     * @type {Number}
+     */
+    nurdz.game.VIEW_WIDTH = Math.floor (nurdz.game.STAGE_WIDTH / nurdz.game.TILE_SIZE);
+
+    /**
+     * The height of the viewport, in tiles.
+     *
+     * @const
+     * @type {Number}
+     */
+    nurdz.game.VIEW_HEIGHT = Math.floor (nurdz.game.STAGE_HEIGHT / nurdz.game.TILE_SIZE);
+
+    /**
      * This sub-namespace contains definitions for key codes in key events, for use in input handling.
      * @type {Object.<String, Number>}
      */
