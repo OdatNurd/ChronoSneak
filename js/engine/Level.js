@@ -1,20 +1,23 @@
 /**
- * This class represents a single level in the game. It takes an instance of level data to know what to
- * do, and then will render the map and allow queries based on what the level data says.
+ * This class represents the idea of a level in the game as based on a tile map. It takes an instance of
+ * level data, which tells it the layout of the level, which includes all entities and tiles used. An API
+ * is provided which renders the map and allows for queries to be made as to the contents of the map
+ * itself, such as finding all entities with a particular name or at a particular location.
  *
- * A stage object can optionally be passed in. If this is done, all of the entities in the level data
- * provided will have that stage set as their stage object if they don't have a stage object set.
- *
- * This allows for entities that are carried with the map data to be constructed and stored prior to level
- * being loaded and yet still have the stage.
- *
+ * @param {nurdz.game.Stage} stage the stage that owns the level
  * @param {nurdz.game.LevelData} levelData the data to display initially
- * @param {nurdz.game.Stage|null} stage the stage that owns the level
  * @constructor
  */
-nurdz.game.Level = function (levelData, stage)
+nurdz.game.Level = function (stage, levelData)
 {
     "use strict";
+
+    /**
+     * The stage that owns this level.
+     *
+     * @type {nurdz.game.Stage}
+     */
+    this.stage = stage;
 
     /**
      * The width of the level we represent.
@@ -46,9 +49,10 @@ nurdz.game.Level = function (levelData, stage)
 
     /**
      * The list of entities that are in this level data, keyed by their ID values for faster lookup.
+     *
      * @type {Object.<String,nurdz.game.Entity>}
      */
-    this.entitiesByID = {};
+    this.entitiesByID = levelData.entitiesByID;
 
     /**
      * The tileset that is associated with this level.
@@ -56,19 +60,6 @@ nurdz.game.Level = function (levelData, stage)
      * @type {nurdz.game.Tileset}
      */
     this.tileset = levelData.tileset;
-
-    // Iterate over all entities. For each one, insert it into the entitiesByID table, and then set in the
-    // current stage.
-    for (var i = 0; i < this.entities.length; i++)
-    {
-        // Give the entity the stage.
-        var entity = this.entities[i];
-        entity.stage = stage;
-
-        // If there is an ID property (there should be), use it to cross reference the entity.
-        if (entity.properties.id)
-            this.entitiesByID[entity.properties.id] = entity;
-    }
 };
 
 // Now define the various member functions and any static stage.
@@ -284,6 +275,6 @@ nurdz.game.Level = function (levelData, stage)
      */
     nurdz.game.Level.prototype.toString = function ()
     {
-        return "[Level " + this.levelData.width + "x" + this.levelData.height + "]";
+        return "[Level data=" + this.levelData + "]";
     };
 } ());

@@ -18,7 +18,7 @@ nurdz.sneak.GameScene = function (stage)
      *
      * @type {nurdz.game.Level}
      */
-    this.level = new nurdz.game.Level (nurdz.sneak.levels.level1, stage);
+    this.level = new nurdz.game.Level (stage, nurdz.sneak.levels.getLevelOne(stage));
 
     /**
      * The size of tiles in the game. Cached for quicker access.
