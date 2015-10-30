@@ -90,6 +90,9 @@ nurdz.game.Entity = function (name, stage, x, y, width, height, properties, zOrd
      * required or not; a property that is not required only throws an error if it exists but is not of
      * the type provided.
      *
+     * The values for the expected type (when not null) are whatever the typeof operator can return, plus
+     * the extra type "array", which indicates that the value must be an array.
+     *
      * @param {String} name the name of the property to check
      * @param {String|null} expectedType the type expected (the result of a typeof operator)
      * @param {Boolean} required true if this property is required and false otherwise.
@@ -98,8 +101,11 @@ nurdz.game.Entity = function (name, stage, x, y, width, height, properties, zOrd
      */
     nurdz.game.Entity.prototype.isPropertyValid = function (name, expectedType, required, values)
     {
+        // Get the value of the property (if any).
+        var propertyValue = this.properties[name];
+
         // Does the property exist?
-        if (this.properties[name] == null)
+        if (propertyValue == null)
         {
             // It does not. If it's not required, then return. Otherwise, complain that it's missing.
             if (required)
@@ -109,17 +115,21 @@ nurdz.game.Entity = function (name, stage, x, y, width, height, properties, zOrd
         }
 
         // If we got an expected type and it's not right, throw an error.
-        if (expectedType != null && typeof (this.properties[name]) != expectedType)
-            throw new TypeError ("Entity " + this.name + ": invalid property '" + name + "': expected " + expectedType);
+        if (expectedType != null)
+        {
+            // Get the actual type of the value amd tjem see if it matched.
+            var actualType = (Array.isArray (propertyValue) ? "array" : typeof (propertyValue));
+            if (actualType != expectedType)
+                throw new TypeError ("Entity " + this.name + ": invalid property '" + name + "': expected " + expectedType);
+        }
 
         // If we got a list of possible values and this property actually exists, make sure that the value is
         // one of them.
-        if (values != null && this.properties[name] != null)
+        if (values != null && propertyValue != null)
         {
-            var propValue = this.properties[name];
-            for (var i = 0; i < values.length; i++)
+            for (var i = 0 ; i < values.length ; i++)
             {
-                if (propValue == values[i])
+                if (propertyValue == values[i])
                     return;
             }
 
