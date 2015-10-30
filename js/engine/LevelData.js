@@ -1,6 +1,8 @@
 /**
- * Objects of this type represent actual levels in a game. Level data is just a series of integer tile
- * ID's that associate with a Tileset that has been provided.
+ * This class represents raw map and entity data that represents the level in a game.
+ *
+ * The map data is just a series of integer tile ID values that associate with the tile set that has been
+ * provided. The data also contains a list of entities that are attached to the map.
  *
  * Various simple checks are done to ensure that the level data provided is actually valid.
  *
