@@ -190,9 +190,7 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
 
         // Make sure that the collected patrol entities (if any) are also valid. We need to have found as
         // many of them as we asked for.
-        if (patrolEntities != null &&
-            ((typeof (this.properties.patrol) == "string" && patrolEntities.length != 1) ||
-            (this.properties.patrol.length != patrolEntities.length)))
+        if (patrolEntities != null && this.properties.patrol.length != patrolEntities.length)
             throw new ReferenceError ("Guard has invalid patrol list; one or more waypoints not found");
 
         // The spawn entity needs to be a waypoint object.
