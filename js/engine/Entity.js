@@ -117,7 +117,7 @@ nurdz.game.Entity = function (name, stage, x, y, width, height, properties, zOrd
         // If we got an expected type and it's not right, throw an error.
         if (expectedType != null)
         {
-            // Get the actual type of the value amd tjem see if it matched.
+            // Get the actual type of the value and see if it matched.
             var actualType = (Array.isArray (propertyValue) ? "array" : typeof (propertyValue));
             if (actualType != expectedType)
                 throw new TypeError ("Entity " + this.name + ": invalid property '" + name + "': expected " + expectedType);

@@ -76,7 +76,7 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
         // but has to be an array if it does exist.
         this.isPropertyValid ("visible", "boolean", true);
         this.isPropertyValid ("trigger", "array", false);
-        
+
         // Chain to the super to check properties it might have inserted or know about.
         nurdz.game.Entity.prototype.validateProperties.call (this);
     };
@@ -98,7 +98,7 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
         // trigger property.
         var scene = this.stage.currentScene ();
         if (scene.level != null)
-            scene.level.triggerEntitiesWithIDs (/** @type {String} */ this.properties.trigger, this);
+            scene.level.triggerEntitiesWithIDs (/** @type {String[]} */this.properties.trigger, this);
     };
 
     /**

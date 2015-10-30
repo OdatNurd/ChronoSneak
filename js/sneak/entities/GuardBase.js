@@ -398,7 +398,7 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
             //
             // In fact, all such triggers everywhere should work this way, with all triggers going to a
             // queue to be invoked at the start of the next step. This should also include actions like
-            // moving. This is important for the ability to scroll time back and forth. So it doean't need
+            // moving. This is important for the ability to scroll time back and forth. So it doesn't need
             // to be implemented right away.
 
             // There is at least one entity in the position that we want to move to. Using the filter

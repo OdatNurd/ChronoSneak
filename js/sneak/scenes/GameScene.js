@@ -213,7 +213,7 @@ nurdz.sneak.GameScene = function (stage)
         // If there are debug target patrols, render them now.
         if (this.debugTargetPatrol != null)
         {
-            // Set the arrow style for the arrows that we are goign to draw.
+            // Set the arrow style for the arrows that we are going to draw.
             this.stage.setArrowStyle ("blue", 2);
 
             // Connect all of the points with lines.
