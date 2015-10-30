@@ -18,7 +18,7 @@
  *         functionality, but all will accept a valid trigger anyway.
  *
  * @param {String} name the internal name of this actor instance, for debugging
- * @param {nurdz.game.Stage|null} stage the stage that will manage this entity or null if it is not known yet
+ * @param {nurdz.game.Stage} stage the stage that will manage this entity
  * @param {Number} x x location for this entity, in map coordinates
  * @param {Number} y y location for this entity, in map coordinates
  * @param {Object} [properties={}] entity specific properties to apply to this entity, or null for none

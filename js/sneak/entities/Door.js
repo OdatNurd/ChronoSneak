@@ -17,12 +17,13 @@
  *       - A closed door will automatically open after this many turns. The value resets every time the
  *        door closes. A value of -1 means always closed (unless manually opened).
  *
+ * @param {nurdz.game.Stage} stage the stage that will manage this entity
  * @param {Number} x the X coordinate of the entity, in map coordinates
  * @param {Number} y the Y coordinate of the entity, in map coordinates
  * @param {Object|null} [properties={}] the properties specific to this entity, or null for none
  * @constructor
  */
-nurdz.sneak.Door = function (x, y, properties)
+nurdz.sneak.Door = function (stage, x, y, properties)
 {
     "use strict";
 
@@ -30,7 +31,7 @@ nurdz.sneak.Door = function (x, y, properties)
     this.defaultProperties = {open: true, horizontal: false, openTime: -1, closeTime: -1};
 
     // Call the super class constructor.
-    nurdz.sneak.ChronoEntity.call (this, "Door", null, x, y, properties, 100, '#5030ff');
+    nurdz.sneak.ChronoEntity.call (this, "Door", stage, x, y, properties, 100, '#5030ff');
 
     // NOTE: The code below is below the constructor call because it is the super constructor that will
     // apply the defaults to the properties given, so it's not until that call returns that we can access

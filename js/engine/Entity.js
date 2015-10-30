@@ -11,8 +11,8 @@
  *    - 'id': string (default: auto generated if not set)
  *       - specifies the id of this entity for use in identifying/finding/triggering this entity.
  *
- * @param {String} name the internal name of this actor instance, for debugging
- * @param {nurdz.game.Stage|null} stage the stage that will manage this entity or null if it is not known yet
+ * @param {String} name the internal name of this entity instance, for debugging
+ * @param {nurdz.game.Stage} stage the stage that will manage this entity
  * @param {Number} x x location for this actor
  * @param {Number} y y location for this actor
  * @param {Number} width the width of this entity

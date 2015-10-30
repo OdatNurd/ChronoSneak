@@ -17,12 +17,13 @@
  *    - 'orientation': "right", "left", "top", "bottom" (default: "right")
  *       - The side of the tile the button appears to be on when it is rendered
  *
+ * @param {nurdz.game.Stage} stage the stage that will manage this entity
  * @param {Number} x the X coordinate of the entity, in map coordinates
  * @param {Number} y the Y coordinate of the entity, in map coordinates
  * @param {Object|null} [properties={}] the properties specific to this entity, or null for none
  * @constructor
  */
-nurdz.sneak.Button = function (x, y, properties)
+nurdz.sneak.Button = function (stage, x, y, properties)
 {
     "use strict";
 
@@ -30,7 +31,7 @@ nurdz.sneak.Button = function (x, y, properties)
     this.defaultProperties = {pressed: false, cycleTime: -1, orientation: "right"};
 
     // Call the super class constructor.
-    nurdz.sneak.ChronoEntity.call (this, "Button", null, x, y, properties, 100, '#cA0000');
+    nurdz.sneak.ChronoEntity.call (this, "Button", stage, x, y, properties, 100, '#cA0000');
 
     // NOTE: The code below is below the constructor call because it is the super constructor that will
     // apply the defaults to the properties given, so it's not until that call returns that we can access

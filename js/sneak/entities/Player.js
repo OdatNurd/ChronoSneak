@@ -2,7 +2,7 @@
  * The ChronoEntity that represents the player in the game. Actions that the player takes are carried out
  * on this entity type.
  *
- * @param {nurdz.game.Stage|null} stage the stage that will manage this entity or null if it is not known yet
+ * @param {nurdz.game.Stage} stage the stage that will manage this entity
  * @param {Number} x the X coordinate of the entity, in map coordinates
  * @param {Number} y the Y coordinate of the entity, in map coordinates
  * @constructor

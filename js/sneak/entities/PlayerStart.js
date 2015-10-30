@@ -1,12 +1,13 @@
 /**
  * An entity whose job it is to record the location at which the player starts in a level.
  *
+ * @param {nurdz.game.Stage} stage the stage that will manage this entity
  * @param {Number} x the X coordinate of the entity, in map coordinates
  * @param {Number} y the Y coordinate of the entity, in map coordinates
  * @param {Object|null} [properties={}] the properties specific to this entity, or null for none
  * @constructor
  */
-nurdz.sneak.PlayerStartEntity = function (x, y, properties)
+nurdz.sneak.PlayerStartEntity = function (stage, x, y, properties)
 {
     "use strict";
 
@@ -14,7 +15,7 @@ nurdz.sneak.PlayerStartEntity = function (x, y, properties)
     this.defaultProperties = {};
 
     // Call the super class constructor.
-    nurdz.sneak.ChronoEntity.call (this, "PlayerStartEntity", null, x, y, properties, -10, 'white');
+    nurdz.sneak.ChronoEntity.call (this, "PlayerStartEntity", stage, x, y, properties, -10, 'white');
 };
 
 // Now define the various member functions and any static stage.

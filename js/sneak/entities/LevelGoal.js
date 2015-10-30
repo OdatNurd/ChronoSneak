@@ -7,12 +7,13 @@
  *    - 'winLevel': true or false (default: true)
  *       - Controls whether the trigger causes a level win or failure
  *
+ * @param {nurdz.game.Stage} stage the stage that will manage this entity
  * @param {Number} x the X coordinate of the entity, in map coordinates
  * @param {Number} y the Y coordinate of the entity, in map coordinates
  * @param {Object|null} [properties={}] the properties specific to this entity, or null for none
  * @constructor
  */
-nurdz.sneak.LevelGoal = function (x, y, properties)
+nurdz.sneak.LevelGoal = function (stage, x, y, properties)
 {
     "use strict";
 
@@ -20,7 +21,7 @@ nurdz.sneak.LevelGoal = function (x, y, properties)
     this.defaultProperties = {winLevel: true};
 
     // Call the super class constructor.
-    nurdz.sneak.ChronoEntity.call (this, "LevelGoal", null, x, y, properties, 1, 'yellow');
+    nurdz.sneak.ChronoEntity.call (this, "LevelGoal", stage, x, y, properties, 1, 'yellow');
 };
 
 // Now define the various member functions and any static stage.

@@ -28,11 +28,12 @@
  *          in the patrol is reached, the patrol should walk back to the first waypoint in the patrol and
  *          continue.
  *
+ * @param {nurdz.game.Stage} stage the stage that will manage this entity
  * @param {String} initialWaypoint the waypoint that the guard should spawn at
  * @param {Object|null} [properties={}] the properties specific to this entity, or null for none
  * @constructor
  */
-nurdz.sneak.GuardBase = function (initialWaypoint, properties)
+nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
 {
     "use strict";
 
@@ -97,7 +98,7 @@ nurdz.sneak.GuardBase = function (initialWaypoint, properties)
     this.nextPatrolPoint = null;
 
     // Call the super class constructor.
-    nurdz.sneak.ChronoEntity.call (this, "GuardBase", null, 0, 0, properties, 1, '#FF0A10');
+    nurdz.sneak.ChronoEntity.call (this, "GuardBase", stage, 0, 0, properties, 1, '#FF0A10');
 };
 
 // Now define the various member functions and any static stage.

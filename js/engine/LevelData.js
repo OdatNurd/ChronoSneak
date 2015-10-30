@@ -6,8 +6,6 @@
  *
  * Various simple checks are done to ensure that the level data provided is actually valid.
  *
- * This sets the stage of all of the entities in the entity list provided to the stage provided/
- *
  * @param {nurdz.game.Stage} stage the stage that will own the data
  * @param {String} name the name of this level
  * @param {Number} width width of the level, in tiles
@@ -89,7 +87,8 @@ nurdz.game.LevelData = function (stage, name, width, height, levelData, entityLi
             throw new Error ("LevelData passed an entity with no 'id' property");
 
         // Give the entity the stage
-        entity.stage = stage;
+        if (entity.stage == null)
+            throw new Error ("LevelData passed an entity that has no stage, id=" + entityID);
 
         // Now store this entity in the lookup table; generate a warning if such an ID already exists, as
         // it will clobber.

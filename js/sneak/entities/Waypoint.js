@@ -2,12 +2,13 @@
  * This is a simple marker entity that controls how guards move. Guards start at some waypoint and then
  * move between them. The waypoints are simple markers that indicate the locations the guards will move to.
  *
+ * @param {nurdz.game.Stage} stage the stage that will manage this entity
  * @param {Number} x the X coordinate of the entity, in map coordinates
  * @param {Number} y the Y coordinate of the entity, in map coordinates
  * @param {Object|null} [properties={}] the properties specific to this entity, or null for none
  * @constructor
  */
-nurdz.sneak.Waypoint = function (x, y, properties)
+nurdz.sneak.Waypoint = function (stage, x, y, properties)
 {
     "use strict";
 
@@ -16,7 +17,7 @@ nurdz.sneak.Waypoint = function (x, y, properties)
     this.defaultProperties = {visible: false};
 
     // Call the super class constructor.
-    nurdz.sneak.ChronoEntity.call (this, "Waypoint", null, x, y, properties, 1, 'black');
+    nurdz.sneak.ChronoEntity.call (this, "Waypoint", stage, x, y, properties, 1, 'black');
 };
 
 // Now define the various member functions and any static stage.
