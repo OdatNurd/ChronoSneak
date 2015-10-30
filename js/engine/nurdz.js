@@ -31,7 +31,7 @@ var nurdz = (function ()
 
             var res = [];
             var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
-            for (var i = 0; i < len; i++)
+            for (var i = 0 ; i < len ; i++)
             {
                 if (i in t)
                 {
@@ -191,7 +191,7 @@ var nurdz = (function ()
                              var root = window;
 
                              // Loop over all of the parts of the requested namespace.
-                             for (var i = 0; i < nsParts.length; i++)
+                             for (var i = 0 ; i < nsParts.length ; i++)
                              {
                                  // If the current part is not defined, then create it as a new object.
                                  if (typeof root[nsParts[i]] == "undefined")
@@ -261,6 +261,5 @@ var nurdz = (function ()
                                win[add] (pre + 'load', init, false);
                            }
                        }
-
     }
 } ());
