@@ -10,7 +10,7 @@ nurdz.sneak.PlayerStartEntity = function (x, y, properties)
 {
     "use strict";
 
-    // Set up the default properties for entities of this type.
+    // Player start entities don't have any defaults.
     this.defaultProperties = {};
 
     // Call the super class constructor.
@@ -68,5 +68,15 @@ nurdz.sneak.PlayerStartEntity = function (x, y, properties)
         }
         else
             nurdz.sneak.ChronoEntity.prototype.render.call (this, stage);
+    };
+
+    /**
+     * Return a string representation of the object, for debugging purposes.
+     *
+     * @returns {String}
+     */
+    nurdz.sneak.PlayerStartEntity.prototype.toString = function ()
+    {
+        return "[PlayerStart id=" + this.properties.id + "]";
     };
 } ());
