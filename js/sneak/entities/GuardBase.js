@@ -332,28 +332,47 @@ nurdz.sneak.GuardBase = function (initialWaypoint, properties)
      */
     nurdz.sneak.GuardBase.prototype.step = function (level)
     {
+
         // We don;'t have to do anything if we don't have a patrol point yet.
         if (this.nextPatrolPoint == null)
             return;
 
-        // Take a step in a direction. We can walk either horizontally or vertically, depending on the
-        // direction to the next waypoint.
+        // Duplicate the current position, then translate that position to take a step in the direction of
+        // the current patrol route.
+        var movePos = this.position.copy ();
         if (this.position.x == this.nextPatrolPoint.position.x)
         {
             // The X is the same, so translate on Y.
-            this.position.translate (0,
-                                     (this.position.y > this.nextPatrolPoint.position.y)
-                                         ? -this.height
-                                         : this.height);
+            movePos.translate (0,
+                               (this.position.y > this.nextPatrolPoint.position.y)
+                                   ? -this.height
+                                   : this.height);
         }
         else
         {
             // The X is different, so translate on X.
-            this.position.translate ((this.position.x > this.nextPatrolPoint.position.x)
-                                         ? -this.width
-                                         : this.width,
-                                     0);
+            movePos.translate ((this.position.x > this.nextPatrolPoint.position.x)
+                                   ? -this.width
+                                   : this.width,
+                               0);
         }
+
+        // Create a duplicate of the move position that is converted from world coordinates to map
+        // coordinates, then get the tile at the position that we want to move to.
+        var mapPos = movePos.reduce (this.width);
+        var dTile = level.tileAt (mapPos.x, mapPos.y);
+
+        // If we did not find a tile or we did but it blocks movement, that's bad for us and we can't move.
+        if (dTile == null || dTile.blocksActorMovement())
+        {
+            console.log ("Halting patrol; move is blocked by map geometry or is out of world");
+            this.nextPatrolPoint = null;
+            this.patrolIndex = -2;
+            return;
+        }
+
+        // The move must be valid, so move to the new position.
+        this.position = movePos;
 
         // If our current position is the position of the patrol point, it is time to move on to the next
         // point now.
