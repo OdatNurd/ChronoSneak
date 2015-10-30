@@ -1,11 +1,24 @@
 /**
  * This entity is the basis for all guards in the game. All logic common to guards is in this entity, with
- * specific guard types sub-classing as appropriate.
+ * specific guard types sub-classing as appropriate to extend this base as needed.
  *
- * A guard is different than a regular entity in that their position is not given at construction time in
- * the normal way. Instead of having an explicit position assigned, they are instead given the id of a
- * waypoint that they should start at. They should also have a a list of waypoints to follow.
+ * A base guard is different than regular entities in that their position is not given at construction
+ * time by providing a map position. Instead, they are provided the ID value of a waypoint that specifies
+ * where they spawn.
  *
+ * Guards respond to the step function primarily by attempting to follow a patrol route. This is laid out in
+ * a property which lists the id values of one or more waypoints, with the guard moving one step between
+ * then for each step call. The patrol can loop, in which case the guard moves from the last point back to
+ * the first point; otherwise they just stop at the last point.
+ *
+ * Guards will permanently halt their patrol if they run into level geometry. Entities that block movement
+ * will stop them on this step() but they will try again; they attempt to trigger the entity to see if
+ * that allows for passage before continuing.
+ *
+ * Base guards only know how to move in horizontal or vertical lines, and so they validate that their
+ * patrol route is navigable in that regard when they are instantiated.
+ *
+ * This entity supports the following properties:
  *    - 'patrol': string or array of strings (default: none)
  *       - If specified, this is an entity ID or a list of entity ID's of waypoints that this guard should
  *         follow. The guard will start walking towards the first waypoint in the list, then to the next
@@ -430,4 +443,13 @@ nurdz.sneak.GuardBase = function (initialWaypoint, properties)
             this.selectNextPatrolWaypoint ();
     };
 
+    /**
+     * Return a string representation of the object, for debugging purposes.
+     *
+     * @returns {String}
+     */
+    nurdz.sneak.GuardBase.prototype.toString = function ()
+    {
+        return "[GuardBase id=" + this.properties.id + "]";
+    };
 } ());
