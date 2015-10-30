@@ -95,7 +95,7 @@ nurdz.game.Actor = function (name, stage, x, y, width, height, zOrder, debugColo
      * Change the position of this actor to that of the point passed in.
      *
      * @param {nurdz.game.Point} position the new position
-     * @see nurdz.game.Actor.setPosXY
+     * @see nurdz.game.Actor.setPositionXY
      */
     nurdz.game.Actor.prototype.setPosition = function (position)
     {
@@ -109,7 +109,7 @@ nurdz.game.Actor = function (name, stage, x, y, width, height, zOrder, debugColo
      * @param {Number} y the new Y-coordinate for this actor
      * @see nurdz.game.Actor.setPosition
      */
-    nurdz.game.Actor.prototype.setPosXY = function (x, y)
+    nurdz.game.Actor.prototype.setPositionXY = function (x, y)
     {
         this.position.setPos (x, y);
     };
