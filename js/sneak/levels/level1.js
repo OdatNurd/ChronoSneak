@@ -35,6 +35,8 @@ nurdz.sneak.levels.level1 = new nurdz.game.LevelData ("level1", 25, 18, [
     new nurdz.sneak.Door (14, 4, {open: false, horizontal: true, id: "door1"}),
     new nurdz.sneak.Door (22, 5, {open: false, horizontal: true, id: "door3"}),
 
+    new nurdz.sneak.Door (15, 15, {open: false, openTime: 1, id: "guardBlock"}),
+
     new nurdz.sneak.Button (20, 13, {orientation: "left", pressed: true, cycleTime: 3, trigger: "autoDoor1"}),
     new nurdz.sneak.Button (15, 6, {orientation: "right", trigger: ["door1", "door3"]}),
     new nurdz.sneak.Button (14, 1, {orientation: "top", trigger: "door2"}),

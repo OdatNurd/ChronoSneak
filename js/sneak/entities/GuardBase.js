@@ -363,12 +363,62 @@ nurdz.sneak.GuardBase = function (initialWaypoint, properties)
         var dTile = level.tileAt (mapPos.x, mapPos.y);
 
         // If we did not find a tile or we did but it blocks movement, that's bad for us and we can't move.
-        if (dTile == null || dTile.blocksActorMovement())
+        if (dTile == null || dTile.blocksActorMovement ())
         {
             console.log ("Halting patrol; move is blocked by map geometry or is out of world");
             this.nextPatrolPoint = null;
             this.patrolIndex = -2;
             return;
+        }
+
+        // There is not a world block. Check to see if there are any entities that block movement on the
+        // target square. Note that we know that the entities will never be null because if the location
+        // was invalid, the movement test would have blocked the move already.
+        var entities = level.entitiesAt (mapPos.x, mapPos.y);
+        if (entities.length > 0)
+        {
+            // TODO Opening of doors should be deferred
+            // Specifically, instead of immediately invoking trigger right now on the door, the movement
+            // should be blocked right now but the attempt to trigger the door should be registered with a
+            // global action queue, so that the door opens the turn after the turn that the guard triggers it.
+            //
+            // In fact, all such triggers everywhere should work this way, with all triggers going to a
+            // queue to be invoked at the start of the next step. This should also include actions like
+            // moving. This is important for the ability to scroll time back and forth. So it doean't need
+            // to be implemented right away.
+
+            // There is at least one entity in the position that we want to move to. Using the filter
+            // method, check to see which ones block actor movement, and only keep the entities that block
+            // movement.
+            //
+            // In the filter, if we find any entities that block us but which we think we can trigger so
+            // that they don't, we try to trigger them and then check again to see if they still block.
+            entities = entities.filter (function (entity)
+                                        {
+                                            // Does this entity block movement by actors?
+                                            if (entity.blocksActorMovement ())
+                                            {
+                                                // Doors can be triggered to open, so try to open the door
+                                                // and then  check again.
+                                                if (entity instanceof nurdz.sneak.Door)
+                                                {
+                                                    entity.trigger (this);
+                                                    return entity.blocksActorMovement ();
+                                                }
+
+                                                return true;
+                                            }
+
+                                            return false;
+                                        });
+
+            // If the number of entities in the array is not 0, the movement is currently blocked because
+            // something is in the way. In that case, just leave and maybe the situation will resolve.
+            if (entities.length != 0)
+            {
+                console.log ("Patrol blocked by one or more entities; skipping this step");
+                return;
+            }
         }
 
         // The move must be valid, so move to the new position.
