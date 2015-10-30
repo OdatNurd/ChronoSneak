@@ -1,15 +1,21 @@
 /**
- * This is the entity which, when triggered via interaction with the player, causes a trigger to occur on
- * other entities.
+ * This is the primary user controlled entity trigger for triggering other arbitrary entities. They can
+ * render themselves as either pressed or released in one of four orientations.
+ *
+ * Buttons are either pressed or released. A trigger (by any entity) when they are in their released state
+ * causes them to change to a pressed state and also trigger all linked entities. In the released state
+ * any entity but the player can trigger them, which causes the button to reset.
+ *
+ * Properties on the button allow it to cycle back to a released state after it is pressed.
  *
  * This entity supports the following properties:
  *    - 'pressed': true or false (default: false)
  *       - Controls whether the button appears pressed or not
  *    - 'cycleTime': integer (default: -1)
  *       - Specifies how many turns a button appears pressed before it resets. -1 means that the button
- *         never resets unless something else triggers it to.
+ *         never resets unless something else triggers it to do so (Player entities cannot do this)
  *    - 'orientation': "right", "left", "top", "bottom" (default: "right")
- *       - The side of the tile the button appears to be on.
+ *       - The side of the tile the button appears to be on when it is rendered
  *
  * @param {Number} x the X coordinate of the entity, in map coordinates
  * @param {Number} y the Y coordinate of the entity, in map coordinates
@@ -275,5 +281,15 @@ nurdz.sneak.Button = function (x, y, properties)
             if (activator instanceof nurdz.sneak.Player == false)
                 this.properties.pressed = false;
         }
+    };
+
+    /**
+     * Return a string representation of the object, for debugging purposes.
+     *
+     * @returns {String}
+     */
+    nurdz.sneak.Button.prototype.toString = function ()
+    {
+        return "[Button id=" + this.properties.id + "]";
     };
 } ());
