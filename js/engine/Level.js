@@ -174,18 +174,6 @@ nurdz.game.Level = function (stage, levelData)
         return retVal;
     };
 
-    // TODO Move this to a custom subclass; there is no step in entities any longer
-    /**
-     * This method will invoke the step method on all entities that currently exist on the map. In
-     * ChronoSneak, this gets invoked every time we move the player, so that all entities can get a logic
-     * step whenever the player takes an action.
-     */
-    nurdz.game.Level.prototype.stepAllEntities = function ()
-    {
-        for (var i = 0 ; i < this.entities.length ; i++)
-            this.entities[i].step (this);
-    };
-
     //noinspection JSUnusedGlobalSymbols
     /**
      * Find all entities that match the id spec passed in (see entitiesWithIDs) and then, for each such
