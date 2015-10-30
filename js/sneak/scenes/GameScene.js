@@ -452,7 +452,7 @@ nurdz.sneak.GameScene = function (stage)
 
             // This key opens a new tab/window with a copy of the current frame displayed.
             case this.keys.KEY_F5:
-                this.screenshot ("ChronoSneak_ss.png", "ChronoSneak ScreenShot");
+                this.screenshot ("ChronoSneak_", "ChronoSneak Screenshot");
                 return true;
 
             case this.keys.KEY_UP:

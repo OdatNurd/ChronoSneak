@@ -48,6 +48,22 @@ nurdz.game.Scene = function (name, stage)
     "use strict";
 
     /**
+     * Every time a screenshot is generated, this value is used in the filename. It is then incremented.
+     *
+     * @type {Number}
+     */
+    var ss_number = 0;
+
+    /**
+     * This the template for the number added to the end of screenshot filenames. The end characters
+     * are replaced with the current number of the screenshot.
+     *
+     * @const
+     * @type {string}
+     */
+    var ss_format = "0000";
+
+    /**
      * This method is invoked at the start of every game frame to allow this scene to update the state of
      * all objects that it contains.
      *
@@ -247,17 +263,21 @@ nurdz.game.Scene = function (name, stage)
      * title passed in will be the title of the window opened and also the alternate text for the image on
      * the page.
      *
+     * The filename provided will have an identifying number and an extension appended to the end. The
+     * window title will also have the screenshot number appended to the end of it. This allows you to
+     * easily distinguish multiple screenshots.
+     *
      * This all requires support from the current browser. Some browsers may not support the notion of
      * automatically downloading the image on a click, some might not use the filename provided.
      *
      * In particular, the browser in use needs to support data URI's. I assume most decent ones do.
      *
-     * @param {String} [filename="screenshot.png"] the name of the screenshot image to create
+     * @param {String} [filename="screenshot"] the name of the screenshot image to create
      * @param {String} [windowTitle="Screenshot"] the title of the window
      */
     nurdz.game.Scene.prototype.screenshot = function (filename, windowTitle)
     {
-        filename = filename || "screenshot.png";
+        filename = filename || "screenshot";
         windowTitle = windowTitle || "Screenshot";
 
         // Create a window to hold the screen shot.
@@ -265,6 +285,12 @@ nurdz.game.Scene = function (name, stage)
 
         // Create a special data URI which the browser will interpret as an image to display.
         var imageURL = this.stage.canvas.toDataURL ();
+
+        // Append the screenshot number to the window title and also to the filename for the generated
+        // image, then advance the screenshot counter for the next image.
+        filename += ((ss_format + ss_number).slice (-ss_format.length)) + ".png";
+        windowTitle += " " + ss_number;
+        ss_number++;
 
         // Now we need to write some HTML into the new document. The image tag using our data URL will
         // cause the browser to display the image. Wrapping it in the anchor tag with the same URL and a
