@@ -232,22 +232,14 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
      */
     nurdz.sneak.GuardBase.prototype.validateProperties = function ()
     {
+        // If there is a patrol property and it's a string, convert it to an array with a single element
+        // to make code later easier.
+        if (typeof (this.properties.patrol) == "string")
+            this.properties.patrol = [this.properties.patrol];
+
         // Validate all properties.
+        this.isPropertyValid ("patrol", "array", false);
         this.isPropertyValid ("patrolLoop", "boolean", false);
-
-        // If there is a property named patrol, it should have a type that is either a string or an
-        // array. If it's not, we will use a bogus call to isPropertyValid to cause it to generate an
-        // error for us.
-        if (this.properties.patrol != null)
-        {
-            // Cache it
-            var patrol = this.properties.patrol;
-
-            // If the trigger is not a string and not an array, that's bad. This invocation of instanceof
-            // will fail because the type given is not valid.
-            if (typeof (patrol) != "string" && Array.isArray (patrol) == false)
-                this.isPropertyValid ("patrol", "string|array", false);
-        }
 
         // Chain to the super to check properties it might have inserted or know about.
         nurdz.sneak.ChronoEntity.prototype.validateProperties.call (this);
