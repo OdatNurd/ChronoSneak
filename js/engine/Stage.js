@@ -1,20 +1,18 @@
 /**
  * Create the stage on which all rendering for the game will be done.
  *
- * A canvas will be created at the provided dimensions and will be inserted into the DOM as the last child
- * of the container DIV with the ID provided.
+ * A canvas will be created and inserted into the DOM as the last child of the container DIV with the ID
+ * provided.
  *
  * The CSS of the DIV will be modified to have a width and height of the canvas, with options that cause
  * it to center itself.
  *
- * @param {Number} width the width of the stage (in pixels)
- * @param {Number} height the height of the stage (in pixels)
  * @param {String} containerDivID the ID of the DIV that should contain the created canvas
  * @param {String} [initialColor] the color to clear the canvas to once it is created
  * @constructor
  * @throws {ReferenceError} if there is no element with the ID provided
  */
-nurdz.game.Stage = function (width, height, containerDivID, initialColor)
+nurdz.game.Stage = function (containerDivID, initialColor)
 {
     "use strict";
 
@@ -24,7 +22,7 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
      * @type {number}
      * @const
      */
-    this.width = width;
+    this.width = nurdz.game.STAGE_WIDTH;
 
     /**
      * The height of the stage, in pixels.
@@ -32,7 +30,7 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
      * @type {Number}
      * @const
      */
-    this.height = height;
+    this.height = nurdz.game.STAGE_HEIGHT;
 
     /**
      * The canvas that the stage renders itself to.
@@ -56,12 +54,12 @@ nurdz.game.Stage = function (width, height, containerDivID, initialColor)
 
     // Now create the canvas and give it the appropriate dimensions.
     this.canvas = document.createElement ("canvas");
-    this.canvas.width = width;
-    this.canvas.height = height;
+    this.canvas.width = this.width;
+    this.canvas.height = this.height;
 
     // Modify the style of the container div to make it center horizontally.
-    container.style.width = width + "px";
-    container.style.height = height + "px";
+    container.style.width = this.width + "px";
+    container.style.height = this.height + "px";
     container.style.marginLeft = "auto";
     container.style.marginRight = "auto";
 
