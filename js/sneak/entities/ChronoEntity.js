@@ -67,23 +67,16 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
      */
     nurdz.sneak.ChronoEntity.prototype.validateProperties = function ()
     {
-        // The visible property needs to exist and be a boolean
+        // If there is a trigger property and it's a string, convert it to an array with a single element,
+        // to make code later easier.
+        if (typeof (this.properties.trigger) == "string")
+            this.properties.trigger = [this.properties.trigger];
+
+        // The visible property needs to exist and be a boolean, while the trigger does NOT need to exist
+        // but has to be an array if it does exist.
         this.isPropertyValid ("visible", "boolean", true);
-
-        // If there is a property named trigger, it should have a type that is either a string or an
-        // array. If it's not, we will use a bogus call to isPropertyValid to cause it to generate an
-        // error for us.
-        if (this.properties.trigger != null)
-        {
-            // Cache it
-            var trigger = this.properties.trigger;
-
-            // If the trigger is not a string and not an array, that's bad. This invocation of instanceof
-            // will fail because the type given is not valid.
-            if (typeof (trigger) != "string" && Array.isArray (trigger) == false)
-                this.isPropertyValid ("trigger", "string|array", false);
-        }
-
+        this.isPropertyValid ("trigger", "array", false);
+        
         // Chain to the super to check properties it might have inserted or know about.
         nurdz.game.Entity.prototype.validateProperties.call (this);
     };

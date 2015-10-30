@@ -300,7 +300,7 @@ nurdz.sneak.GameScene = function (stage)
 
         // Get the list of entities that this entity will trigger. If the list is empty, we still have
         // nothing to do.
-        var links = this.level.entitiesWithIDs (/** @type {String} */ entity.properties.trigger);
+        var links = this.level.entitiesWithIDs (entity.properties.trigger);
         if (links.length == 0)
             return null;
 

@@ -141,22 +141,16 @@ nurdz.game.Level = function (stage, levelData)
      * Scan over all entities in the level and return back a list of all entities with the id or ids
      * given, which may be an empty array.
      *
-     * The parameter may be a string representing a single entity ID or it may be an array of such IDs.
-     *
      * NOTE: No care is taken to not include duplicate entities if the entity list provided contains the
      * same entity ID more than once. It's also not an error if no such entity exists, although a warning
      * will be generated to the console in this case.
      *
-     * @param {String[]|String} idSpec the id or ids of entities to find
+     * @param {String[]} idSpec the array of entity IDs to find
      * @returns {nurdz.game.Entity[]} list of matching entities (may be an empty array)
      */
     nurdz.game.Level.prototype.entitiesWithIDs = function (idSpec)
     {
         var retVal = [];
-
-        // If the spec given is a string, turn it into an array of itself.
-        if (typeof (idSpec) == "string")
-            idSpec = [idSpec];
 
         for (var i = 0 ; i < idSpec.length ; i++)
         {
@@ -176,13 +170,13 @@ nurdz.game.Level = function (stage, levelData)
 
     //noinspection JSUnusedGlobalSymbols
     /**
-     * Find all entities that match the id spec passed in (see entitiesWithIDs) and then, for each such
-     * entity found, fire their trigger method using the provided activator as the source of the trigger.
+     * Find all entities that match the id list passed in and then, for each such entity found, fire their
+     * trigger method using the provided activator as the source of the trigger.
      *
      * As a convenience, if the idSpec provided is null, nothing happens. This allows for entities to use
      * this method without having to first verify that they actually have a trigger.
      *
-     * @param {String[]|String|null} idSpec the id or ids of entities to find or null too do nothing
+     * @param {String[]|null} idSpec the id or ids of entities to find or null too do nothing
      * @param {nurdz.game.Actor|null} activator the actor that is activating the entities, or null
      */
     nurdz.game.Level.prototype.triggerEntitiesWithIDs = function (idSpec, activator)
