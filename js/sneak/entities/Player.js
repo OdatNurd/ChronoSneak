@@ -1,9 +1,10 @@
 /**
- * The actor that represents the player.
+ * The ChronoEntity that represents the player in the game. Actions that the player takes are carried out
+ * on this entity type.
  *
  * @param {nurdz.game.Stage|null} stage the stage that will manage this entity or null if it is not known yet
- * @param {Number} x the initial X location for this player actor
- * @param {Number} y the initial Y location for this player actor
+ * @param {Number} x the X coordinate of the entity, in map coordinates
+ * @param {Number} y the Y coordinate of the entity, in map coordinates
  * @constructor
  */
 nurdz.sneak.Player = function (stage, x, y)
@@ -11,7 +12,7 @@ nurdz.sneak.Player = function (stage, x, y)
     "use strict";
 
     // Call the super class constructor.
-    nurdz.sneak.ChronoEntity.call (this, 'PlayerActor', stage, x, y, {id: "player"}, 10, 'green');
+    nurdz.sneak.ChronoEntity.call (this, 'Player', stage, x, y, {id: "player"}, 10, 'green');
 };
 
 // Now define the various member functions and any static stage.
@@ -58,6 +59,6 @@ nurdz.sneak.Player = function (stage, x, y)
      */
     nurdz.sneak.Player.prototype.toString = function ()
     {
-        return "[Player Actor: pos=" + this.position.toString () + "]";
+        return "[Player: pos=" + this.position.toString () + "]";
     };
 } ());
