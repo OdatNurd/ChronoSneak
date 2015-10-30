@@ -16,7 +16,7 @@ nurdz.sneak.LevelGoal = function (x, y, properties)
 {
     "use strict";
 
-    // Set up the default properties for entities of this type.
+    // By default, triggering a level goal wins the level.
     this.defaultProperties = {winLevel: true};
 
     // Call the super class constructor.
@@ -93,6 +93,37 @@ nurdz.sneak.LevelGoal = function (x, y, properties)
             nurdz.sneak.ChronoEntity.prototype.render.call (this, stage);
     };
 
+    //noinspection JSUnusedLocalSymbols
+    /**
+     * This method gets invoked by the other trigger functions and abstracts what actually happens when
+     * this entity gets triggered, since the circumstances of who can trigger us is different depending on
+     * how it happens.
+     * @param {nurdz.game.Actor|null} activator the actor that triggered this entity, or null if unknown
+     */
+    nurdz.sneak.LevelGoal.prototype.handleTrigger = function (activator)
+    {
+        if (this.properties.winLevel)
+            console.log ("You have completed the level successfully!");
+        else
+            console.log ("You lose!");
+    };
+
+    /**
+     * This method is invoked whenever this entity gets triggered by another entity. This can happen
+     * programmatically or in response to interactions with other entities, which does not include
+     * collision (see triggerTouch() for that).
+     *
+     * The method gets passed the Actor that caused the trigger to happen, although this can be null
+     * depending on how the trigger happened.
+     *
+     * @param {nurdz.game.Actor|null} activator the actor that triggered this entity, or null if unknown
+     * @see nurdz.game.Entity.triggerTouch
+     */
+    nurdz.sneak.LevelGoal.prototype.trigger = function (activator)
+    {
+        this.handleTrigger (activator);
+    };
+
     /**
      * This method is invoked whenever this entity gets triggered by another entity as a result of a
      * direct collision (touch). This can happen programmatically or in response to interactions with other
@@ -106,13 +137,18 @@ nurdz.sneak.LevelGoal = function (x, y, properties)
      */
     nurdz.sneak.LevelGoal.prototype.triggerTouch = function (activator)
     {
+        // The only entity type that can trigger a level goal by touch is the player.
         if (activator instanceof nurdz.sneak.Player)
-        {
-            if (this.properties.winLevel)
-                console.log ("You have completed the level successfully!");
-            else
-                console.log ("You lose!");
-        }
+            this.handleTrigger (activator);
     };
 
+    /**
+     * Return a string representation of the object, for debugging purposes.
+     *
+     * @returns {String}
+     */
+    nurdz.sneak.ChronoEntity.prototype.toString = function ()
+    {
+        return "[LevelGoal id=" + this.properties.id + "]";
+    };
 } ());

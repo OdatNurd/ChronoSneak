@@ -27,6 +27,7 @@ nurdz.sneak.levels.level1 = new nurdz.game.LevelData ("level1", 25, 18, [
     new nurdz.sneak.PlayerStartEntity (23, 11, {id: 'playerStart', visible: false}),
 
     new nurdz.sneak.LevelGoal (1, 5, {id: 'winGoal'}),
+    new nurdz.sneak.LevelGoal (0, 4, {id: 'loseGoal', winLevel: false}),
 
     new nurdz.sneak.Door (4, 8, {open: false, openTime: 14, id: "exitDoor"}),
     new nurdz.sneak.Door (19, 11, {open: true, openTime: 3, id: "autoDoor1"}),
@@ -37,6 +38,7 @@ nurdz.sneak.levels.level1 = new nurdz.game.LevelData ("level1", 25, 18, [
 
     new nurdz.sneak.Door (15, 15, {open: false, openTime: 1, id: "guardBlock"}),
 
+    new nurdz.sneak.Button (22, 9, {orientation: "top", pressed: false, trigger: "loseGoal"}),
     new nurdz.sneak.Button (20, 13, {orientation: "left", pressed: true, cycleTime: 3, trigger: "autoDoor1"}),
     new nurdz.sneak.Button (15, 6, {orientation: "right", trigger: ["door1", "door3"]}),
     new nurdz.sneak.Button (14, 1, {orientation: "top", trigger: "door2"}),
