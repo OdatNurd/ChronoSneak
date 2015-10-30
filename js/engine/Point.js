@@ -121,6 +121,48 @@ nurdz.game.Point = function (x, y)
 
     //noinspection JSUnusedGlobalSymbols
     /**
+     * Create and return a copy of this point in which each component is divided by the factor provided.
+     * This allows for some simple coordinate conversions in a single step.
+     *
+     * This is a special case of scale() that is more straight forward for use in some cases.
+     *
+     * No care is made to ensure that the result is clamped to whole coordinates or anything.
+     *
+     * @param {Number} factor the amount to divide each component of this point by
+     * @returns {nurdz.game.Point} a copy of this point with its values divided by the passed in factor
+     * @see nurdz.game.Point.scale
+     */
+    nurdz.game.Point.prototype.reduce = function (factor)
+    {
+        var retVal = this.copy ();
+        retVal.x /= factor;
+        retVal.y /= factor;
+
+        return retVal;
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Create and return a copy of this point in which each component is scaled by the scale factor
+     * provided. This allows for some simple coordinate conversions in a single step.
+     *
+     * No scare is made to made to ensure that the result is clamped to whole coordinates or anything.
+     *
+     * @param {Number} scale the amount to multiply each component of this point by
+     * @returns {nurdz.game.Point} a copy of this point with itss values scaled by the passed in factor
+     * @see nurdz.game.Point.reduce
+     */
+    nurdz.game.Point.prototype.scale = function (scale)
+    {
+        var retVal = this.copy ();
+        retVal.x *= scale;
+        retVal.y *= scale;
+
+        return retVal;
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
      * Compares this point to the point passed in to determine if they represent the same point.
      *
      * @returns {Boolean} true or false depending on equality
