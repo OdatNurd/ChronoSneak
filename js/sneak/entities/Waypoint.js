@@ -11,7 +11,8 @@ nurdz.sneak.Waypoint = function (x, y, properties)
 {
     "use strict";
 
-    // Set up the default properties for entities of this type.
+    // Set up the default properties for entities of this type. Waypoints are not meant to be visible,
+    // they're just markers.
     this.defaultProperties = {visible: false};
 
     // Call the super class constructor.
@@ -66,5 +67,15 @@ nurdz.sneak.Waypoint = function (x, y, properties)
         }
         else
             nurdz.sneak.ChronoEntity.prototype.render.call (this, stage);
+    };
+
+    /**
+     * Return a string representation of the object, for debugging purposes.
+     *
+     * @returns {String}
+     */
+    nurdz.sneak.Waypoint.prototype.toString = function ()
+    {
+        return "[Waypoint id=" + this.properties.id + "]";
     };
 } ());
