@@ -1,7 +1,9 @@
 /**
- * A scene is just a wrapper around specific handling for object update, rendering and input handling.
- * This is the case class for all scenes in the game, and its implementation is empty. You should subclass
- * this class in order to provide more specific handling of scenes as appropriate.
+ * The base class for all scenes in a game; a scene is just a simple wrapper around specific handling for
+ * object update, rendering and input handling, allowing for better object isolation.
+ *
+ * This base class defines the behaviour of a scene as it applies to a game; you should subclass it to
+ * implement your own specific handling as needed.
  *
  * @param {String} name the name of the scene, for debugging purposes
  * @param {nurdz.game.Stage} stage the stage that will be associated with this scene
@@ -72,7 +74,7 @@ nurdz.game.Scene = function (name, stage)
      */
     nurdz.game.Scene.prototype.update = function ()
     {
-        for (var i = 0; i < this.actorList.length; i++)
+        for (var i = 0 ; i < this.actorList.length ; i++)
             this.actorList[i].update (this.stage);
     };
 
@@ -85,7 +87,7 @@ nurdz.game.Scene = function (name, stage)
      */
     nurdz.game.Scene.prototype.render = function ()
     {
-        for (var i = 0; i < this.actorList.length; i++)
+        for (var i = 0 ; i < this.actorList.length ; i++)
             this.actorList[i].render (this.stage);
     };
 
@@ -159,15 +161,36 @@ nurdz.game.Scene = function (name, stage)
 
     //noinspection JSUnusedGlobalSymbols
     /**
-     * Return a list of actors whose position matches the position passed in.
+     * Return a list of actors whose position matches the position passed in. This is probably most useful
+     * when actors are at rigidly defined locations, such as in a tile based game.
+     *
+     * @param {nurdz.game.Point} location the location to search for actors at
+     * @returns {nurdz.game.Actor[]}
+     */
+    nurdz.game.Scene.prototype.actorsAt = function (location)
+    {
+        var retVal = [];
+        for (var i = 0 ; i < this.actorList.length ; i++)
+        {
+            var actor = this.actorList[i];
+            if (actor.position.equals(location))
+                retVal.push (actor);
+        }
+        return retVal;
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Return a list of actors whose position matches the position passed in. This is probably most useful
+     * when actors are at rigidly defined locations, such as in a tile based game.
      *
      * @param {Number} x the X coordinate to search for actors at
      * @param {Number} y the Y coordinate to search for actors at
      * @returns {nurdz.game.Actor[]}
      */
-    nurdz.game.Scene.prototype.actorsAt = function (x, y)
+    nurdz.game.Scene.prototype.actorsAtXY = function (x, y)
     {
-       var retVal = [];
+        var retVal = [];
         for (var i = 0 ; i < this.actorList.length ; i++)
         {
             var actor = this.actorList[i];
@@ -188,16 +211,6 @@ nurdz.game.Scene = function (name, stage)
     nurdz.game.Scene.prototype.sortActors = function ()
     {
         this.actorList.sort (function (left, right) { return left.zOrder - right.zOrder; });
-    };
-
-    /**
-     * Return a string representation of the object, for debugging purposes.
-     *
-     * @returns {String}
-     */
-    nurdz.game.Scene.prototype.toString = function ()
-    {
-        return "[Scene: " + this.name + "]";
     };
 
     //noinspection JSUnusedLocalSymbols
@@ -305,5 +318,13 @@ nurdz.game.Scene = function (name, stage)
         wind.document.write ('</a>');
     };
 
-
+    /**
+     * Return a string representation of the object, for debugging purposes.
+     *
+     * @returns {String}
+     */
+    nurdz.game.Scene.prototype.toString = function ()
+    {
+        return "[Scene: " + this.name + "]";
+    };
 } ());

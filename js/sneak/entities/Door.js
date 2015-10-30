@@ -197,7 +197,7 @@ nurdz.sneak.Door = function (stage, x, y, properties)
             // and we are blocked.
             //
             // NOTE: This only works because we bound all of our actors to tile coordinates.
-            var actors = scene.actorsAt (this.position.x, this.position.y);
+            var actors = scene.actorsAt (this.position);
             if (actors.length != 1)
             {
                 console.log ("Can't toggle door this step; currently blocked");
