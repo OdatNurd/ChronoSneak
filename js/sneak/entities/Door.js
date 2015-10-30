@@ -1,5 +1,9 @@
 /**
- * This is the entity which blocks player movement until it is opened.
+ * This entity allows for doors, which block the movement of other entities unless they are open.
+ *
+ * Doors can be in either a horizontal or vertical orientation, open or closed, and can automatically open
+ * and/or close after a set number of triggers. Every time the door is triggered, its state changes to the
+ * alternate of its current state, regardless of what the current state is.
  *
  * This entity supports the following properties:
  *    - 'open': true or false (default: false)
@@ -246,5 +250,15 @@ nurdz.sneak.Door = function (x, y, properties)
     {
         // Toggle the door stage.
         this.toggleDoorState ();
+    };
+
+    /**
+     * Return a string representation of the object, for debugging purposes.
+     *
+     * @returns {String}
+     */
+    nurdz.sneak.Door.prototype.toString = function ()
+    {
+        return "[Door id=" + this.properties.id + "]";
     };
 } ());
