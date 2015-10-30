@@ -37,7 +37,7 @@ nurdz.sneak.levels.getLevelOne = function (stage)
         new nurdz.sneak.Door (stage, 19, 11, {open: true, openTime: 3, id: "autoDoor1"}),
         new nurdz.sneak.Door (stage, 19, 15, {open: false, openTime: 2}),
         new nurdz.sneak.Door (stage, 11, 10, {open: false, id: "door2"}),
-        new nurdz.sneak.Door (stage, 4, 4, {open: false, horizontal: true, id: "door1"}),
+        new nurdz.sneak.Door (stage, 14, 4, {open: false, horizontal: true, id: "door1"}),
         new nurdz.sneak.Door (stage, 22, 5, {open: false, horizontal: true, id: "door3"}),
 
         new nurdz.sneak.Door (stage, 15, 15, {open: false, openTime: 1, id: "guardBlock"}),
