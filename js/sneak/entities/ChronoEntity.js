@@ -82,6 +82,19 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
     };
 
     /**
+     * This method queries whether the player is able to interact with this entity using the interaction
+     * keys. Any entity which returns false from this cannot be interacted with. Examples of that include
+     * marker entities like waypoints.
+     *
+     * @returns {Boolean} true if this entity is interactive, or false otherwise.
+     */
+    nurdz.sneak.ChronoEntity.prototype.isInteractive = function ()
+    {
+        // By default, nothing is interactive
+        return false;
+    };
+
+    /**
      * This method finds all entities on the current level that have an ID that matches the list of ID
      * values in the "trigger" property of this entity, and invokes their trigger methods specifying this
      * object as the source of the trigger event.

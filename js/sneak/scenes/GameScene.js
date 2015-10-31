@@ -478,22 +478,34 @@ nurdz.sneak.GameScene = function (stage)
                 translatePos = new nurdz.game.Point (this.player.width, 0);
                 break;
 
-            // These keys finds all entities where the player is currently standing and tries to trigger
-            // them. If there are any to attempt to trigger, this counts as an action even if it has no
-            // effect on anything, so other entities get a step.
+            // These keys are the interaction keys: If there are any entities on the same tile as the
+            // player is on, they get triggered, which may or may not cause them to do something.
+            //
+            // Doing this counts as an action, which means that all other entities step and thus get a turn.
+            // An attempt to activate when there is nothing to activate has no effect. If you want to kill
+            // time, use the wait key instead.
             case this.keys.KEY_SPACEBAR:
             case this.keys.KEY_Q:
-                // Step all entities.
-                this.level.stepAllEntities ();
-
-                // Now trigger everything on this tile.
+                // Collect all entities that are on this tile, then filter out entities that we know
+                // cannot be activated.
                 entities = this.level.entitiesAtXY (mapX, mapY);
+                entities = entities.filter (function (entity) { return entity.isInteractive (); });
                 if (entities.length > 0)
                 {
+                    // Step all entities.
+                    this.level.stepAllEntities ();
+
+                    // Now trigger everything that is on the same tile as us, except for ourselves.
                     for (i = 0 ; i < entities.length ; i++)
+                    {
                         entities[i].trigger (this.player);
+                    }
+
+                    return true;
                 }
-                return true;
+                else
+                    console.log ("Cannot activate entities: none found");
+                return false;
 
             // This key causes a "wait" action, which allows all entities to have a turn without the
             // player doing anything.

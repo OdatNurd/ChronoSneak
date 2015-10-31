@@ -105,6 +105,19 @@ nurdz.sneak.Button = function (stage, x, y, properties)
     };
 
     /**
+     * This method queries whether the player is able to interact with this entity using the interaction
+     * keys. Any entity which returns false from this cannot be interacted with. Examples of that include
+     * marker entities like waypoints.
+     *
+     * @returns {Boolean} true if this entity is interactive, or false otherwise.
+     */
+    nurdz.sneak.Button.prototype.isInteractive = function ()
+    {
+        // The player can itneract with a button in order to trigger it and thus trigger some other entity.
+        return true;
+    };
+
+    /**
      * Query whether or not this entity blocks movement of actors or not.
      *
      * @returns {Boolean} true if actor movement is blocked by this tile, or false otherwise
