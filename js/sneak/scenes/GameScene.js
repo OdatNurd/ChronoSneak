@@ -76,11 +76,11 @@ nurdz.sneak.GameScene = function (stage)
 
     // Attempt to find the player start entity so that we know where to start the player for this run. If
     // this does not have exactly one entity, the level is invalid.
-    var playerStartPos = this.level.entitiesWithType (nurdz.sneak.PlayerStartEntity);
-    if (playerStartPos.length != 1)
+    var playerStartPos = this.level.entitiesByID["playerStart"];
+    if (playerStartPos == null)
         throw new Error ("Unable to determine player start position.");
     else
-        console.log ("Using entity '" + playerStartPos[0].properties.id + "' as player start location");
+        console.log ("Using entity '" + playerStartPos.properties.id + "' as player start location");
 
     /**
      * The player in the game. We create the player at the location of the player start in our level.
@@ -88,7 +88,7 @@ nurdz.sneak.GameScene = function (stage)
      * @type {nurdz.sneak.Player}
      */
     this.player = new nurdz.sneak.Player (stage, 0, 0);
-    this.player.position = playerStartPos[0].position.copy ();
+    this.player.position.setTo (playerStartPos.position);
 
     // Insert the player into the list of entities that exist in the level. This allows other entities
     // that query entities on the map to know about the player.

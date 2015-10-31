@@ -28,7 +28,7 @@ nurdz.sneak.levels.getLevelOne = function (stage)
         2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
     ], [
         // The location the player will start at.
-        new nurdz.sneak.PlayerStartEntity (stage, 23, 11, {id: 'playerStart', visible: false}),
+        new nurdz.sneak.Waypoint (stage, 23, 11, {id: 'playerStart', visible: false}),
 
         new nurdz.sneak.LevelGoal (stage, 1, 5, {id: 'winGoal'}),
         new nurdz.sneak.LevelGoal (stage, 0, 4, {id: 'loseGoal', winLevel: false}),
