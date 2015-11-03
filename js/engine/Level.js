@@ -67,6 +67,7 @@ nurdz.game.Level = function (stage, levelData)
 {
     "use strict";
 
+    //noinspection JSUnusedGlobalSymbols
     /**
      * Given an entity type, return back a list of all entities of that type that the level data contains.
      * There could be 0 or more such entries.

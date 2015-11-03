@@ -113,7 +113,7 @@ nurdz.sneak.Button = function (stage, x, y, properties)
      */
     nurdz.sneak.Button.prototype.isInteractive = function ()
     {
-        // The player can itneract with a button in order to trigger it and thus trigger some other entity.
+        // The player can interact with a button in order to trigger it and thus trigger some other entity.
         return true;
     };
 
