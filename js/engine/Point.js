@@ -35,10 +35,12 @@ nurdz.game.Point = function (x, y)
      * Set the position of this point to the same as the point passed in.
      *
      * @param {nurdz.game.Point} point the point to copy from
+     * @returns {nurdz.game.Point} this point after the translation, for chaining calls.
      */
     nurdz.game.Point.prototype.setTo = function (point)
     {
         this.setToXY (point.x, point.y);
+        return this;
     };
 
     //noinspection JSUnusedGlobalSymbols
@@ -47,11 +49,13 @@ nurdz.game.Point = function (x, y)
      *
      * @param {Number} x the new X-coordinate
      * @param {Number} y the enw Y-coordinate
+     * @returns {nurdz.game.Point} this point after the translation, for chaining calls.
      */
     nurdz.game.Point.prototype.setToXY = function (x, y)
     {
         this.x = x;
         this.y = y;
+        return this;
     };
 
     //noinspection JSUnusedGlobalSymbols
@@ -59,11 +63,11 @@ nurdz.game.Point = function (x, y)
      * Translate the location of this point using the values passed in. No range checking is done.
      *
      * @param {nurdz.game.Point} delta the point that contains both delta values
+     * @returns {nurdz.game.Point} this point after the translation, for chaining calls.
      */
     nurdz.game.Point.prototype.translate = function (delta)
     {
-        this.x += delta.x;
-        this.y += delta.y;
+        return this.translateXY (delta.x, delta.y);
     };
 
     //noinspection JSUnusedGlobalSymbols
@@ -72,11 +76,13 @@ nurdz.game.Point = function (x, y)
      *
      * @param {Number} deltaX the change in X-coordinate
      * @param {Number} deltaY the change in Y-coordinate
+     * @returns {nurdz.game.Point} this point after the translation, for chaining calls.
      */
     nurdz.game.Point.prototype.translateXY = function (deltaX, deltaY)
     {
         this.x += deltaX;
         this.y += deltaY;
+        return this;
     };
 
     //noinspection JSUnusedGlobalSymbols
@@ -86,6 +92,7 @@ nurdz.game.Point = function (x, y)
      *
      * @param {Number} minX the minimum X-coordinate to allow
      * @param {Number} maxX the maximum Y-coordinate to allow
+     * @returns {nurdz.game.Point} this point after the translation, for chaining calls.
      */
     nurdz.game.Point.prototype.clampX = function (minX, maxX)
     {
@@ -93,6 +100,7 @@ nurdz.game.Point = function (x, y)
             this.x = minX;
         else if (this.x > maxX)
             this.x = maxX;
+        return this;
     };
 
     //noinspection JSUnusedGlobalSymbols
@@ -102,6 +110,7 @@ nurdz.game.Point = function (x, y)
      *
      * @param {Number} minY the minimum Y-coordinate to allow
      * @param {Number} maxY the maximum Y-coordinate to allow
+     * @returns {nurdz.game.Point} this point after the translation, for chaining calls.
      */
     nurdz.game.Point.prototype.clampY = function (minY, maxY)
     {
@@ -109,6 +118,7 @@ nurdz.game.Point = function (x, y)
             this.y = minY;
         else if (this.y > maxY)
             this.y = maxY;
+        return this;
     };
 
     //noinspection JSUnusedGlobalSymbols
@@ -117,11 +127,13 @@ nurdz.game.Point = function (x, y)
      * provided.
      *
      * @param {nurdz.game.Stage} stage the stage to clamp to
+     * @returns {nurdz.game.Point} this point after the translation, for chaining calls.
      */
     nurdz.game.Point.prototype.clampToStage = function (stage)
     {
         this.clampX (0, stage.width - 1);
         this.clampY (0, stage.height - 1);
+        return this;
     };
 
     //noinspection JSUnusedGlobalSymbols
@@ -148,9 +160,7 @@ nurdz.game.Point = function (x, y)
      */
     nurdz.game.Point.prototype.copyTranslated = function (translation)
     {
-        var retVal = this.copy ();
-        retVal.translate (translation);
-        return retVal;
+        return this.copyTranslatedXY (translation.x, translation.y);
     };
 
     //noinspection JSUnusedGlobalSymbols
@@ -167,8 +177,7 @@ nurdz.game.Point = function (x, y)
     nurdz.game.Point.prototype.copyTranslatedXY = function (x, y)
     {
         var retVal = this.copy ();
-        retVal.translateXY (x, y);
-        return retVal;
+        return retVal.translateXY (x, y);
     };
 
     //noinspection JSUnusedGlobalSymbols
