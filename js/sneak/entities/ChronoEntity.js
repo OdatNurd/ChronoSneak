@@ -64,26 +64,8 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
     nurdz.game.Entity.call (this, name, stage, x * tSize, y * tSize, tSize, tSize, properties || {}, zOrder,
                             debugColor);
 
-    // Now convert the facing that we have (which is a string) to the appropriate number value. Right is 0
-    // and angles increase in a clockwise manner.
-    switch (this.properties.facing)
-    {
-        case "right":
-            this.properties.facing = 0;
-            break;
-
-        case "down":
-            this.properties.facing = 90;
-            break;
-
-        case "left":
-            this.properties.facing = 180;
-            break;
-
-        case "up":
-            this.properties.facing = 270;
-            break;
-    }
+    // Now convert the facing that we have (which is a string) to the appropriate number value.
+    this.setFacing (this.properties.facing);
 };
 
 // Now define the various member functions and any static stage.
@@ -101,6 +83,72 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
             value:        nurdz.sneak.ChronoEntity
         }
     });
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Change the facing of this entity to the value passed in. You can pass in an angle (in degrees) as a
+     * number of one of the strings "up", "down", "left" or "right" to have the routine calculate the
+     * correct angle.
+     *
+     * As a result of ChronoSneak being a grid based game, the facing is constrained to one of the four
+     * cardinal directions. The default is the right (0 degrees) if the passed in angle or facing string
+     * is not valid.
+     * @param {String|Number} newFacing the new facing
+     */
+    nurdz.sneak.ChronoEntity.prototype.setFacing = function (newFacing)
+    {
+        // If we got a string, then convert it to a number.
+        if (typeof (newFacing) == "string")
+        {
+            // These textual facing values should be converted into degrees. Rotations start with 0 on the
+            // right and proceeding clockwise as angles get bigger.
+            switch (newFacing)
+            {
+                case "right":
+                    newFacing = 0;
+                    break;
+
+                case "down":
+                    newFacing = 90;
+                    break;
+
+                case "left":
+                    newFacing = 180;
+                    break;
+
+                case "up":
+                    newFacing = 270;
+                    break;
+
+                // In case something goes awry.
+                default:
+                    console.log ("Invalid facing string: ", newFacing);
+                    newFacing = 0;
+                    break;
+            }
+        }
+
+        // Now the facing is a number. We only support multiples of 90, so constrain if needed.
+        if (newFacing % 90)
+        {
+            // See which increment of 90 we're closer to. If we're closer to the higher value, add
+            // whatever else we need in order to get there. If we're smaller, subtract the remainder.
+            var remainder = newFacing % 90;
+            if (remainder >= 45)
+                newFacing += 45 - remainder;
+            else
+                newFacing -= remainder;
+        }
+
+        // Now make sure that the angle is between 0 and 360.
+        newFacing %= 360;
+        if (newFacing < 0)
+            newFacing += 360;
+        this.orientation = this.orientation % 360;
+
+        // Set the property now.
+        this.properties.facing = newFacing;
+    };
 
     //noinspection JSUnusedGlobalSymbols
     /**
