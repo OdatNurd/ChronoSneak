@@ -28,7 +28,8 @@ nurdz.sneak.GameScene = function (stage)
     this.tileSize = nurdz.game.TILE_SIZE;
 
     /**
-     * The current position of the mouse, or null if we don't know yet.
+     * The current position of the mouse, or null if we don't know yet. The mouse position is stored in
+     * world coordinates.
      *
      * @type {nurdz.game.Point|null}
      */
@@ -87,8 +88,7 @@ nurdz.sneak.GameScene = function (stage)
      *
      * @type {nurdz.sneak.Player}
      */
-    this.player = new nurdz.sneak.Player (stage, 0, 0);
-    this.player.position.setTo (playerStartPos.position);
+    this.player = new nurdz.sneak.Player (stage, playerStartPos.mapPosition.x, playerStartPos.mapPosition.y);
 
     // Insert the player into the list of entities that exist in the level. This allows other entities
     // that query entities on the map to know about the player.
@@ -236,25 +236,21 @@ nurdz.sneak.GameScene = function (stage)
      */
     nurdz.sneak.GameScene.prototype.inputMouseMove = function (eventObj)
     {
-        /**
-         * The current position of the mouse, or null if we don't know yet.
-         * @type {nurdz.game.Point|null}
-         */
+        // Calculate the mouse position.
         this.mousePos = this.stage.calculateMousePos (eventObj);
 
-        // Calculate the map positions of where the mouse is.
-        var mX = Math.floor (this.mousePos.x / this.tileSize);
-        var mY = Math.floor (this.mousePos.y / this.tileSize);
+        // Now convert that position into a map position.
+        var mapPos = this.mousePos.copy ().reduce (this.tileSize);
 
         // If there is no debug position, or there is but it is different than where the mouse is now,
         // calculate new debug text.
-        if (this.debugPos == null || (this.debugPos.x != mX || this.debugPos.y != mY))
+        if (this.debugPos == null || (this.debugPos.x != mapPos.x || this.debugPos.y != mapPos.y))
         {
             // Get the tile and any entities under the mouse.
-            var mTile = this.level.tileAtXY (mX, mY);
-            var entities = this.level.entitiesAtXY (mX, mY);
+            var mTile = this.level.tileAt (mapPos);
+            var entities = this.level.entitiesAt (mapPos);
 
-            this.debugTxt = "[" + mX + ", " + mY + "]";
+            this.debugTxt = "[" + mapPos.x + ", " + mapPos.y + "]";
             if (mTile != null)
                 this.debugTxt += "=> " + mTile.name;
             if (entities != null && entities.length > 0)
@@ -267,12 +263,9 @@ nurdz.sneak.GameScene = function (stage)
 
             // Save the debug position now.
             if (this.debugPos == null)
-                this.debugPos = new nurdz.game.Point (mX, mY);
+                this.debugPos = mapPos.copy ();
             else
-            {
-                this.debugPos.x = mX;
-                this.debugPos.y = mY;
-            }
+                this.debugPos.setTo (mapPos);
 
             // Remove the target links now because the position has changed. The user can press the button
             // to calculate new ones.
@@ -419,10 +412,8 @@ nurdz.sneak.GameScene = function (stage)
     {
         var entities, i;
 
-        // Calculate the map location where the player is by converting from screen coordinates to map
-        // coordinates. This is kind of nasty.
-        var mapX = this.player.position.x / this.tileSize;
-        var mapY = this.player.position.y / this.tileSize;
+        // Get the map location of the player.
+        var mapPos = this.player.mapPosition;
 
         /**
          * When the input represents a movement key, this stores the map position the player would move to
@@ -430,13 +421,6 @@ nurdz.sneak.GameScene = function (stage)
          *
          * @type {nurdz.game.Point|null} */
         var targetPos = null;
-
-        /**
-         * When the input represents a movement key, this stores the translation to apply to the player to
-         * perform the move, if the move is valid.
-         *
-         * @type {nurdz.game.Point|null} */
-        var translatePos = null;
 
         // Check for valid keys.
         // If a valid movement key was seen, check to see if the position that was moved to is blocked.
@@ -456,26 +440,22 @@ nurdz.sneak.GameScene = function (stage)
 
             case this.keys.KEY_UP:
             case this.keys.KEY_W:
-                targetPos = new nurdz.game.Point (mapX, mapY - 1);
-                translatePos = new nurdz.game.Point (0, -this.player.height);
+                targetPos = mapPos.copyTranslatedXY (0, -1);
                 break;
 
             case this.keys.KEY_DOWN:
             case this.keys.KEY_S:
-                targetPos = new nurdz.game.Point (mapX, mapY + 1);
-                translatePos = new nurdz.game.Point (0, this.player.height);
+                targetPos = mapPos.copyTranslatedXY (0, 1);
                 break;
 
             case this.keys.KEY_LEFT:
             case this.keys.KEY_A:
-                targetPos = new nurdz.game.Point (mapX - 1, mapY);
-                translatePos = new nurdz.game.Point (-this.player.width, 0);
+                targetPos = mapPos.copyTranslatedXY (-1, 0);
                 break;
 
             case this.keys.KEY_RIGHT:
             case this.keys.KEY_D:
-                targetPos = new nurdz.game.Point (mapX + 1, mapY);
-                translatePos = new nurdz.game.Point (this.player.width, 0);
+                targetPos = mapPos.copyTranslatedXY (1, 0);
                 break;
 
             // These keys are the interaction keys: If there are any entities on the same tile as the
@@ -488,7 +468,7 @@ nurdz.sneak.GameScene = function (stage)
             case this.keys.KEY_Q:
                 // Collect all entities that are on this tile, then filter out entities that we know
                 // cannot be activated.
-                entities = this.level.entitiesAtXY (mapX, mapY);
+                entities = this.level.entitiesAt (mapPos);
                 entities = entities.filter (function (entity) { return entity.isInteractive (); });
                 if (entities.length > 0)
                 {
@@ -520,9 +500,9 @@ nurdz.sneak.GameScene = function (stage)
         // touch if they support that.
         if (targetPos != null && this.level.isBlockedAt (targetPos) == false)
         {
-            // Yep, translate the player accordingly and then step all of the entities, as they have a
-            // turn now since the player moved.
-            this.player.position.translate (translatePos);
+            // The move is valid, so move the player there and then step all of the entities, since they
+            // now get a turn.
+            this.player.setMapPosition (targetPos);
             this.level.stepAllEntities ();
 
             // Now find all entities at the position that the player moved to, and trigger them all.
