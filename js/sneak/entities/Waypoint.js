@@ -77,6 +77,8 @@ nurdz.sneak.Waypoint = function (stage, x, y, properties)
      */
     nurdz.sneak.Waypoint.prototype.toString = function ()
     {
-        return "[Waypoint id=" + this.properties.id + "]";
+        return String.format ("[Waypoint id='{0}' pos={1}]",
+                              this.properties.id,
+                              this.mapPosition.toString());
     };
 } ());

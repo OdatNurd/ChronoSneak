@@ -294,6 +294,8 @@ nurdz.game.Level = function (stage, levelData)
      */
     nurdz.game.Level.prototype.toString = function ()
     {
-        return "[Level data=" + this.levelData + "]";
+        return String.format ("[Level size={0}x{1} tileset={2}]",
+                              this.width, this.height,
+                              this.tileset.toString());
     };
 } ());

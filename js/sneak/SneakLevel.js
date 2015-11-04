@@ -48,6 +48,8 @@ nurdz.sneak.SneakLevel = function (stage, levelData)
      */
     nurdz.sneak.SneakLevel.prototype.toString = function ()
     {
-        return "[SneakLevel data=" + this.levelData + "]";
+        return String.format ("[SneakLevel size={0}x{1} tileset={2}]",
+                              this.width, this.height,
+                              this.tileset.toString());
     };
 } ());

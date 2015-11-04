@@ -152,6 +152,8 @@ nurdz.game.LevelData = function (stage, name, width, height, levelData, entityLi
      */
     nurdz.game.LevelData.prototype.toString = function ()
     {
-        return "[LevelData tileset=" + this.tileset.name + " size=" + this.width + "x" + this.height + "]";
+        return String.format ("[LevelData size={0}x{1} tileset={2}]",
+                              this.width, this.height,
+                              this.tileset.toString());
     };
 } ());

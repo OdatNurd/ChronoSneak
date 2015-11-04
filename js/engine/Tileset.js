@@ -81,6 +81,6 @@ nurdz.game.Tileset = function (name, tiles)
      */
     nurdz.game.Tileset.prototype.toString = function ()
     {
-        return "[Tileset " + this.name + " tileCount=" + this.length + "]";
+        return String.format ("[Tileset name='{0}' tileCount={1}]", this.name, this.length);
     };
 } ());

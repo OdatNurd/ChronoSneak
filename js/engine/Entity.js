@@ -208,6 +208,6 @@ nurdz.game.Entity = function (name, stage, x, y, width, height, properties, zOrd
      */
     nurdz.game.Entity.prototype.toString = function ()
     {
-        return "[Entity " + this.name + "]";
+        return String.format ("[Entity name='{0}']", this.name);
     };
 } ());

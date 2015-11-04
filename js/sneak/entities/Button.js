@@ -304,6 +304,9 @@ nurdz.sneak.Button = function (stage, x, y, properties)
      */
     nurdz.sneak.Button.prototype.toString = function ()
     {
-        return "[Button id=" + this.properties.id + "]";
+        return String.format ("[Button id='{0}' pos={1} pressed={2}]",
+                              this.properties.id,
+                              this.mapPosition.toString(),
+                              this.properties.pressed);
     };
 } ());

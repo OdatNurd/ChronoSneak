@@ -144,6 +144,35 @@ var nurdz = (function ()
         };
     }
 
+    // Include a string format function if one does not already exist.
+    if (!String.format)
+    {
+        //noinspection JSPrimitiveTypeWrapperUsage
+        /**
+         * Takes a format string and one or more other strings, and does a replacement, returning a copy
+         * of the newly formatted string.
+         *
+         * The format string can contain sequences like {0} or {1} or {n}, where that text (including the
+         * braces) will get replaced with the argument at that location.
+         *
+         * Example: String.format ("Hello, {0}", "Terence"); returns the string "Hello, Terence".
+         *
+         * @param {String} format the format string
+         * @returns {String} the string
+         */
+        String.format = function (format)
+        {
+            var args = Array.prototype.slice.call(arguments, 1);
+            return format.replace(/{(\d+)}/g, function (match, number)
+            {
+                return typeof args[number] != 'undefined'
+                    ? args[number]
+                    : match
+                    ;
+            });
+        };
+    }
+
     // Now the actual contents of the namespace.
     return {
         /**

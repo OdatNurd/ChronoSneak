@@ -260,6 +260,9 @@ nurdz.sneak.Door = function (stage, x, y, properties)
      */
     nurdz.sneak.Door.prototype.toString = function ()
     {
-        return "[Door id=" + this.properties.id + "]";
+        return String.format ("[Door id='{0}' pos={1} type={2}]",
+                              this.properties.id,
+                              this.mapPosition.toString(),
+                              (this.properties.horizontal ? "horizontal" : "vertical"));
     };
 } ());

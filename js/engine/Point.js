@@ -245,6 +245,6 @@ nurdz.game.Point = function (x, y)
      */
     nurdz.game.Point.prototype.toString = function ()
     {
-        return "[" + this.x + ", " + this.y + "]";
+        return String.format ("[{0}, {1}]", this.x, this.y);
     };
 } ());

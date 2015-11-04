@@ -103,6 +103,10 @@ nurdz.sneak.GameScene = function (stage)
     // actually takes a turn or does something that burns time (like waiting).
     this.addActorArray (this.level.entities);
     this.sortActors ();
+
+    console.log (stage.toString());
+
+    this.actors()
 };
 
 (function ()

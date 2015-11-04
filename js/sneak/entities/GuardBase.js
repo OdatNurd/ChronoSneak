@@ -427,6 +427,10 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
      */
     nurdz.sneak.GuardBase.prototype.toString = function ()
     {
-        return "[GuardBase id=" + this.properties.id + "]";
+        return String.format ("[GuardBase id='{0}' pos={1} spawnPos='{2}' patrolLoops={3}]",
+                              this.properties.id,
+                              this.mapPosition.toString(),
+                              this.initialWaypoint,
+                              this.properties.patrolLoop);
     };
 } ());

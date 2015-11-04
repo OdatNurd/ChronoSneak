@@ -59,6 +59,8 @@ nurdz.sneak.Player = function (stage, x, y)
      */
     nurdz.sneak.Player.prototype.toString = function ()
     {
-        return "[Player: pos=" + this.position.toString () + "]";
+        return String.format ("[Player id='{0}' pos={1}]",
+                              this.properties.id,
+                              this.mapPosition.toString());
     };
 } ());

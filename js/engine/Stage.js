@@ -719,4 +719,15 @@ nurdz.game.Stage = function (containerDivID, initialColor)
         document.removeEventListener ('keyup', keyUpEvent);
     };
 
+    /**
+     * Return a string representation of the object, for debugging purposes.
+     *
+     * @returns {String}
+     */
+    nurdz.game.Stage.prototype.toString = function ()
+    {
+        return String.format ("[Stage dimensions={0}x{1} tileSize={2}]",
+                              this.width, this.height,
+                              nurdz.game.TILE_SIZE);
+    };
 } ());

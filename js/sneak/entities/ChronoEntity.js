@@ -232,6 +232,6 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
      */
     nurdz.sneak.ChronoEntity.prototype.toString = function ()
     {
-        return "[ChronoEntity " + this.name + "]";
+        return String.format ("[ChronoEntity name='{0}' pos={1}]", this.name, this.mapPosition.toString());
     };
 } ());

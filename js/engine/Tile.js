@@ -75,6 +75,6 @@ nurdz.game.Tile = function (name, internalID, debugColor)
      */
     nurdz.game.Tile.prototype.toString = function ()
     {
-        return "[Tile " + this.name + " id=" + this.tileID + "]";
+        return String.format ("[Tile name='{0}' id={1}]", this.name, this.tileID);
     };
 } ());

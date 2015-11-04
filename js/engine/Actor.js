@@ -121,6 +121,6 @@ nurdz.game.Actor = function (name, stage, x, y, width, height, zOrder, debugColo
      */
     nurdz.game.Actor.prototype.toString = function ()
     {
-        return "[Actor: " + this.name + "]";
+        return String.format ("[Actor name='{0}]", this.name);
     };
 } ());

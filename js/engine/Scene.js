@@ -325,6 +325,6 @@ nurdz.game.Scene = function (name, stage)
      */
     nurdz.game.Scene.prototype.toString = function ()
     {
-        return "[Scene: " + this.name + "]";
+        return String.format ("[Scene name='{0}']", this.name);
     };
 } ());

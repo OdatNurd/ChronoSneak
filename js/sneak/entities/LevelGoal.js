@@ -150,6 +150,9 @@ nurdz.sneak.LevelGoal = function (stage, x, y, properties)
      */
     nurdz.sneak.ChronoEntity.prototype.toString = function ()
     {
-        return "[LevelGoal id=" + this.properties.id + "]";
+        return String.format ("[LevelGoal id='{0}' pos={1} winLevel={2}]",
+                              this.properties.id,
+                              this.mapPosition.toString(),
+                              this.properties.winLevel);
     };
 } ());
