@@ -37,6 +37,21 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
     // defaults to true
     this.defaultProperties = nurdz.copyProperties (this.defaultProperties || {}, {visible: true});
 
+    /**
+     * The position of this entity on the map.
+     *
+     * The standard position property on an entity is its position on the stage. However, since
+     * ChronoSneak is a tile map based game, that requires a lot of converting from world coordinates to
+     * map coordinates to be interactive with the map.
+     *
+     * As a result, ChronoEntity keeps the standard position property and also implements this one that is
+     * kept up to date (as long as you use the correct API) so that the entity always knows its map
+     * position and still can render itself efficiently.
+     *
+     * @type {nurdz.game.Point}
+     */
+    this.mapPosition = new nurdz.game.Point (x, y);
+
     // Call the super class constructor. We use tile size for the dimensions and we also need to modify
     // the position passed in so that it translates to screen coordinates.
     nurdz.game.Entity.call (this, name, stage, x * tSize, y * tSize, tSize, tSize, properties || {}, zOrder,
@@ -58,6 +73,56 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
             value:        nurdz.sneak.ChronoEntity
         }
     });
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Set the position of this entity by setting its position on the stage (world coordinates). The
+     * position of the entity on the map will automatically be updated.
+     *
+     * @param {nurdz.game.Point} point the point to set the position to.
+     */
+    nurdz.sneak.ChronoEntity.prototype.setStagePosition = function (point)
+    {
+        this.setStagePositionXY (point.x, point.y);
+    };
+
+    /**
+     * Set the position of this entity by setting its position on the stage (world coordinates). The
+     * position of the entity on the map will automatically be updated.
+     *
+     * @param {Number} x the X coordinate of the new stage position
+     * @param {Number} y the Y coordinate of the new stage position
+     */
+    nurdz.sneak.ChronoEntity.prototype.setStagePositionXY = function (x, y)
+    {
+        this.position.setToXY (x, y);
+        this.mapPosition = this.position.reduce (nurdz.game.TILE_SIZE);
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Set the position of this entity by setting its position in the level (map coordinates). The
+     * position of the entity on the stage will automatically be updated.
+     *
+     * @param {nurdz.game.Point} point the point to set the position to.
+     */
+    nurdz.sneak.ChronoEntity.prototype.setMapPosition = function (point)
+    {
+        this.setMapPositionXY (point.x, point.y);
+    };
+
+    /**
+     * Set the position of this entity by setting its position in the level (map coordinates). The
+     * position of the entity on the stage will automatically be updated.
+     *
+     * @param {Number} x the X coordinate of the new stage position
+     * @param {Number} y the Y coordinate of the new stage position
+     */
+    nurdz.sneak.ChronoEntity.prototype.setMapPositionXY = function (x, y)
+    {
+        this.mapPosition.setToXY (x, y);
+        this.position = this.mapPosition.scale (nurdz.game.TILE_SIZE);
+    };
 
     /**
      * This is automatically invoked at the end of the constructor to validate that the properties object

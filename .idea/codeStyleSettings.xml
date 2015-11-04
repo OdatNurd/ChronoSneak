@@ -22,6 +22,7 @@
           <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true" />
           <option name="ALIGN_MULTILINE_TERNARY_OPERATION" value="true" />
           <option name="ALIGN_MULTILINE_ARRAY_INITIALIZER_EXPRESSION" value="true" />
+          <option name="SPACE_BEFORE_SEMICOLON" value="true" />
           <option name="SPACE_BEFORE_METHOD_CALL_PARENTHESES" value="true" />
           <option name="SPACE_BEFORE_METHOD_PARENTHESES" value="true" />
           <option name="CALL_PARAMETERS_WRAP" value="1" />
@@ -35,6 +36,6 @@
         </codeStyleSettings>
       </value>
     </option>
-    <option name="PREFERRED_PROJECT_CODE_STYLE" value="Terence Custom" />
+    <option name="USE_PER_PROJECT_SETTINGS" value="true" />
   </component>
 </project>
