@@ -194,6 +194,39 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
     {
     };
 
+    /**
+     * In ChronoSneak, all entities are the size of a tile and have an inherent facing which might affect
+     * their rendering.
+     *
+     * For such entities, this method exists as a convenience. It will translate (and optionally rotate)
+     * the stage so that the origin is at the center of the canvas location representing the tile that
+     * this entity is on.
+     *
+     * The state of the canvas is saved with this call and restored in the doneRendering() call, which
+     * must always pair with this method.
+     *
+     * @param {nurdz.game.Stage} stage the stage to render on
+     * @param {Number|null} [angle=null] the amount to rotate, or null if not required
+     * @see nurdz.sneak.ChronoEntity.endRendering
+     */
+    nurdz.sneak.ChronoEntity.prototype.startRendering = function (stage, angle)
+    {
+        stage.translateAndRotate (this.position.x + (this.width / 2),
+                                  this.position.y + (this.width / 2),
+                                  angle);
+    };
+
+    /**
+     * This undoes the translation and rotation done to the stage provided that was done via a call to
+     * startRendering(). This should always be paired with a call to that method.
+     *
+     * @param {nurdz.game.Stage} stage the stage to render on
+     * @see nurdz.sneak.ChronoEntity.startRendering
+     */
+    nurdz.sneak.ChronoEntity.prototype.endRendering = function (stage)
+    {
+        stage.restore ();
+    };
 
     /**
      * Render this chrono entity to the stage provided.
@@ -204,6 +237,9 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
      * This allows for tracking during initial debugging of the engine by allowing some visible recognition
      * of otherwise invisible entities without having to see their actual representations.
      *
+     * NOTE: The base class implementation may use startRendering()/endRendering(), so take care when
+     * chaining to this method if you also do your own rendering.
+     *
      * @param {nurdz.game.Stage} stage the stage to render to
      */
     nurdz.sneak.ChronoEntity.prototype.render = function (stage)
@@ -212,17 +248,17 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
             stage.fillRect (this.position.x, this.position.y, this.width, this.height, this.debugColor);
         else
         {
-            var x = this.position.x;
-            var y = this.position.y;
-            var offset = Math.floor (this.width * 0.3125);
+            this.startRendering (stage);
+            var offset = Math.floor (this.width * 0.1875);
 
             stage.setLineStyle (this.debugColor);
             stage.canvasContext.beginPath ();
-            stage.canvasContext.moveTo (x + offset, y + offset);
-            stage.canvasContext.lineTo (x + this.width - offset, y + this.height - offset);
-            stage.canvasContext.moveTo (x + offset, y + this.height - offset);
-            stage.canvasContext.lineTo (x + this.width - offset, y + offset);
+            stage.canvasContext.moveTo (-offset, -offset);
+            stage.canvasContext.lineTo (offset, offset);
+            stage.canvasContext.moveTo (-offset, offset);
+            stage.canvasContext.lineTo (offset, -offset);
             stage.canvasContext.stroke ();
+            this.endRendering (stage);
         }
     };
 
