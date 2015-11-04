@@ -187,8 +187,8 @@ nurdz.game.Point = function (x, y)
     nurdz.game.Point.prototype.reduce = function (factor)
     {
         var retVal = this.copy ();
-        retVal.x /= factor;
-        retVal.y /= factor;
+        retVal.x = Math.floor (retVal.x / factor);
+        retVal.y = Math.floor (retVal.y / factor);
 
         return retVal;
     };
