@@ -8,7 +8,7 @@ nurdz.sneak.FloorTile = function ()
     "use strict";
 
     // Call the super class constructor.
-    nurdz.game.Tile.call (this, "FLOOR", 0);
+    nurdz.game.Tile.call (this, "FLOOR", 0, '#b0b0c0');
 };
 
 // Now define the various member functions and any static stage.
@@ -46,7 +46,8 @@ nurdz.sneak.FloorTile = function ()
      */
     nurdz.sneak.FloorTile.prototype.render = function (stage, x, y)
     {
-        stage.fillRect (x, y, this.size, this.size, '#b0b0c0');
+        // Let the base class render, then do a bit of a fill.
+        nurdz.game.Tile.prototype.render.call (this, stage, x, y);
         stage.fillRect (x + 1, y + 1, this.size - 2, this.size - 2, '#c8c8c8');
     };
 } ());

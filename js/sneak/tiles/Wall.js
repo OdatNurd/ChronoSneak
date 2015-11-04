@@ -8,7 +8,7 @@ nurdz.sneak.WallTile = function ()
     "use strict";
 
     // Call the super class constructor.
-    nurdz.game.Tile.call (this, "WALL", 2);
+    nurdz.game.Tile.call (this, "WALL", 2, '#5030ff');
 };
 
 // Now define the various member functions and any static stage.
@@ -35,17 +35,5 @@ nurdz.sneak.WallTile = function ()
     nurdz.sneak.WallTile.prototype.blocksActorMovement = function ()
     {
         return true;
-    };
-
-    /**
-     * Render this tile to the location provided.
-     *
-     * @param {nurdz.game.Stage} stage the stage to render to
-     * @param {Number} x the X-coordinate to draw the tile at
-     * @param {Number} y the Y-coordinate to draw the tile at
-     */
-    nurdz.sneak.WallTile.prototype.render = function (stage, x, y)
-    {
-        stage.fillRect (x, y, this.size, this.size, '#5030ff');
     };
 } ());

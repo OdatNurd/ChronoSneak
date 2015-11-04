@@ -4,9 +4,10 @@
  *
  * @param {String} name the textual name of this tile
  * @param {Number} internalID the numeric ID that represents this tile
+ * @param {String} [debugColor='yellow'] the color to render the tile as for debugging
  * @constructor
  */
-nurdz.game.Tile = function (name, internalID)
+nurdz.game.Tile = function (name, internalID, debugColor)
 {
     "use strict";
 
@@ -23,6 +24,13 @@ nurdz.game.Tile = function (name, internalID)
      * @type {Number}
      */
     this.tileID = internalID;
+
+    /**
+     * The color that the base class uses to render this tile if it is not overridden.
+     *
+     * @type {String}
+     */
+    this.debugColor = debugColor || 'yellow';
 
     /**
      * The size of tiles, cached here for clarity.
@@ -57,7 +65,7 @@ nurdz.game.Tile = function (name, internalID)
      */
     nurdz.game.Tile.prototype.render = function (stage, x, y)
     {
-        stage.fillRect (x, y, this.size, this.size, 'yellow');
+        stage.fillRect (x, y, this.size, this.size, this.debugColor);
     };
 
     /**
