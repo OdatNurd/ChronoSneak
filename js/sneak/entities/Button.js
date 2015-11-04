@@ -77,7 +77,7 @@ nurdz.sneak.Button = function (stage, x, y, properties)
      * @const
      * @type {number}
      */
-    var BUTTON_IN_SIZE = 6;
+    var BUTTON_IN_SIZE = Math.floor (nurdz.game.TILE_SIZE * 0.20);
 
     /**
      * How thick a button is when it is not pressed.
@@ -85,7 +85,7 @@ nurdz.sneak.Button = function (stage, x, y, properties)
      * @const
      * @type {number}
      */
-    var BUTTON_OUT_SIZE = 14;
+    var BUTTON_OUT_SIZE = Math.floor (nurdz.game.TILE_SIZE * 0.45);
 
     /**
      * This is automatically invoked at the end of the constructor to validate that the properties object

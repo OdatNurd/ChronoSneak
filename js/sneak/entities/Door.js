@@ -78,7 +78,7 @@ nurdz.sneak.Door = function (stage, x, y, properties)
      * @const
      * @type {number}
      */
-    var DOOR_STUB = 4;
+    var DOOR_STUB = Math.floor (nurdz.game.TILE_SIZE * 0.125);
 
     /**
      * This is automatically invoked at the end of the constructor to validate that the properties object

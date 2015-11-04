@@ -214,13 +214,14 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
         {
             var x = this.position.x;
             var y = this.position.y;
+            var offset = Math.floor (this.width * 0.3125);
 
             stage.setLineStyle (this.debugColor);
             stage.canvasContext.beginPath ();
-            stage.canvasContext.moveTo (x + 10, y + 10);
-            stage.canvasContext.lineTo (x + this.width - 10, y + this.height - 10);
-            stage.canvasContext.moveTo (x + 10, y + this.height - 10);
-            stage.canvasContext.lineTo (x + this.width - 10, y + 10);
+            stage.canvasContext.moveTo (x + offset, y + offset);
+            stage.canvasContext.lineTo (x + this.width - offset, y + this.height - offset);
+            stage.canvasContext.moveTo (x + offset, y + this.height - offset);
+            stage.canvasContext.lineTo (x + this.width - offset, y + offset);
             stage.canvasContext.stroke ();
         }
     };

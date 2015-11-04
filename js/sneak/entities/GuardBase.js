@@ -302,7 +302,7 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
      * @const
      * @type {Number}
      */
-    var MARGIN = 5;
+    var MARGIN = Math.floor (nurdz.game.TILE_SIZE * 0.15);
 
     /**
      * Render this actor to the stage provided. The base class version renders a positioning box for this

@@ -81,14 +81,13 @@ nurdz.sneak.LevelGoal = function (stage, x, y, properties)
             // Calculate the center of the tile that we're on.
             var x = this.position.x + (this.width / 2);
             var y = this.position.y + (this.height / 2);
-            var r = this.width / 2;
 
             // This is redundant, but it turns out that for our purposes here, I don't care. It renders a
             // target as three circles when it could conceivably use only two with a hole in the center of the
             // second one or some such. Life is too short.
-            stage.fillCircle (x, y, r - 2, 'red');
-            stage.fillCircle (x, y, r - 7, 'white');
-            stage.fillCircle (x, y, r - 10, 'red');
+            stage.fillCircle (x, y, Math.floor (this.width * 0.45), 'red');
+            stage.fillCircle (x, y, Math.floor (this.width * 0.30), 'white');
+            stage.fillCircle (x, y, Math.floor (this.width * 0.20), 'red');
         }
         else
             nurdz.sneak.ChronoEntity.prototype.render.call (this, stage);

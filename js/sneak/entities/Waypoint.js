@@ -61,7 +61,7 @@ nurdz.sneak.Waypoint = function (stage, x, y, properties)
             // Calculate the center of the tile that we're on.
             var x = this.position.x + (this.width / 2);
             var y = this.position.y + (this.height / 2);
-            var r = this.width / 8;
+            var r = Math.floor (this.width * 0.125);
 
             // Simple dot.
             stage.fillCircle (x, y, r, this.debugColor);

@@ -38,7 +38,7 @@ nurdz.sneak.Player = function (stage, x, y)
      * @const
      * @type {number}
      */
-    var MARGIN = 5;
+    var MARGIN = Math.floor (nurdz.game.TILE_SIZE * 0.15);
 
     /**
      * Render this actor to the stage provided. We simply render a box using the debug color.
