@@ -250,7 +250,7 @@ nurdz.sneak.GameScene = function (stage)
             var mTile = this.level.tileAt (mapPos);
             var entities = this.level.entitiesAt (mapPos);
 
-            this.debugTxt = "[" + mapPos.x + ", " + mapPos.y + "]";
+            this.debugTxt = mapPos.toString ();
             if (mTile != null)
                 this.debugTxt += "=> " + mTile.name;
             if (entities != null && entities.length > 0)
