@@ -12,6 +12,10 @@
  *    - 'visible': true or false (default: true)
  *       - controls whether the entity is visible in the map or not; When this property is set to false,
  *         the entity does not render visibly, although it still operates as normal otherwise.
+ *    - 'facing': "up", "down", "left" or "right" (default: "right")
+ *       - controls what direction the entity is facing. Depending on the entity, this may or may not have
+ *         different effects. In the initial property setup, this is a string value, but on instantiation
+ *         the facing is converted to an appropriate angle (in degrees).
  *    - 'trigger': string or array of strings (default: none)
  *       - If specified, this is an entity ID or a list of entity ID's for which a trigger should be
  *         invoked whenever this entity gets triggered itself. NOTE: Not all entity subclasses support this
@@ -35,7 +39,10 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
 
     // Modify the list of default properties to make sure that all entities get a visibility property that
     // defaults to true
-    this.defaultProperties = nurdz.copyProperties (this.defaultProperties || {}, {visible: true});
+    this.defaultProperties = nurdz.copyProperties (this.defaultProperties || {}, {
+        visible: true,
+        facing:  "right"
+    });
 
     /**
      * The position of this entity on the map.
@@ -56,6 +63,27 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
     // the position passed in so that it translates to screen coordinates.
     nurdz.game.Entity.call (this, name, stage, x * tSize, y * tSize, tSize, tSize, properties || {}, zOrder,
                             debugColor);
+
+    // Now convert the facing that we have (which is a string) to the appropriate number value. Right is 0
+    // and angles increase in a clockwise manner.
+    switch (this.properties.facing)
+    {
+        case "right":
+            this.properties.facing = 0;
+            break;
+
+        case "down":
+            this.properties.facing = 90;
+            break;
+
+        case "left":
+            this.properties.facing = 180;
+            break;
+
+        case "up":
+            this.properties.facing = 270;
+            break;
+    }
 };
 
 // Now define the various member functions and any static stage.
@@ -141,6 +169,7 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
         // but has to be an array if it does exist.
         this.isPropertyValid ("visible", "boolean", true);
         this.isPropertyValid ("trigger", "array", false);
+        this.isPropertyValid ("facing", "string", true, ["up", "down", "left", "right"]);
 
         // Chain to the super to check properties it might have inserted or know about.
         nurdz.game.Entity.prototype.validateProperties.call (this);

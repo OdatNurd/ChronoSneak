@@ -18,7 +18,9 @@ nurdz.sneak.LevelGoal = function (stage, x, y, properties)
     "use strict";
 
     // By default, triggering a level goal wins the level.
-    this.defaultProperties = {winLevel: true};
+    this.defaultProperties = {
+        winLevel: true
+    };
 
     // Call the super class constructor.
     nurdz.sneak.ChronoEntity.call (this, "LevelGoal", stage, x, y, properties, 1, 'yellow');

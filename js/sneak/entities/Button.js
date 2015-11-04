@@ -8,14 +8,14 @@
  *
  * Properties on the button allow it to cycle back to a released state after it is pressed.
  *
+ * The facing of the button determines what side of the map tile it is rendered on.
+ *
  * This entity supports the following properties:
  *    - 'pressed': true or false (default: false)
  *       - Controls whether the button appears pressed or not
  *    - 'cycleTime': integer (default: -1)
  *       - Specifies how many turns a button appears pressed before it resets. -1 means that the button
  *         never resets unless something else triggers it to do so (Player entities cannot do this)
- *    - 'orientation': "right", "left", "top", "bottom" (default: "right")
- *       - The side of the tile the button appears to be on when it is rendered
  *
  * @param {nurdz.game.Stage} stage the stage that will manage this entity
  * @param {Number} x the X coordinate of the entity, in map coordinates
@@ -28,7 +28,10 @@ nurdz.sneak.Button = function (stage, x, y, properties)
     "use strict";
 
     // Set up the default properties for entities of this type.
-    this.defaultProperties = {pressed: false, cycleTime: -1, orientation: "right"};
+    this.defaultProperties = {
+        pressed:   false,
+        cycleTime: -1
+    };
 
     // Call the super class constructor.
     nurdz.sneak.ChronoEntity.call (this, "Button", stage, x, y, properties, 100, '#CC5200');
@@ -98,7 +101,6 @@ nurdz.sneak.Button = function (stage, x, y, properties)
         // Validate properties
         this.isPropertyValid ("pressed", "boolean", true);
         this.isPropertyValid ("cycleTime", "number", true);
-        this.isPropertyValid ("orientation", "string", true, ["top", "bottom", "left", "right"]);
 
         // Chain to the super to check properties it might have inserted or know about.
         nurdz.sneak.ChronoEntity.prototype.validateProperties.call (this);
@@ -139,38 +141,18 @@ nurdz.sneak.Button = function (stage, x, y, properties)
         // Are we visible?
         if (this.properties.visible)
         {
-            // Cache the size of half of a tile.
-            var halfTile = nurdz.game.TILE_SIZE / 2;
-
-            // Determine how to rotate the canvas in order to render our button. The rendering code below
-            // assumes that it is rendering on the right hand side, which is a rotation angle of 0.
-            var rotation = 0;
-            switch (this.properties.orientation)
-            {
-                case "left":
-                    rotation = 180;
-                    break;
-                case "right":
-                    rotation = 0;
-                    break;
-                case "top":
-                    rotation = 270;
-                    break;
-                case "bottom":
-                    rotation = 90;
-                    break;
-            }
-
-            this.startRendering (stage, rotation);
-
-            // Now draw the button as if we are on the right hand side of the map tile. The rotation above
-            // will handle positioning things on the appropriate side of the tile.
+            // Calculate the Y position of the top of the button graphic.
             var renderY = -((this.height / 2) - (BUTTON_WIDTH / 2));
+
+            // Now draw the button as if we are on the right hand side of the map tile. The rotation will
+            // handle positioning things on the appropriate side of the tile.
+            this.startRendering (stage, this.properties.facing);
+
             if (this.properties.pressed)
-                stage.fillRect (halfTile - BUTTON_IN_SIZE, renderY,
+                stage.fillRect ((this.width / 2) - BUTTON_IN_SIZE, renderY,
                                 BUTTON_IN_SIZE, BUTTON_WIDTH, this.debugColor);
             else
-                stage.fillRect (halfTile - BUTTON_OUT_SIZE, renderY,
+                stage.fillRect ((this.width / 2) - BUTTON_OUT_SIZE, renderY,
                                 BUTTON_OUT_SIZE, BUTTON_WIDTH, this.debugColor);
 
             this.endRendering (stage);

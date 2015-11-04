@@ -38,7 +38,9 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
     "use strict";
 
     // Set up the default properties for entities of this type.
-    this.defaultProperties = {patrolLoop: false};
+    this.defaultProperties = {
+        patrolLoop: false
+    };
 
     /**
      * This represents the id of the waypoint that the guard should spawn at initially. The actual entity

@@ -14,7 +14,9 @@ nurdz.sneak.Waypoint = function (stage, x, y, properties)
 
     // Set up the default properties for entities of this type. Waypoints are not meant to be visible,
     // they're just markers.
-    this.defaultProperties = {visible: false};
+    this.defaultProperties = {
+        visible: true
+    };
 
     // Call the super class constructor.
     nurdz.sneak.ChronoEntity.call (this, "Waypoint", stage, x, y, properties, 1, 'black');

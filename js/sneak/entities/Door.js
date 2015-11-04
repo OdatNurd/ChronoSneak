@@ -28,7 +28,12 @@ nurdz.sneak.Door = function (stage, x, y, properties)
     "use strict";
 
     // Set up the default properties for entities of this type.
-    this.defaultProperties = {open: true, horizontal: false, openTime: -1, closeTime: -1};
+    this.defaultProperties = {
+        open:       true,
+        horizontal: false,
+        openTime:   -1,
+        closeTime:  -1
+    };
 
     // Call the super class constructor.
     nurdz.sneak.ChronoEntity.call (this, "Door", stage, x, y, properties, 100, '#7a00f4');
