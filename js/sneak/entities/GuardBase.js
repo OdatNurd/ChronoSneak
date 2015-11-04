@@ -216,7 +216,7 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
         this.patrolPoints = patrolEntities;
 
         // Set our position now.
-        this.position = this.spawnEntity.position.copy ();
+        this.setMapPosition (this.spawnEntity.mapPosition);
 
         // Lastly, set up our patrol
         this.selectNextPatrolWaypoint ();
@@ -337,34 +337,20 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
     nurdz.sneak.GuardBase.prototype.step = function (level)
     {
 
-        // We don;'t have to do anything if we don't have a patrol point yet.
+        // We don't have to do anything if we don't have a patrol point yet.
         if (this.nextPatrolPoint == null)
             return;
 
         // Duplicate the current position, then translate that position to take a step in the direction of
         // the current patrol route.
-        var movePos = this.position.copy ();
-        if (this.position.x == this.nextPatrolPoint.position.x)
-        {
-            // The X is the same, so translate on Y.
-            movePos.translateXY (0,
-                                 (this.position.y > this.nextPatrolPoint.position.y)
-                                     ? -this.height
-                                     : this.height);
-        }
+        var movePos = this.mapPosition.copy ();
+        if (this.mapPosition.x == this.nextPatrolPoint.mapPosition.x)
+            movePos.translateXY (0, (this.mapPosition.y > this.nextPatrolPoint.mapPosition.y) ? -1 : 1);
         else
-        {
-            // The X is different, so translate on X.
-            movePos.translateXY ((this.position.x > this.nextPatrolPoint.position.x)
-                                     ? -this.width
-                                     : this.width,
-                                 0);
-        }
+            movePos.translateXY ((this.mapPosition.x > this.nextPatrolPoint.mapPosition.x) ? -1 : 1, 0);
 
-        // Create a duplicate of the move position that is converted from world coordinates to map
-        // coordinates, then get the tile at the position that we want to move to.
-        var mapPos = movePos.reduce (this.width);
-        var dTile = level.tileAt (mapPos);
+        // Get the tile at the position the move would take us to.
+        var dTile = level.tileAt (movePos);
 
         // If we did not find a tile or we did but it blocks movement, that's bad for us and we can't move.
         if (dTile == null || dTile.blocksActorMovement ())
@@ -378,7 +364,7 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
         // There is not a world block. Check to see if there are any entities that block movement on the
         // target square. Note that we know that the entities will never be null because if the location
         // was invalid, the movement test would have blocked the move already.
-        var entities = level.entitiesAt (mapPos);
+        var entities = level.entitiesAt (movePos);
         if (entities.length > 0)
         {
             // TODO Opening of doors should be deferred
@@ -426,11 +412,11 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
         }
 
         // The move must be valid, so move to the new position.
-        this.position = movePos;
+        this.setMapPosition (movePos);
 
         // If our current position is the position of the patrol point, it is time to move on to the next
         // point now.
-        if (this.position.equals (this.nextPatrolPoint.position))
+        if (this.mapPosition.equals (this.nextPatrolPoint.mapPosition))
             this.selectNextPatrolWaypoint ();
     };
 
