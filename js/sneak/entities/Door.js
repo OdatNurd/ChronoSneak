@@ -31,7 +31,7 @@ nurdz.sneak.Door = function (stage, x, y, properties)
     this.defaultProperties = {open: true, horizontal: false, openTime: -1, closeTime: -1};
 
     // Call the super class constructor.
-    nurdz.sneak.ChronoEntity.call (this, "Door", stage, x, y, properties, 100, '#5030ff');
+    nurdz.sneak.ChronoEntity.call (this, "Door", stage, x, y, properties, 100, '#7a00f4');
 
     // NOTE: The code below is below the constructor call because it is the super constructor that will
     // apply the defaults to the properties given, so it's not until that call returns that we can access
@@ -110,52 +110,6 @@ nurdz.sneak.Door = function (stage, x, y, properties)
     };
 
     /**
-     * Renders the entity as a horizontal door that is either open or closed, depending on the flag passed in.
-     *
-     * @param {nurdz.game.Stage} stage the stage to render on
-     * @param {Boolean} open true to render the door as open or false to render it as closed
-     */
-    nurdz.sneak.Door.prototype.drawHorizontalDoor = function (stage, open)
-    {
-        // Based on the door thickness, determine the position of the top left corners of the doors.
-        var renderY = this.position.y + ((this.height / 2) - (DOOR_THICKNESS / 2));
-
-        // Render for open or closed.
-        if (open)
-        {
-            // Render a left and right side.
-            stage.fillRect (this.position.x, renderY, DOOR_STUB, DOOR_THICKNESS, this.debugColor);
-            stage.fillRect (this.position.x + this.width - DOOR_STUB, renderY,
-                            DOOR_STUB, DOOR_THICKNESS, this.debugColor);
-        }
-        else
-            stage.fillRect (this.position.x, renderY, this.width, DOOR_THICKNESS, this.debugColor);
-    };
-
-    /**
-     * Renders the entity as a horizontal door that is either open or closed, depending on the flag passed in.
-     *
-     * @param {nurdz.game.Stage} stage the stage to render on
-     * @param {Boolean} open true to render the door as open or false to render it as closed
-     */
-    nurdz.sneak.Door.prototype.drawVerticalDoor = function (stage, open)
-    {
-        // Based on the door thickness, determine the position of the top left corners of the doors.
-        var renderX = this.position.x + ((this.width / 2) - (DOOR_THICKNESS / 2));
-
-        // Render for open or closed.
-        if (open)
-        {
-            // Render a top and bottom side.
-            stage.fillRect (renderX, this.position.y, DOOR_THICKNESS, DOOR_STUB, this.debugColor);
-            stage.fillRect (renderX, this.position.y + this.height - DOOR_STUB,
-                            DOOR_THICKNESS, DOOR_STUB, this.debugColor);
-        }
-        else
-            stage.fillRect (renderX, this.position.y, DOOR_THICKNESS, this.height, this.debugColor);
-    };
-
-    /**
      * Render this actor to the stage provided. The base class version renders a positioning box for this
      * actor using its position and size, using the debug color provided in the constructor.
      *
@@ -166,10 +120,24 @@ nurdz.sneak.Door = function (stage, x, y, properties)
         // If the entity is visible, draw the door. Otherwise, chain to the superclass version.
         if (this.properties.visible)
         {
-            if (this.properties.horizontal)
-                this.drawHorizontalDoor (stage, this.properties.open);
+            // The drawing code renders a horizontal door, so if this is a vertical door we need some
+            // rotation. It doesn't matter if it's 90 or 270; both work.
+            this.startRendering (stage, this.properties.horizontal ? null : 90);
+
+            // Based on the door thickness, determine the position of the top left corners of the door
+            // segments.
+            var renderY = -(DOOR_THICKNESS / 2);
+            if (this.properties.open)
+            {
+                // Render a left and right side.
+                stage.fillRect (-(this.width / 2), renderY, DOOR_STUB, DOOR_THICKNESS, this.debugColor);
+                stage.fillRect ((this.width / 2) - DOOR_STUB, renderY,
+                                DOOR_STUB, DOOR_THICKNESS, this.debugColor);
+            }
             else
-                this.drawVerticalDoor (stage, this.properties.open);
+                stage.fillRect (-(this.width / 2), renderY, this.width, DOOR_THICKNESS, this.debugColor);
+
+            this.endRendering (stage);
         }
         else
             nurdz.sneak.ChronoEntity.prototype.render.call (this, stage);

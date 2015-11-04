@@ -12,7 +12,7 @@ nurdz.sneak.Player = function (stage, x, y)
     "use strict";
 
     // Call the super class constructor.
-    nurdz.sneak.ChronoEntity.call (this, 'Player', stage, x, y, {id: "player"}, 10, 'green');
+    nurdz.sneak.ChronoEntity.call (this, 'Player', stage, x, y, {id: "player"}, 10, '#009000');
 };
 
 // Now define the various member functions and any static stage.
@@ -47,9 +47,11 @@ nurdz.sneak.Player = function (stage, x, y)
      */
     nurdz.sneak.Player.prototype.render = function (stage)
     {
-        stage.fillRect (this.position.x + MARGIN, this.position.y + MARGIN,
+        this.startRendering (stage);
+        stage.fillRect (-(this.width / 2) + MARGIN, -(this.height / 2) + MARGIN,
                         this.width - (2 * MARGIN), this.height - (2 * MARGIN),
                         this.debugColor);
+        this.endRendering (stage);
     };
 
     /**

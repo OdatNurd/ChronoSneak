@@ -77,17 +77,14 @@ nurdz.sneak.LevelGoal = function (stage, x, y, properties)
         // If the entity is visible, draw a target. Otherwise, chain to the superclass version.
         if (this.properties.visible)
         {
-            // For aid of initial debugging of things, if the
-            // Calculate the center of the tile that we're on.
-            var x = this.position.x + (this.width / 2);
-            var y = this.position.y + (this.height / 2);
-
             // This is redundant, but it turns out that for our purposes here, I don't care. It renders a
             // target as three circles when it could conceivably use only two with a hole in the center of the
             // second one or some such. Life is too short.
-            stage.fillCircle (x, y, Math.floor (this.width * 0.45), 'red');
-            stage.fillCircle (x, y, Math.floor (this.width * 0.30), 'white');
-            stage.fillCircle (x, y, Math.floor (this.width * 0.20), 'red');
+            this.startRendering (stage);
+            stage.fillCircle (0, 0, Math.floor (this.width * 0.45), 'red');
+            stage.fillCircle (0, 0, Math.floor (this.width * 0.30), 'white');
+            stage.fillCircle (0, 0, Math.floor (this.width * 0.20), 'red');
+            this.endRendering (stage);
         }
         else
             nurdz.sneak.ChronoEntity.prototype.render.call (this, stage);

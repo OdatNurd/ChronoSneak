@@ -8,7 +8,7 @@ nurdz.sneak.WallTile = function ()
     "use strict";
 
     // Call the super class constructor.
-    nurdz.game.Tile.call (this, "WALL", 2, '#5030ff');
+    nurdz.game.Tile.call (this, "WALL", 2, '#004890');
 };
 
 // Now define the various member functions and any static stage.

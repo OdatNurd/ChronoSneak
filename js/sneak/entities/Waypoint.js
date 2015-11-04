@@ -58,13 +58,10 @@ nurdz.sneak.Waypoint = function (stage, x, y, properties)
         // Draw a small dot to mark the waypoint if it's visible, otherwise, chain to the superclass version.
         if (this.properties.visible)
         {
-            // Calculate the center of the tile that we're on.
-            var x = this.position.x + (this.width / 2);
-            var y = this.position.y + (this.height / 2);
-            var r = Math.floor (this.width * 0.125);
-
             // Simple dot.
-            stage.fillCircle (x, y, r, this.debugColor);
+            this.startRendering (stage);
+            stage.fillCircle (0, 0, Math.floor (this.width * 0.125), this.debugColor);
+            this.endRendering (stage);
         }
         else
             nurdz.sneak.ChronoEntity.prototype.render.call (this, stage);

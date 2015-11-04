@@ -31,7 +31,7 @@ nurdz.sneak.Button = function (stage, x, y, properties)
     this.defaultProperties = {pressed: false, cycleTime: -1, orientation: "right"};
 
     // Call the super class constructor.
-    nurdz.sneak.ChronoEntity.call (this, "Button", stage, x, y, properties, 100, '#cA0000');
+    nurdz.sneak.ChronoEntity.call (this, "Button", stage, x, y, properties, 100, '#CC5200');
 
     // NOTE: The code below is below the constructor call because it is the super constructor that will
     // apply the defaults to the properties given, so it's not until that call returns that we can access
@@ -129,87 +129,6 @@ nurdz.sneak.Button = function (stage, x, y, properties)
     };
 
     /**
-     * Renders the entity as a button on the left side of the tile that is either pressed or released,
-     * depending on the flag passed in.
-     *
-     * @param {nurdz.game.Stage} stage the stage to render on
-     * @param {Boolean} pressed true to render the button as pressed or false to render it as released
-     */
-    nurdz.sneak.Button.prototype.drawButtonLeft = function (stage, pressed)
-    {
-        // Based on the button thickness, determine the position of the top left corners of the doors.
-        var renderY = this.position.y + ((this.height / 2) - (BUTTON_WIDTH / 2));
-
-        // Render for pressed or released
-        if (pressed)
-            stage.fillRect (this.position.x, renderY, BUTTON_IN_SIZE, BUTTON_WIDTH, this.debugColor);
-        else
-            stage.fillRect (this.position.x, renderY, BUTTON_OUT_SIZE, BUTTON_WIDTH, this.debugColor);
-    };
-
-    /**
-     * Renders the entity as a button on the right side of the tile that is either pressed or released,
-     * depending on the flag passed in.
-     *
-     * @param {nurdz.game.Stage} stage the stage to render on
-     * @param {Boolean} pressed true to render the button as pressed or false to render it as released
-     */
-    nurdz.sneak.Button.prototype.drawButtonRight = function (stage, pressed)
-    {
-        // Based on the button thickness, determine the position of the top left corners of the doors.
-        var renderY = this.position.y + ((this.height / 2) - (BUTTON_WIDTH / 2));
-
-        // Render for pressed or released
-        if (pressed)
-            stage.fillRect (this.position.x + this.width - BUTTON_IN_SIZE, renderY,
-                            BUTTON_IN_SIZE, BUTTON_WIDTH, this.debugColor);
-        else
-            stage.fillRect (this.position.x + this.width - BUTTON_OUT_SIZE, renderY,
-                            BUTTON_OUT_SIZE, BUTTON_WIDTH, this.debugColor);
-
-    };
-
-    /**
-     * Renders the entity as a button on the top side of the tile that is either pressed or released,
-     * depending on the flag passed in.
-     *
-     * @param {nurdz.game.Stage} stage the stage to render on
-     * @param {Boolean} pressed true to render the button as pressed or false to render it as released
-     */
-    nurdz.sneak.Button.prototype.drawButtonTop = function (stage, pressed)
-    {
-        // Based on the button thickness, determine the position of the top left corners of the doors.
-        var renderX = this.position.x + ((this.width / 2) - (BUTTON_WIDTH / 2));
-
-        // Render for pressed or released
-        if (pressed)
-            stage.fillRect (renderX, this.position.y, BUTTON_WIDTH, BUTTON_IN_SIZE, this.debugColor);
-        else
-            stage.fillRect (renderX, this.position.y, BUTTON_WIDTH, BUTTON_OUT_SIZE, this.debugColor);
-    };
-
-    /**
-     * Renders the entity as a button on the bottom side of the tile that is either pressed or released,
-     * depending on the flag passed in.
-     *
-     * @param {nurdz.game.Stage} stage the stage to render on
-     * @param {Boolean} pressed true to render the button as pressed or false to render it as released
-     */
-    nurdz.sneak.Button.prototype.drawButtonBottom = function (stage, pressed)
-    {
-        // Based on the button thickness, determine the position of the top left corners of the doors.
-        var renderX = this.position.x + ((this.width / 2) - (BUTTON_WIDTH / 2));
-
-        // Render for pressed or released
-        if (pressed)
-            stage.fillRect (renderX, this.position.y + this.height - BUTTON_IN_SIZE,
-                            BUTTON_WIDTH, BUTTON_IN_SIZE, this.debugColor);
-        else
-            stage.fillRect (renderX, this.position.y + this.height - BUTTON_OUT_SIZE,
-                            BUTTON_WIDTH, BUTTON_OUT_SIZE, this.debugColor);
-    };
-
-    /**
      * Render this actor to the stage provided. The base class version renders a positioning box for this
      * actor using its position and size, using the debug color provided in the constructor.
      *
@@ -217,25 +136,44 @@ nurdz.sneak.Button = function (stage, x, y, properties)
      */
     nurdz.sneak.Button.prototype.render = function (stage)
     {
-        // If the entity is visible, draw a target. Otherwise, chain to the superclass version.
+        // Are we visible?
         if (this.properties.visible)
         {
+            // Cache the size of half of a tile.
+            var halfTile = nurdz.game.TILE_SIZE / 2;
+
+            // Determine how to rotate the canvas in order to render our button. The rendering code below
+            // assumes that it is rendering on the right hand side, which is a rotation angle of 0.
+            var rotation = 0;
             switch (this.properties.orientation)
             {
                 case "left":
-                    this.drawButtonLeft (stage, this.properties.pressed);
+                    rotation = 180;
                     break;
                 case "right":
-                    this.drawButtonRight (stage, this.properties.pressed);
+                    rotation = 0;
                     break;
                 case "top":
-                    this.drawButtonTop (stage, this.properties.pressed);
+                    rotation = 270;
                     break;
                 case "bottom":
-                    this.drawButtonBottom (stage, this.properties.pressed);
+                    rotation = 90;
                     break;
             }
 
+            this.startRendering (stage, rotation);
+
+            // Now draw the button as if we are on the right hand side of the map tile. The rotation above
+            // will handle positioning things on the appropriate side of the tile.
+            var renderY = -((this.height / 2) - (BUTTON_WIDTH / 2));
+            if (this.properties.pressed)
+                stage.fillRect (halfTile - BUTTON_IN_SIZE, renderY,
+                                BUTTON_IN_SIZE, BUTTON_WIDTH, this.debugColor);
+            else
+                stage.fillRect (halfTile - BUTTON_OUT_SIZE, renderY,
+                                BUTTON_OUT_SIZE, BUTTON_WIDTH, this.debugColor);
+
+            this.endRendering (stage);
         }
         else
             nurdz.sneak.ChronoEntity.prototype.render.call (this, stage);

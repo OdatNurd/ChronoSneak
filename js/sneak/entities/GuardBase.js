@@ -98,7 +98,7 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
     this.nextPatrolPoint = null;
 
     // Call the super class constructor.
-    nurdz.sneak.ChronoEntity.call (this, "GuardBase", stage, 0, 0, properties, 1, '#FF0A10');
+    nurdz.sneak.ChronoEntity.call (this, "GuardBase", stage, 0, 0, properties, 2, '#EB3B00');
 };
 
 // Now define the various member functions and any static stage.
@@ -315,9 +315,11 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
         // Draw a small dot to mark the waypoint if it's visible, otherwise, chain to the superclass version.
         if (this.properties.visible)
         {
-            stage.fillRect (this.position.x + MARGIN, this.position.y + MARGIN,
+            this.startRendering (stage);
+            stage.fillRect (-(this.width / 2) + MARGIN, -(this.height / 2) + MARGIN,
                             this.width - (2 * MARGIN), this.height - (2 * MARGIN),
                             this.debugColor);
+            this.endRendering (stage);
         }
         else
             nurdz.sneak.ChronoEntity.prototype.render.call (this, stage);
