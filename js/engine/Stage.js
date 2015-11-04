@@ -555,6 +555,57 @@ nurdz.game.Stage = function (containerDivID, initialColor)
 
     //noinspection JSUnusedGlobalSymbols
     /**
+     * Do an (optional) translation and (optional) rotation of the stage canvas. You can perform one or
+     * both operations. This implicitly saves the current canvas state on a stack so that it can be
+     * restored later via a call to restore().
+     *
+     * When both an X and a Y value are provided, the canvas is translated so that the origin is moved in
+     * the translation direction given. One or both values can be null to indicate that no translation is
+     * desired.
+     *
+     * When the angle is not null, the canvas is rotated by that many degrees around the origin.
+     *
+     * The order of operations is always translation first and rotation second, because once the rotation
+     * happens, the direction of the axes are no longer what you expect. In particular this means that you
+     * should be careful about invoking this function when the canvas has already been translated and/or
+     * rotation.
+     *
+     * Note that the current translation and rotation of the canvas is held on a stack, so every call to
+     * this method needs to be balanced with a call to the restore() method.
+     *
+     * @param {Number|null} x the amount to translate on the X axis
+     * @param {Number|null} y the amount to translate on the Y axis
+     * @param {Number|null} [angle=null] the angle to rotate the canvas, in degrees
+     * @see nurdz.game.Stage.restore
+     */
+    nurdz.game.Stage.prototype.translateAndRotate = function (x, y, angle)
+    {
+        // First, save the canvas context.
+        this.canvasContext.save ();
+
+        // If we are translating, translate now.
+        if (x != null && y != null)
+            this.canvasContext.translate (x, y);
+
+        // If we are rotating, rotate now.
+        if (angle != null)
+            this.canvasContext.rotate (angle * (Math.PI / 180));
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Restore the canvas state that was in effect the last time that translateAndRotate was invoked. This
+     * needs to be invoked the same number of times as that function was invoked because the canvas state
+     * is stored on a stack.
+     * @see nurdz.game.Stage.translateAndRotate
+     */
+    nurdz.game.Stage.prototype.restore = function ()
+    {
+        this.canvasContext.restore ();
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
      * Display text to the stage at the position provided. How the the text anchors to the point provided
      * needs to be set by you prior to calling. By default, the location specified is the top left corner.
      *
