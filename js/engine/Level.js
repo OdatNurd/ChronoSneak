@@ -105,10 +105,6 @@ nurdz.game.Level = function (stage, levelData)
         if (x < 0 || y < 0 || x >= this.width || y >= this.width)
             return null;
 
-        // The location passed in is in map coordinates, so scale it to be in map (tile) space.
-        x *= nurdz.game.TILE_SIZE;
-        y *= nurdz.game.TILE_SIZE;
-
         // Iterate over all entities to see if they are at the map location provided.
         var retVal = [];
         for (var i = 0 ; i < this.entities.length ; i++)
@@ -117,7 +113,7 @@ nurdz.game.Level = function (stage, levelData)
             var entity = this.entities[i];
 
             // If the location matches, add it to the array.
-            if (entity.position.equalsXY (x, y))
+            if (entity.mapPosition.equalsXY (x, y))
                 retVal.push (entity);
         }
 
