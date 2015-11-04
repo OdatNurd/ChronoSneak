@@ -96,7 +96,7 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
     nurdz.sneak.ChronoEntity.prototype.setStagePositionXY = function (x, y)
     {
         this.position.setToXY (x, y);
-        this.mapPosition = this.position.reduce (nurdz.game.TILE_SIZE);
+        this.mapPosition = this.position.copyReduced (nurdz.game.TILE_SIZE);
     };
 
     //noinspection JSUnusedGlobalSymbols
@@ -121,7 +121,7 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
     nurdz.sneak.ChronoEntity.prototype.setMapPositionXY = function (x, y)
     {
         this.mapPosition.setToXY (x, y);
-        this.position = this.mapPosition.scale (nurdz.game.TILE_SIZE);
+        this.position = this.mapPosition.copyScaled (nurdz.game.TILE_SIZE);
     };
 
     /**

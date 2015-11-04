@@ -87,6 +87,44 @@ nurdz.game.Point = function (x, y)
 
     //noinspection JSUnusedGlobalSymbols
     /**
+     * Reduce the components in this point by dividing each by the factor provided. This allows for some
+     * simple coordinate conversions in a single step. After conversion the points are rounded down to ensure
+     * that the coordinates remain integers.
+     *
+     * This is a special case of scale() that is more straight forward for use in some cases.
+     *
+     * @param {Number} factor the amount to divide each component of this point by
+     * @returns {nurdz.game.Point} a copy of this point with its values divided by the passed in factor
+     * @see nurdz.game.Point.scale
+     * @see nurdz.game.Point.copyScaled
+     */
+    nurdz.game.Point.prototype.reduce = function (factor)
+    {
+        this.x = Math.floor (this.x / factor);
+        this.y = Math.floor (this.y / factor);
+        return this
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Scale the components in this point by multiplying each by the scale factor provided. This allows for
+     * some simple coordinate conversions in a single step. After conversion the points are rounded down to
+     * ensure that the coordinates remain integers.
+     *
+     * @param {Number} scale the amount to multiply each component of this point by
+     * @returns {nurdz.game.Point} this point after the scale, for chaining calls.
+     * @see nurdz.game.Point.reduce
+     * @see nurdz.game.Point.copyReduced
+     */
+    nurdz.game.Point.prototype.scale = function (scale)
+    {
+        this.x = Math.floor (this.x * scale);
+        this.y = Math.floor (this.y * scale);
+        return this;
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
      * Clamp the value of the X-coordinate of this point so that it is between the min and max values
      * provided, inclusive.
      *
@@ -183,43 +221,35 @@ nurdz.game.Point = function (x, y)
     //noinspection JSUnusedGlobalSymbols
     /**
      * Create and return a copy of this point in which each component is divided by the factor provided.
-     * This allows for some simple coordinate conversions in a single step.
+     * This allows for some simple coordinate conversions in a single step. After conversion the points
+     * are rounded down to ensure that the coordinates remain integers.
      *
      * This is a special case of scale() that is more straight forward for use in some cases.
-     *
-     * No care is made to ensure that the result is clamped to whole coordinates or anything.
      *
      * @param {Number} factor the amount to divide each component of this point by
      * @returns {nurdz.game.Point} a copy of this point with its values divided by the passed in factor
      * @see nurdz.game.Point.scale
+     * @see nurdz.game.Point.copyScaled
      */
-    nurdz.game.Point.prototype.reduce = function (factor)
+    nurdz.game.Point.prototype.copyReduced = function (factor)
     {
-        var retVal = this.copy ();
-        retVal.x = Math.floor (retVal.x / factor);
-        retVal.y = Math.floor (retVal.y / factor);
-
-        return retVal;
+        return this.copy ().reduce (factor);
     };
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * Create and return a copy of this point in which each component is scaled by the scale factor
-     * provided. This allows for some simple coordinate conversions in a single step.
-     *
-     * No scare is made to made to ensure that the result is clamped to whole coordinates or anything.
+     * provided. This allows for some simple coordinate conversions in a single step. After conversion the
+     * points are rounded down to ensure that the coordinates remain integers.
      *
      * @param {Number} scale the amount to multiply each component of this point by
      * @returns {nurdz.game.Point} a copy of this point with its values scaled by the passed in factor
      * @see nurdz.game.Point.reduce
+     * @see nurdz.game.Point.copyReduced
      */
-    nurdz.game.Point.prototype.scale = function (scale)
+    nurdz.game.Point.prototype.copyScaled = function (scale)
     {
-        var retVal = this.copy ();
-        retVal.x *= scale;
-        retVal.y *= scale;
-
-        return retVal;
+        return this.copy ().scale (scale);
     };
 
     //noinspection JSUnusedGlobalSymbols

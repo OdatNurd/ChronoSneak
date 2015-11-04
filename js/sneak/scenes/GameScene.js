@@ -242,7 +242,7 @@ nurdz.sneak.GameScene = function (stage)
         this.mousePos = this.stage.calculateMousePos (eventObj);
 
         // Now convert that position into a map position.
-        var mapPos = this.mousePos.copy ().reduce (this.tileSize);
+        var mapPos = this.mousePos.copyReduced (this.tileSize);
 
         // If there is no debug position, or there is but it is different than where the mouse is now,
         // calculate new debug text.
