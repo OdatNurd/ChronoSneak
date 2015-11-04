@@ -104,8 +104,6 @@ nurdz.sneak.GameScene = function (stage)
     this.addActorArray (this.level.entities);
     this.sortActors ();
 
-    console.log (stage.toString());
-
     this.actors()
 };
 
