@@ -366,7 +366,7 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
         // need to change our facing and leave; turning takes a turn.
         if (moveFacing != this.properties.facing)
         {
-            this.setFacing (moveFacing);
+            this.setFacing (this.calculateTurnFacing (moveFacing));
             return;
         }
 

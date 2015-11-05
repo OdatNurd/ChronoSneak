@@ -113,12 +113,15 @@ nurdz.sneak.levels.getLevelOne = function (stage)
         new nurdz.sneak.Waypoint (stage, 18, 8, {id: "way1"}),
         new nurdz.sneak.Waypoint (stage, 18, 15, {id: "way2"}),
         new nurdz.sneak.Waypoint (stage, 12, 15, {id: "way3"}),
+        new nurdz.sneak.Waypoint (stage, 12, 13, {id: "way3a"}),
+        new nurdz.sneak.Waypoint (stage, 7, 13, {id: "way3b"}),
         new nurdz.sneak.Waypoint (stage, 12, 8, {id: "way4"}),
 
         new nurdz.sneak.GuardBase (stage, "gStart1", {
             facing:     "left",
             patrolLoop: true,
-            patrol:     ["pStart1", "way2", "way3", "way4", "way1"]
+            handedness: "left",
+            patrol:     ["pStart1", "way2", "way3", "way3a", "way3b", "way3a", "way4", "way1"]
         })
     ], nurdz.sneak.stdTiles);
 };

@@ -528,7 +528,7 @@ nurdz.sneak.GameScene = function (stage)
         {
             // Turn if we're turning.
             if (newFacing != null)
-                this.player.setFacing (newFacing);
+                this.player.setFacing (this.player.calculateTurnFacing (newFacing));
 
             // Move if we're moving.
             if (targetPos != null)

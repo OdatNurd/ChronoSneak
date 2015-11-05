@@ -16,6 +16,11 @@
  *       - controls what direction the entity is facing. Depending on the entity, this may or may not have
  *         different effects. In the initial property setup, this is a string value, but on instantiation
  *         the facing is converted to an appropriate angle (in degrees).
+ *    - 'handedness': "right" or "left" (default: "right")
+ *       - This controls if this entity is right or left handed, which affects things such as what
+ *         direction it turns when it needs to make an about face. This property is optional, and at
+ *         construction time the value is converted to true for "right" and false for "left" to make its
+ *         use in code easier.
  *    - 'trigger': string or array of strings (default: none)
  *       - If specified, this is an entity ID or a list of entity ID's for which a trigger should be
  *         invoked whenever this entity gets triggered itself. NOTE: Not all entity subclasses support this
@@ -66,6 +71,11 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
 
     // Now convert the facing that we have (which is a string) to the appropriate number value.
     this.setFacing (this.properties.facing);
+
+    // If there is a handedness property, then we will convert it from its string version to a boolean
+    // version, where true is used for right handed.
+    if (this.properties.handedness)
+        this.properties.handedness = (this.properties.handedness == "right");
 };
 
 // Now define the various member functions and any static stage.
@@ -84,7 +94,6 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
         }
     });
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Change the facing of this entity to the value passed in. You can pass in an angle (in degrees) as a
      * number of one of the strings "up", "down", "left" or "right" to have the routine calculate the
@@ -128,26 +137,118 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
             }
         }
 
+        // Set the property now.
+        this.properties.facing = this.normalizeFacingAngle (newFacing);
+    };
+
+    /**
+     * This is automatically invoked at the end of the constructor to validate that the properties object
+     * that we have is valid as far as we can tell (i.e. needed properties exist and have a sensible value).
+     *
+     * This validates that
+     */
+    nurdz.sneak.ChronoEntity.prototype.validateProperties = function ()
+    {
+        // If there is a trigger property and it's a string, convert it to an array with a single element,
+        // to make code later easier.
+        if (typeof (this.properties.trigger) == "string")
+            this.properties.trigger = [this.properties.trigger];
+
+        // The visible property needs to exist and be a boolean, while the trigger does NOT need to exist
+        // but has to be an array if it does exist.
+        this.isPropertyValid ("visible", "boolean", true);
+        this.isPropertyValid ("trigger", "array", false);
+        this.isPropertyValid ("facing", "string", true, ["up", "down", "left", "right"]);
+        this.isPropertyValid ("handedness", "string", false, ["right", "left"]);
+
+        // Chain to the super to check properties it might have inserted or know about.
+        nurdz.game.Entity.prototype.validateProperties.call (this);
+    };
+
+    /**
+     * This method queries whether the player is able to interact with this entity using the interaction
+     * keys. Any entity which returns false from this cannot be interacted with. Examples of that include
+     * marker entities like waypoints.
+     *
+     * @returns {Boolean} true if this entity is interactive, or false otherwise.
+     */
+    nurdz.sneak.ChronoEntity.prototype.isInteractive = function ()
+    {
+        // By default, nothing is interactive
+        return false;
+    };
+
+    /**
+     * This helper method takes a facing value that is some number of degrees, and then normalizes it.
+     * First, the angle is snapped to an increment of 90 degrees. Secondly, it is constrained to values
+     * between 0 and 270 (360 becomes 0 on the wrap around).
+     *
+     * This works even if the new facing is a negative number. in which case it becomes the appropriate
+     * positive angle (e.g. -90 becomes 270).
+     *
+     * @param {Number} facing the facing angle to normalize
+     * @returns {Number} the normalized angle
+     */
+    nurdz.sneak.ChronoEntity.prototype.normalizeFacingAngle = function (facing)
+    {
         // Now the facing is a number. We only support multiples of 90, so constrain if needed.
-        if (newFacing % 90)
+        if (facing % 90)
         {
             // See which increment of 90 we're closer to. If we're closer to the higher value, add
             // whatever else we need in order to get there. If we're smaller, subtract the remainder.
-            var remainder = newFacing % 90;
+            var remainder = facing % 90;
             if (remainder >= 45)
-                newFacing += 90 - remainder;
+                facing += 90 - remainder;
             else
-                newFacing -= remainder;
+                facing -= remainder;
         }
 
         // Now make sure that the angle is between 0 and 360.
-        newFacing %= 360;
-        if (newFacing < 0)
-            newFacing += 360;
-        newFacing %= 360;
+        facing %= 360;
+        if (facing < 0)
+            facing += 360;
+        return facing % 360;
+    };
 
-        // Set the property now.
-        this.properties.facing = newFacing;
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * This is a helper method which can be used to determine what facing an entity should take when it
+     * wants to alter its facing from its current facing to some destination facing.
+     *
+     * This assumes that the entity would be smart enough to always want to turn the shortest possible
+     * way, such that if it was facing up and wanted to face right, it would turn there directly and not
+     * rotate to the left for three steps.
+     *
+     * In the case of an about face (the two facings are diametrically opposed), the entity chooses to
+     * turn either left or right based its handedness property, with a default of turning to the right if
+     * such a property is not set.
+     *
+     * @param {Number} destinationFacing the facing to turn towards
+     * @returns {Number} the facing to take in order to turn towards the destination facing
+     */
+    nurdz.sneak.ChronoEntity.prototype.calculateTurnFacing = function (destinationFacing)
+    {
+        // Check properties to see if this entity wants to turn to the right (true) or left (false) when
+        // it needs to do an about face. We have to do some magic here because the usual trick of using ||
+        // does not work with booleans. Here the only time you get a false is when it is explicitly set
+        // to false, and everything else (including null and undefined) becomes true.
+        var aboutFaceToRight = this.properties.handedness !== false;
+
+        // Calculate the difference between the current facing and the facing that we want to turn
+        // towards. This always comes out to a positive value and is the shortest possible turn that can
+        // be made to get to the destination (e.g. facing down and wanting to turn to face the right comes
+        // out as 90 and not as 270).
+        var turnDistance = 180 - Math.abs (Math.abs (this.properties.facing - destinationFacing) - 180);
+
+        // If the turn distance is only 90 degrees, then we can return the destination facing directly; we
+        // can turn 90 degrees at a time and we're 90 degrees away, so just do it.
+        if (turnDistance <= 90)
+            return destinationFacing;
+
+        // The only other option is 180 degrees, so we are diametrically opposed to where we want to go
+        // and we need to make an about face. If we want to turn to the right, we add 90 degrees, and we
+        // subtract 90 to turn to the left. The default is to go to the right if we don't otherwise know.
+        return this.normalizeFacingAngle (this.properties.facing + (aboutFaceToRight ? 90 : -90));
     };
 
     //noinspection JSUnusedGlobalSymbols
@@ -198,42 +299,6 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
     {
         this.mapPosition.setToXY (x, y);
         this.position = this.mapPosition.copyScaled (nurdz.game.TILE_SIZE);
-    };
-
-    /**
-     * This is automatically invoked at the end of the constructor to validate that the properties object
-     * that we have is valid as far as we can tell (i.e. needed properties exist and have a sensible value).
-     *
-     * This validates that
-     */
-    nurdz.sneak.ChronoEntity.prototype.validateProperties = function ()
-    {
-        // If there is a trigger property and it's a string, convert it to an array with a single element,
-        // to make code later easier.
-        if (typeof (this.properties.trigger) == "string")
-            this.properties.trigger = [this.properties.trigger];
-
-        // The visible property needs to exist and be a boolean, while the trigger does NOT need to exist
-        // but has to be an array if it does exist.
-        this.isPropertyValid ("visible", "boolean", true);
-        this.isPropertyValid ("trigger", "array", false);
-        this.isPropertyValid ("facing", "string", true, ["up", "down", "left", "right"]);
-
-        // Chain to the super to check properties it might have inserted or know about.
-        nurdz.game.Entity.prototype.validateProperties.call (this);
-    };
-
-    /**
-     * This method queries whether the player is able to interact with this entity using the interaction
-     * keys. Any entity which returns false from this cannot be interacted with. Examples of that include
-     * marker entities like waypoints.
-     *
-     * @returns {Boolean} true if this entity is interactive, or false otherwise.
-     */
-    nurdz.sneak.ChronoEntity.prototype.isInteractive = function ()
-    {
-        // By default, nothing is interactive
-        return false;
     };
 
     /**
