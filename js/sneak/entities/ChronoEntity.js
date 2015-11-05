@@ -135,7 +135,7 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
             // whatever else we need in order to get there. If we're smaller, subtract the remainder.
             var remainder = newFacing % 90;
             if (remainder >= 45)
-                newFacing += 45 - remainder;
+                newFacing += 90 - remainder;
             else
                 newFacing -= remainder;
         }
@@ -144,7 +144,7 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
         newFacing %= 360;
         if (newFacing < 0)
             newFacing += 360;
-        this.orientation = this.orientation % 360;
+        newFacing %= 360;
 
         // Set the property now.
         this.properties.facing = newFacing;
