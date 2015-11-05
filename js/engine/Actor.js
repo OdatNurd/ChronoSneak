@@ -91,25 +91,26 @@ nurdz.game.Actor = function (name, stage, x, y, width, height, zOrder, debugColo
         stage.fillRect (this.position.x, this.position.y, this.width, this.height, this.debugColor);
     };
 
+    //noinspection JSUnusedGlobalSymbols
     /**
-     * Change the position of this actor to that of the point passed in.
+     * Set the position of this actor by setting its position on the stage (world coordinates).
      *
      * @param {nurdz.game.Point} position the new position
-     * @see nurdz.game.Actor.setPositionXY
+     * @see nurdz.game.Actor.setStagePositionXY
      */
-    nurdz.game.Actor.prototype.setPosition = function (position)
+    nurdz.game.Actor.prototype.setStagePosition = function (position)
     {
         this.position.setTo (position);
     };
 
     /**
-     * Change the position of this actor to the coordinates provided.
+     * Set the position of this actor by setting its position on the stage (world coordinates).
      *
      * @param {Number} x the new X-coordinate for this actor
      * @param {Number} y the new Y-coordinate for this actor
-     * @see nurdz.game.Actor.setPosition
+     * @see nurdz.game.Actor.setStagePosition
      */
-    nurdz.game.Actor.prototype.setPositionXY = function (x, y)
+    nurdz.game.Actor.prototype.setStagePositionXY = function (x, y)
     {
         this.position.setToXY (x, y);
     };
