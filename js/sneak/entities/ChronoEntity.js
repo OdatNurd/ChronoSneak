@@ -95,53 +95,6 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
     });
 
     /**
-     * Change the facing of this entity to the value passed in. You can pass in an angle (in degrees) as a
-     * number of one of the strings "up", "down", "left" or "right" to have the routine calculate the
-     * correct angle.
-     *
-     * As a result of ChronoSneak being a grid based game, the facing is constrained to one of the four
-     * cardinal directions. The default is the right (0 degrees) if the passed in angle or facing string
-     * is not valid.
-     * @param {String|Number} newFacing the new facing
-     */
-    nurdz.sneak.ChronoEntity.prototype.setFacing = function (newFacing)
-    {
-        // If we got a string, then convert it to a number.
-        if (typeof (newFacing) == "string")
-        {
-            // These textual facing values should be converted into degrees. Rotations start with 0 on the
-            // right and proceeding clockwise as angles get bigger.
-            switch (newFacing)
-            {
-                case "right":
-                    newFacing = 0;
-                    break;
-
-                case "down":
-                    newFacing = 90;
-                    break;
-
-                case "left":
-                    newFacing = 180;
-                    break;
-
-                case "up":
-                    newFacing = 270;
-                    break;
-
-                // In case something goes awry.
-                default:
-                    console.log ("Invalid facing string: ", newFacing);
-                    newFacing = 0;
-                    break;
-            }
-        }
-
-        // Set the property now.
-        this.properties.facing = this.normalizeFacingAngle (newFacing);
-    };
-
-    /**
      * This is automatically invoked at the end of the constructor to validate that the properties object
      * that we have is valid as far as we can tell (i.e. needed properties exist and have a sensible value).
      *
@@ -210,6 +163,21 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
         return facing % 360;
     };
 
+    /**
+     * Given a facing angle in the range of 0-360 (with 360 being interpreted as 0) this method returns
+     * the difference between the current facing angle and that facing.
+     *
+     * This comparison is always done so as to return the minimum possible distance.
+     *
+     * @param {Number} destinationFacing the destination facing to compare to
+     * @returns {Number} the distance in degrees between the current facing of this entity and the
+     * destination facing.
+     */
+    nurdz.sneak.ChronoEntity.prototype.angleToNewFacing = function (destinationFacing)
+    {
+        return 180 - Math.abs (Math.abs (this.properties.facing - destinationFacing) - 180);
+    };
+
     //noinspection JSUnusedGlobalSymbols
     /**
      * This is a helper method which can be used to determine what facing an entity should take when it
@@ -238,7 +206,7 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
         // towards. This always comes out to a positive value and is the shortest possible turn that can
         // be made to get to the destination (e.g. facing down and wanting to turn to face the right comes
         // out as 90 and not as 270).
-        var turnDistance = 180 - Math.abs (Math.abs (this.properties.facing - destinationFacing) - 180);
+        var turnDistance = this.angleToNewFacing (destinationFacing);
 
         // If the turn distance is only 90 degrees, then we can return the destination facing directly; we
         // can turn 90 degrees at a time and we're 90 degrees away, so just do it.
@@ -249,6 +217,53 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
         // and we need to make an about face. If we want to turn to the right, we add 90 degrees, and we
         // subtract 90 to turn to the left. The default is to go to the right if we don't otherwise know.
         return this.normalizeFacingAngle (this.properties.facing + (aboutFaceToRight ? 90 : -90));
+    };
+
+    /**
+     * Change the facing of this entity to the value passed in. You can pass in an angle (in degrees) as a
+     * number of one of the strings "up", "down", "left" or "right" to have the routine calculate the
+     * correct angle.
+     *
+     * As a result of ChronoSneak being a grid based game, the facing is constrained to one of the four
+     * cardinal directions. The default is the right (0 degrees) if the passed in angle or facing string
+     * is not valid.
+     * @param {String|Number} newFacing the new facing
+     */
+    nurdz.sneak.ChronoEntity.prototype.setFacing = function (newFacing)
+    {
+        // If we got a string, then convert it to a number.
+        if (typeof (newFacing) == "string")
+        {
+            // These textual facing values should be converted into degrees. Rotations start with 0 on the
+            // right and proceeding clockwise as angles get bigger.
+            switch (newFacing)
+            {
+                case "right":
+                    newFacing = 0;
+                    break;
+
+                case "down":
+                    newFacing = 90;
+                    break;
+
+                case "left":
+                    newFacing = 180;
+                    break;
+
+                case "up":
+                    newFacing = 270;
+                    break;
+
+                // In case something goes awry.
+                default:
+                    console.log ("Invalid facing string: ", newFacing);
+                    newFacing = 0;
+                    break;
+            }
+        }
+
+        // Set the property now.
+        this.properties.facing = this.normalizeFacingAngle (newFacing);
     };
 
     //noinspection JSUnusedGlobalSymbols
