@@ -12,6 +12,15 @@ nurdz.sneak.SneakLevel = function (stage, levelData)
 
     // Call the super class constructor.
     nurdz.game.Level.call (this, stage, levelData);
+
+    // Now find all of the guard objects and allow them to determine their patrol routes and spawn locations
+    // and set themselves up. This has to be deferred until now because we are the class that provides the
+    // API that allows them to find the information that they care about.
+    for (var i = 0 ; i < this.entities.length ; i++)
+    {
+        if (this.entities[i] instanceof nurdz.sneak.GuardBase)
+            this.entities[i].collectWaypoints (this);
+    }
 };
 
 // Now define the various member functions and any static stage.
