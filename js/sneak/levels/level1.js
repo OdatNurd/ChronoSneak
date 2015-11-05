@@ -29,7 +29,6 @@ nurdz.sneak.levels.getLevelOne = function (stage)
     ], [
         new nurdz.sneak.Player (stage, 23, 11, {
             facing:     'left',
-            handedness: "right",
             visible:    true
         }),
 

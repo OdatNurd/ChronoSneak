@@ -15,7 +15,8 @@ nurdz.sneak.Player = function (stage, x, y, properties)
     // Set up the default properties for entities of this type. Waypoints are not meant to be visible,
     // they're just markers.
     this.defaultProperties = {
-        id: "player"
+        id:         "player",
+        handedness: "right"
     };
 
     // Call the super class constructor.
