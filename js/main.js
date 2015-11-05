@@ -59,8 +59,18 @@
 
         try
         {
-            // Set up the stage.
+            // Set up the stage. We set it into the sneak namespace so that we can access it via the
+            // console in browser, if we need to.
             var stage = new nurdz.game.Stage ('gameContent');
+            document.createElement("canvas");
+
+            /**
+             * The stage for the game. This is a global that exists only so that it can be accessed via
+             * the console in browser for debugging and testing. You SHOULD NOT use it in any code.
+             *
+             * @type {nurdz.game.Stage}
+             */
+            nurdz.sneak.stage = stage;
 
             // Set up the button that will stop the game if something goes wrong.
             setupButton (stage, "controlBtn");
@@ -77,6 +87,5 @@
             console.log ("Error starting the game");
             throw error;
         }
-
     });
 } ());
