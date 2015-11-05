@@ -483,10 +483,14 @@ nurdz.sneak.GameScene = function (stage)
             // time, use the wait key instead.
             case this.keys.KEY_SPACEBAR:
             case this.keys.KEY_Q:
-                // Collect all entities that are on this tile, then filter out entities that we know
-                // cannot be activated.
-                entities = this.level.entitiesAt (mapPos);
-                entities = entities.filter (function (entity) { return entity.isInteractive (); });
+                // Collect all entities that are on this tile, then filter out entities that we can't
+                // interact with. This includes entities that are just not interactive as well as entities
+                // that don't want to interact with us right now.
+                entities = this.level.entitiesAt (mapPos).filter (function (entity)
+                                                                  {
+                                                                      return entity.canInteractWith (
+                                                                          this.player);
+                                                                  }.bind (this));
                 if (entities.length > 0)
                 {
                     // Step all entities.
@@ -501,7 +505,7 @@ nurdz.sneak.GameScene = function (stage)
                     return true;
                 }
                 else
-                    console.log ("Cannot activate entities: none found");
+                    console.log ("Cannot activate: no eligible entities found");
                 return false;
 
             // This key causes a "wait" action, which allows all entities to have a turn without the

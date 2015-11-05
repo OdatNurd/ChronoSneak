@@ -119,19 +119,6 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
     };
 
     /**
-     * This method queries whether the player is able to interact with this entity using the interaction
-     * keys. Any entity which returns false from this cannot be interacted with. Examples of that include
-     * marker entities like waypoints.
-     *
-     * @returns {Boolean} true if this entity is interactive, or false otherwise.
-     */
-    nurdz.sneak.ChronoEntity.prototype.isInteractive = function ()
-    {
-        // By default, nothing is interactive
-        return false;
-    };
-
-    /**
      * This helper method takes a facing value that is some number of degrees, and then normalizes it.
      * First, the angle is snapped to an increment of 90 degrees. Secondly, it is constrained to values
      * between 0 and 270 (360 becomes 0 on the wrap around).
@@ -417,6 +404,23 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
             stage.canvasContext.stroke ();
             this.endRendering (stage);
         }
+    };
+
+    //noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
+    /**
+     * This method queries whether the entity provided is able to interact with this entity. This can be as
+     * simple or as introspective as desired, e.g.) any class of entity, only a certain class of entity,
+     * or only entities with certain properties.
+     *
+     * The default is to deny access to all interaction.
+     *
+     * @returns {Boolean} true if this entity can be interacted with by the passed in entity, or false
+     * otherwise.
+     */
+    nurdz.sneak.ChronoEntity.prototype.canInteractWith = function (otherEntity)
+    {
+        // By default, nothing is interactive
+        return false;
     };
 
     /**

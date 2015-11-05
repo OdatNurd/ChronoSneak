@@ -107,16 +107,24 @@ nurdz.sneak.Button = function (stage, x, y, properties)
     };
 
     /**
-     * This method queries whether the player is able to interact with this entity using the interaction
-     * keys. Any entity which returns false from this cannot be interacted with. Examples of that include
-     * marker entities like waypoints.
+     * This method queries whether the entity provided is able to interact with this entity. This can be as
+     * simple or as introspective as desired, e.g.) any class of entity, only a certain class of entity,
+     * or only entities with certain properties.
      *
-     * @returns {Boolean} true if this entity is interactive, or false otherwise.
+     * The default is to deny access to all interaction.
+     *
+     * @returns {Boolean} true if this entity can be interacted with by the passed in entity, or false
+     * otherwise.
      */
-    nurdz.sneak.Button.prototype.isInteractive = function ()
+    nurdz.sneak.Button.prototype.canInteractWith = function (otherEntity)
     {
-        // The player can interact with a button in order to trigger it and thus trigger some other entity.
-        return true;
+        // The player can interact with the button if they are no more than 90 degrees turned away from
+        // its facing. Any more than that and they have their back to it.
+        if (otherEntity instanceof nurdz.sneak.Player)
+            return this.angleToNewFacing(otherEntity.properties.facing) <= 90;
+
+        // No other entity can interact with this.
+        return false;
     };
 
     /**
