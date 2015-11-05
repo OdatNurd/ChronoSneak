@@ -30,6 +30,7 @@ nurdz.sneak.levels.getLevelOne = function (stage)
         // The location the player will start at.
         new nurdz.sneak.Waypoint (stage, 23, 11, {
             id:      'playerStart',
+            facing:  'left',
             visible: false
         }),
 
@@ -44,12 +45,12 @@ nurdz.sneak.levels.getLevelOne = function (stage)
         new nurdz.sneak.Door (stage, 4, 8, {
             id:       "exitDoor",
             open:     false,
-            openTime: 14
+            openTime: 16
         }),
         new nurdz.sneak.Door (stage, 19, 11, {
             id:       "autoDoor1",
             open:     true,
-            openTime: 3
+            openTime: 4
         }),
         new nurdz.sneak.Door (stage, 19, 15, {
             open:     false,
@@ -103,7 +104,8 @@ nurdz.sneak.levels.getLevelOne = function (stage)
         }),
         new nurdz.sneak.Button (stage, 10, 15, {
             facing:  "up",
-            trigger: "exitBtn"
+            trigger: "exitBtn",
+            cycleTime: 3
         }),
 
         new nurdz.sneak.Waypoint (stage, 21, 11, {id: "gStart1"}),
@@ -114,6 +116,7 @@ nurdz.sneak.levels.getLevelOne = function (stage)
         new nurdz.sneak.Waypoint (stage, 12, 8, {id: "way4"}),
 
         new nurdz.sneak.GuardBase (stage, "gStart1", {
+            facing:     "left",
             patrolLoop: true,
             patrol:     ["pStart1", "way2", "way3", "way4", "way1"]
         })

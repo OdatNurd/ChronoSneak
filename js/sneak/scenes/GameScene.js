@@ -84,11 +84,13 @@ nurdz.sneak.GameScene = function (stage)
         console.log ("Using entity '" + playerStartPos.properties.id + "' as player start location");
 
     /**
-     * The player in the game. We create the player at the location of the player start in our level.
+     * The player in the game. We create the player at the location of the player start in our level and
+     * align the initial facing to the direction that the start position is facing.
      *
      * @type {nurdz.sneak.Player}
      */
     this.player = new nurdz.sneak.Player (stage, playerStartPos.mapPosition.x, playerStartPos.mapPosition.y);
+    this.player.setFacing (playerStartPos.properties.facing);
 
     // Insert the player into the list of entities that exist in the level. This allows other entities
     // that query entities on the map to know about the player.
@@ -414,15 +416,25 @@ nurdz.sneak.GameScene = function (stage)
     {
         var entities, i;
 
-        // Get the map location of the player.
+        // Get the map location of the player and his facing.
         var mapPos = this.player.mapPosition;
+        var mapFacing = this.player.properties.facing;
 
         /**
          * When the input represents a movement key, this stores the map position the player would move to
-         * for later checking.
+         * for later checking, as long as the movement key is in the direction that the player is already
+         * facing. Otherwise this remains null.
          *
          * @type {nurdz.game.Point|null} */
         var targetPos = null;
+
+        /**
+         * When the input represents a movement key that is not the direction that the player is moving
+         * in, this is set to the facing that the player should turn in response to this move so that they
+         * can continue moving in that direction on the next turn.
+         * @type {Number|null}
+         */
+        var newFacing = null;
 
         // Check for valid keys.
         // If a valid movement key was seen, check to see if the position that was moved to is blocked.
@@ -442,22 +454,34 @@ nurdz.sneak.GameScene = function (stage)
 
             case this.keys.KEY_UP:
             case this.keys.KEY_W:
-                targetPos = mapPos.copyTranslatedXY (0, -1);
+                if (mapFacing == 270)
+                    targetPos = mapPos.copyTranslatedXY (0, -1);
+                else
+                    newFacing = 270;
                 break;
 
             case this.keys.KEY_DOWN:
             case this.keys.KEY_S:
-                targetPos = mapPos.copyTranslatedXY (0, 1);
+                if (mapFacing == 90)
+                    targetPos = mapPos.copyTranslatedXY (0, 1);
+                else
+                    newFacing = 90;
                 break;
 
             case this.keys.KEY_LEFT:
             case this.keys.KEY_A:
-                targetPos = mapPos.copyTranslatedXY (-1, 0);
+                if (mapFacing == 180)
+                    targetPos = mapPos.copyTranslatedXY (-1, 0);
+                else
+                    newFacing = 180;
                 break;
 
             case this.keys.KEY_RIGHT:
             case this.keys.KEY_D:
-                targetPos = mapPos.copyTranslatedXY (1, 0);
+                if (mapFacing == 0)
+                    targetPos = mapPos.copyTranslatedXY (1, 0);
+                else
+                    newFacing = 0;
                 break;
 
             // These keys are the interaction keys: If there are any entities on the same tile as the
@@ -497,23 +521,32 @@ nurdz.sneak.GameScene = function (stage)
                 return true;
         }
 
-        // If a movement happened, then move the player and allow all entities a turn. This also makes
-        // sure to check if the player is currently standing on an entity, which will trigger them for a
-        // touch if they support that.
-        if (targetPos != null && this.level.isBlockedAt (targetPos) == false)
+        // If a turn happened, OR a move happened that is not blocked, then move the player and allow all
+        // entities a turn. This will also trigger entities that the player is now standing on.
+        if (newFacing != null ||
+            (targetPos != null && this.level.isBlockedAt (targetPos) == false))
         {
-            // The move is valid, so move the player there and then step all of the entities, since they
-            // now get a turn.
-            this.player.setMapPosition (targetPos);
+            // Turn if we're turning.
+            if (newFacing != null)
+                this.player.setFacing (newFacing);
+
+            // Move if we're moving.
+            if (targetPos != null)
+                this.player.setMapPosition (targetPos);
+
+            // Now let all entities have a turn.
             this.level.stepAllEntities ();
 
-            // Now find all entities at the position that the player moved to, and trigger them all.
+            // If we moved, then find all entities at the position that the playere moved to and trigger them.
             //
             // This happens after the move and the entity gets a turn so that the entities have a chance
             // to move during their step such that they are no longer where the player might have ended up.
-            entities = this.level.entitiesAt (targetPos);
-            for (i = 0 ; i < entities.length ; i++)
-                entities[i].triggerTouch (this.player);
+            if (this.targetPosition != null)
+            {
+                entities = this.level.entitiesAt (targetPos);
+                for (i = 0 ; i < entities.length ; i++)
+                    entities[i].triggerTouch (this.player);
+            }
             return true;
         }
 

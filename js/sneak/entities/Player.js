@@ -47,10 +47,12 @@ nurdz.sneak.Player = function (stage, x, y)
      */
     nurdz.sneak.Player.prototype.render = function (stage)
     {
-        this.startRendering (stage);
+        this.startRendering (stage, this.properties.facing);
         stage.fillRect (-(this.width / 2) + MARGIN, -(this.height / 2) + MARGIN,
                         this.width - (2 * MARGIN), this.height - (2 * MARGIN),
                         this.debugColor);
+        stage.setArrowStyle("#000000");
+        stage.drawArrow (-(this.width / 2) + MARGIN, 0, (this.width / 2) - MARGIN, 0);
         this.endRendering (stage);
     };
 
