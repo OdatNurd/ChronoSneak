@@ -74,7 +74,7 @@ nurdz.sneak.levels.getLevelOne = function (stage)
         new nurdz.sneak.Door (stage, 15, 15, {
             id:       "guardBlock",
             open:     false,
-            openTime: 1
+            openTime: 3
         }),
 
         new nurdz.sneak.Button (stage, 22, 9, {
