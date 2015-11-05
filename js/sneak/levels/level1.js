@@ -27,11 +27,10 @@ nurdz.sneak.levels.getLevelOne = function (stage)
         2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 2,
         2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
     ], [
-        // The location the player will start at.
-        new nurdz.sneak.Waypoint (stage, 23, 11, {
-            id:      'playerStart',
-            facing:  'left',
-            visible: false
+        new nurdz.sneak.Player (stage, 23, 11, {
+            facing:     'left',
+            handedness: "right",
+            visible:    true
         }),
 
         new nurdz.sneak.LevelGoal (stage, 1, 5, {
@@ -103,7 +102,7 @@ nurdz.sneak.levels.getLevelOne = function (stage)
             pressed: true
         }),
         new nurdz.sneak.Button (stage, 10, 15, {
-            id: "prepExitBtn",
+            id:      "prepExitBtn",
             facing:  "up",
             trigger: "exitBtn"
         }),

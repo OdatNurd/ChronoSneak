@@ -75,26 +75,16 @@ nurdz.sneak.GameScene = function (stage)
     // start and how they patrol.
     this.spawnGuards ();
 
-    // Attempt to find the player start entity so that we know where to start the player for this run. If
-    // this does not have exactly one entity, the level is invalid.
-    var playerStartPos = this.level.entitiesByID["playerStart"];
-    if (playerStartPos == null)
-        throw new Error ("Unable to determine player start position.");
-    else
-        console.log ("Using entity '" + playerStartPos.properties.id + "' as player start location");
-
     /**
      * The player in the game. We create the player at the location of the player start in our level and
      * align the initial facing to the direction that the start position is facing.
      *
      * @type {nurdz.sneak.Player}
      */
-    this.player = new nurdz.sneak.Player (stage, playerStartPos.mapPosition.x, playerStartPos.mapPosition.y);
-    this.player.setFacing (playerStartPos.properties.facing);
+    this.player = this.level.entitiesByID["player"];
+    if (this.player == null || this.player instanceof nurdz.sneak.Player == false)
+        throw new Error ("Unable to find player entity or entity is not a player");
 
-    // Insert the player into the list of entities that exist in the level. This allows other entities
-    // that query entities on the map to know about the player.
-    this.level.entities.push (this.player);
 
     // Add the player and all of the entities in the level to the list of actors in the scene, so that the
     // update and render methods of all of them will get invoked automatically.
@@ -105,8 +95,6 @@ nurdz.sneak.GameScene = function (stage)
     // actually takes a turn or does something that burns time (like waiting).
     this.addActorArray (this.level.entities);
     this.sortActors ();
-
-    this.actors()
 };
 
 (function ()
@@ -335,7 +323,7 @@ nurdz.sneak.GameScene = function (stage)
 
         // Get the list of waypoints and the spawn position of the guard.
         var waypoints = this.level.entitiesWithIDs (guard.properties.patrol);
-        var spawnPos = this.level.entitiesByID[guard.initialWaypoint];
+        var spawnPos = this.level.entitiesByID[guard.properties.spawnPoint];
 
         // Store the spawn position as the first point and the waypoints as the following positions. Each
         // point is offset by half the tile size so that when the patrol path is displayed, it centers in
@@ -540,7 +528,7 @@ nurdz.sneak.GameScene = function (stage)
             // Now let all entities have a turn.
             this.level.stepAllEntities ();
 
-            // If we moved, then find all entities at the position that the playere moved to and trigger them.
+            // If we moved, then find all entities at the position that the player moved to and trigger them.
             //
             // This happens after the move and the entity gets a turn so that the entities have a chance
             // to move during their step such that they are no longer where the player might have ended up.

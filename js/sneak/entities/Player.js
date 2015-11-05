@@ -5,14 +5,21 @@
  * @param {nurdz.game.Stage} stage the stage that will manage this entity
  * @param {Number} x the X coordinate of the entity, in map coordinates
  * @param {Number} y the Y coordinate of the entity, in map coordinates
+ * @param {Object|null} [properties={}] the properties specific to this entity, or null for none
  * @constructor
  */
-nurdz.sneak.Player = function (stage, x, y)
+nurdz.sneak.Player = function (stage, x, y, properties)
 {
     "use strict";
 
+    // Set up the default properties for entities of this type. Waypoints are not meant to be visible,
+    // they're just markers.
+    this.defaultProperties = {
+        id: "player"
+    };
+
     // Call the super class constructor.
-    nurdz.sneak.ChronoEntity.call (this, 'Player', stage, x, y, {id: "player"}, 10, '#009000');
+    nurdz.sneak.ChronoEntity.call (this, 'Player', stage, x, y, properties, 10, '#009000');
 };
 
 // Now define the various member functions and any static stage.
