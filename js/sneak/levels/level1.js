@@ -117,7 +117,8 @@ nurdz.sneak.levels.getLevelOne = function (stage)
         new nurdz.sneak.Waypoint (stage, 7, 13, {id: "way3b"}),
         new nurdz.sneak.Waypoint (stage, 12, 8, {id: "way4"}),
 
-        new nurdz.sneak.GuardBase (stage, "gStart1", {
+        new nurdz.sneak.GuardBase (stage, 0, 0, {
+            spawnPoint: "gStart1",
             facing:     "left",
             patrolLoop: true,
             handedness: "left",

@@ -2,10 +2,6 @@
  * This entity is the basis for all guards in the game. All logic common to guards is in this entity, with
  * specific guard types sub-classing as appropriate to extend this base as needed.
  *
- * A base guard is different than regular entities in that their position is not given at construction
- * time by providing a map position. Instead, they are provided the ID value of a waypoint that specifies
- * where they spawn.
- *
  * Guards respond to the step function primarily by attempting to follow a patrol route. This is laid out in
  * a property which lists the id values of one or more waypoints, with the guard moving one step between
  * then for each step call. The patrol can loop, in which case the guard moves from the last point back to
@@ -19,6 +15,8 @@
  * patrol route is navigable in that regard when they are instantiated.
  *
  * This entity supports the following properties:
+ *    - 'spawnPoint': string (default: none)
+ *       - The guard spawns at the waypoint that has this ID value; it is an error if no such waypoint exists.
  *    - 'patrol': string or array of strings (default: none)
  *       - If specified, this is an entity ID or a list of entity ID's of waypoints that this guard should
  *         follow. The guard will start walking towards the first waypoint in the list, then to the next
@@ -29,11 +27,12 @@
  *          continue.
  *
  * @param {nurdz.game.Stage} stage the stage that will manage this entity
- * @param {String} initialWaypoint the waypoint that the guard should spawn at
+ * @param {Number} x the X coordinate of the entity, in map coordinates
+ * @param {Number} y the Y coordinate of the entity, in map coordinates
  * @param {Object|null} [properties={}] the properties specific to this entity, or null for none
  * @constructor
  */
-nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
+nurdz.sneak.GuardBase = function (stage, x, y, properties)
 {
     "use strict";
 
@@ -43,21 +42,10 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
     };
 
     /**
-     * This represents the id of the waypoint that the guard should spawn at initially. The actual entity
-     * can be found in the spawnEntity value once the map is fully loaded.
-     *
-     * @type {String}
-     * @see nurdz.sneak.GuardBase.spawnEntity
-     * @see nurdz.sneak.GuardBase.collectWaypoints
-     */
-    this.initialWaypoint = initialWaypoint;
-
-    /**
      * The waypoint where this guard should spawn. This is null when the object is first initialized but gets
      * set after the level is loaded.
      *
      * @type {nurdz.sneak.Waypoint|null}
-     * @see nurdz.sneak.GuardBase.initialWaypoint
      * @see nurdz.sneak.GuardBase.collectWaypoints
      */
     this.spawnEntity = null;
@@ -100,7 +88,7 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
     this.nextPatrolPoint = null;
 
     // Call the super class constructor.
-    nurdz.sneak.ChronoEntity.call (this, "GuardBase", stage, 0, 0, properties, 2, '#EB3B00');
+    nurdz.sneak.ChronoEntity.call (this, "GuardBase", stage, x, y, properties, 2, '#EB3B00');
 };
 
 // Now define the various member functions and any static stage.
@@ -118,6 +106,29 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
             value:        nurdz.sneak.GuardBase
         }
     });
+
+    /**
+     * This is automatically invoked at the end of the constructor to validate that the properties object
+     * that we have is valid as far as we can tell (i.e. needed properties exist and have a sensible value).
+     *
+     * This validates that
+     */
+    nurdz.sneak.GuardBase.prototype.validateProperties = function ()
+    {
+        // If there is a patrol property and it's a string, convert it to an array with a single element
+        // to make code later easier.
+        if (typeof (this.properties.patrol) == "string")
+            this.properties.patrol = [this.properties.patrol];
+
+        // Validate all properties.
+        this.isPropertyValid ("patrol", "array", false);
+        this.isPropertyValid ("patrolLoop", "boolean", false);
+        this.isPropertyValid ("spawnPoint", "string", true);
+
+        // Chain to the super to check properties it might have inserted or know about.
+        nurdz.sneak.ChronoEntity.prototype.validateProperties.call (this);
+    };
+
 
     /**
      * Every time this is invoked, it causes the guard to select the next patrol point in its patrol. If
@@ -180,7 +191,7 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
         var patrolEntities = null;
 
         // Get the entity that is the spawn entity.
-        var spawnEntity = level.entitiesByID[this.initialWaypoint];
+        var spawnEntity = level.entitiesByID[this.properties.spawnPoint];
 
         // If there is a patrol, collect the entities for the patrol points.
         if (this.properties.patrol)
@@ -222,27 +233,6 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
 
         // Lastly, set up our patrol
         this.selectNextPatrolWaypoint ();
-    };
-
-    /**
-     * This is automatically invoked at the end of the constructor to validate that the properties object
-     * that we have is valid as far as we can tell (i.e. needed properties exist and have a sensible value).
-     *
-     * This validates that
-     */
-    nurdz.sneak.GuardBase.prototype.validateProperties = function ()
-    {
-        // If there is a patrol property and it's a string, convert it to an array with a single element
-        // to make code later easier.
-        if (typeof (this.properties.patrol) == "string")
-            this.properties.patrol = [this.properties.patrol];
-
-        // Validate all properties.
-        this.isPropertyValid ("patrol", "array", false);
-        this.isPropertyValid ("patrolLoop", "boolean", false);
-
-        // Chain to the super to check properties it might have inserted or know about.
-        nurdz.sneak.ChronoEntity.prototype.validateProperties.call (this);
     };
 
     /**
@@ -451,7 +441,7 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
         return String.format ("[GuardBase id='{0}' pos={1} spawnPos='{2}' patrolLoops={3}]",
                               this.properties.id,
                               this.mapPosition.toString(),
-                              this.initialWaypoint,
+                              this.properties.spawnPoint,
                               this.properties.patrolLoop);
     };
 } ());
