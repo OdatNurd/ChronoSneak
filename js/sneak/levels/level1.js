@@ -99,13 +99,13 @@ nurdz.sneak.levels.getLevelOne = function (stage)
         new nurdz.sneak.Button (stage, 10, 11, {
             id:      "exitBtn",
             facing:  "down",
-            trigger: "exitDoor",
+            trigger: ["exitDoor", "prepExitBtn"],
             pressed: true
         }),
         new nurdz.sneak.Button (stage, 10, 15, {
+            id: "prepExitBtn",
             facing:  "up",
-            trigger: "exitBtn",
-            cycleTime: 3
+            trigger: "exitBtn"
         }),
 
         new nurdz.sneak.Waypoint (stage, 21, 11, {id: "gStart1"}),
