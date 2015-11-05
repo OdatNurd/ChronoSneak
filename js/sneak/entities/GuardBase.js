@@ -317,10 +317,12 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
         // Draw a small dot to mark the waypoint if it's visible, otherwise, chain to the superclass version.
         if (this.properties.visible)
         {
-            this.startRendering (stage);
+            this.startRendering (stage, this.properties.facing);
             stage.fillRect (-(this.width / 2) + MARGIN, -(this.height / 2) + MARGIN,
                             this.width - (2 * MARGIN), this.height - (2 * MARGIN),
                             this.debugColor);
+            stage.setArrowStyle ("#000000");
+            stage.drawArrow (-(this.width / 2) + MARGIN, 0, (this.width / 2) - MARGIN, 0);
             this.endRendering (stage);
         }
         else
@@ -340,18 +342,33 @@ nurdz.sneak.GuardBase = function (stage, initialWaypoint, properties)
      */
     nurdz.sneak.GuardBase.prototype.step = function (level)
     {
-
         // We don't have to do anything if we don't have a patrol point yet.
         if (this.nextPatrolPoint == null)
             return;
 
         // Duplicate the current position, then translate that position to take a step in the direction of
-        // the current patrol route.
+        // the next waypoint on the patrol route. We also record what the map facing would be in the move
+        // were to go in that direction.
         var movePos = this.mapPosition.copy ();
+        var moveFacing;
         if (this.mapPosition.x == this.nextPatrolPoint.mapPosition.x)
-            movePos.translateXY (0, (this.mapPosition.y > this.nextPatrolPoint.mapPosition.y) ? -1 : 1);
+        {
+            moveFacing = (this.mapPosition.y > this.nextPatrolPoint.mapPosition.y) ? 270 : 90;
+            movePos.translateXY (0, moveFacing == 270 ? -1 : 1);
+        }
         else
-            movePos.translateXY ((this.mapPosition.x > this.nextPatrolPoint.mapPosition.x) ? -1 : 1, 0);
+        {
+            moveFacing = (this.mapPosition.x > this.nextPatrolPoint.mapPosition.x) ? 180 : 0;
+            movePos.translateXY (moveFacing == 180 ? -1 : 1, 0);
+        }
+
+        // If the direction that we would have to move in is not the direction that we're facing, we just
+        // need to change our facing and leave; turning takes a turn.
+        if (moveFacing != this.properties.facing)
+        {
+            this.setFacing (moveFacing);
+            return;
+        }
 
         // Get the tile at the position the move would take us to.
         var dTile = level.tileAt (movePos);
