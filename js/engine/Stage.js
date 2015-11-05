@@ -111,6 +111,28 @@ nurdz.game.Stage = function (containerDivID, initialColor)
     var gameTimerID = null;
 
     /**
+     * The current FPS that the game is running at, recalculated once per second.
+     *
+     * @type {Number}
+     */
+    var fps = 0;
+
+    /**
+     * When calculating FPS, this is the time that the most recent frame count started. Once we have
+     * counted frames for a second, we reset and start again.
+     *
+     * @type {Number}
+     */
+    var startTime = 0;
+
+    /**
+     * When calculating FPS, this is the number of frames that we have seen in the last second.
+     *
+     * @type {Number}
+     */
+    var frameNumber = 0;
+
+    /**
      * This method runs one game frame for the current scene. The scene will get a change to update itself
      * and it will then be asked to render itself.
      *
@@ -118,6 +140,24 @@ nurdz.game.Stage = function (containerDivID, initialColor)
      */
     var sceneLoop = function ()
     {
+        // Get the current time for this frame and the elapsed time since we started.
+        var currentTime = new Date ().getTime();
+        var elapsedTime = (currentTime - startTime) / 1000;
+
+        // This counts as a frame.
+        frameNumber++;
+
+        // Calculate the FPS now
+        fps = frameNumber / elapsedTime;
+
+        // If a second or more has elapsed, reset the count. We don't want an average over time, we want
+        // the most recent numbers so that we can see momentary drops.
+        if (elapsedTime > 1)
+        {
+            startTime = new Date ().getTime ();
+            frameNumber = 0;
+        }
+
         try
         {
             // If there is a scene change scheduled, change it now.
@@ -163,6 +203,10 @@ nurdz.game.Stage = function (containerDivID, initialColor)
         if (gameTimerID != null)
             throw new Error ("Attempt to start the game running when it is already running");
 
+        // Reset the variables we use for frame counts.
+        startTime = 0;
+        frameNumber = 0;
+
         // Fire off a timer to invoke our scene loop using an appropriate interval.
         gameTimerID = setInterval (sceneLoop, 1000 / fps);
 
@@ -191,6 +235,18 @@ nurdz.game.Stage = function (containerDivID, initialColor)
 
         // Turn off input events.
         disableInputEvents (this.canvas);
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * The stage keeps track of the current frame rate that the update loop is being called at, and this
+     * returns the most recently calculated value.
+     *
+     * @returns {Number}
+     */
+    nurdz.game.Stage.prototype.fps = function ()
+    {
+        return fps;
     };
 
     /**

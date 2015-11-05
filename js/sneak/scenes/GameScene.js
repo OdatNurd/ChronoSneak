@@ -188,6 +188,9 @@ nurdz.sneak.GameScene = function (stage)
         if (this.debugTxt != null)
             this.stage.drawTxt (this.debugTxt, 16, this.stage.height - 6, 'white');
 
+        // Render the current FPS to the screen
+        this.stage.drawTxt(this.stage.fps ().toFixed (0), 6, 20, "red");
+
         // If there are debug target links, render them now.
         if (this.debugTargetLinks != null)
         {
