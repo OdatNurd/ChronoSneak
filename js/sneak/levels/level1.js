@@ -9,9 +9,9 @@ nurdz.sneak.levels.getLevelOne = function (stage)
     // Create and return the object.
     return new nurdz.sneak.SneakLevelData (stage, "level1", 25, 18, [
         2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+        2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 2,
         2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 2,
-        2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 2,
-        2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 2,
+        2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 2,
         2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 0, 2, 2, 0, 2, 2, 0, 0, 2, 0, 0, 0, 0, 2,
         2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 2, 2,
         2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2,
@@ -56,6 +56,15 @@ nurdz.sneak.levels.getLevelOne = function (stage)
     /***************************************************
      * Doors
      **************************************************/
+
+        {
+            class: "Door", position: [3, 2],
+            id:    "closetDoor",
+
+            open:     false
+        },
+
+        /************************************/
 
         {
             class: "Door", position: [4, 8],
@@ -129,6 +138,26 @@ nurdz.sneak.levels.getLevelOne = function (stage)
      **************************************************/
 
         {
+            class: "Button", position: [3, 1],
+            panel: true,
+            facing: "right",
+
+            trigger: "closetDoor"
+        },
+
+        /************************************/
+
+        {
+            class:  "Button", position: [3, 3],
+            panel: true,
+            facing: "left",
+
+            trigger: "closetDoor"
+        },
+
+        /************************************/
+
+        {
             class:  "Button", position: [22, 9],
             facing: "up",
 
@@ -153,7 +182,27 @@ nurdz.sneak.levels.getLevelOne = function (stage)
             class:  "Button", position: [15, 6],
             facing: "right",
 
-            trigger: ["door1", "door3"]
+            trigger: ["door1"]
+        },
+
+        /************************************/
+
+        {
+            class:  "Button", position: [21, 5],
+            panel: true,
+            facing: "up",
+
+            trigger: ["door3"]
+        },
+
+        /************************************/
+
+        {
+            class:  "Button", position: [23, 5],
+            panel: true,
+            facing: "down",
+
+            trigger: ["door3"]
         },
 
         /************************************/

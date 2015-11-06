@@ -11,6 +11,10 @@
  * The facing of the button determines what side of the map tile it is rendered on.
  *
  * This entity supports the following properties:
+ *    - 'panel': true or false (default: false)
+ *       - When this is set to true, the button renders as a wall panel instead of a button. Visually this
+ *         means that the panel does not change size but does show a green light when it is open and a red
+ *         light when it is closed.
  *    - 'pressed': true or false (default: false)
  *       - Controls whether the button appears pressed or not
  *    - 'cycleTime': integer (default: -1)
@@ -30,6 +34,7 @@ nurdz.sneak.Button = function (stage, x, y, properties)
     // Set up the default properties for entities of this type.
     this.defaultProperties = {
         pressed:   false,
+        panel:     false,
         cycleTime: -1
     };
 
@@ -67,7 +72,7 @@ nurdz.sneak.Button = function (stage, x, y, properties)
     });
 
     /**
-     * How wide a button is on the wall.
+     * When rendering as a button, this determines how wide the button is.
      *
      * @const
      * @type {Number}
@@ -75,20 +80,45 @@ nurdz.sneak.Button = function (stage, x, y, properties)
     var BUTTON_WIDTH = Math.floor (nurdz.game.TILE_SIZE / 2);
 
     /**
-     * How thick a button is when it is pressed.
+     * When rendering as a button, this determines how thick the button is when it appears pressed.
      *
      * @const
-     * @type {number}
+     * @type {Number}
      */
     var BUTTON_IN_SIZE = Math.floor (nurdz.game.TILE_SIZE * 0.20);
 
     /**
-     * How thick a button is when it is not pressed.
+     * When rendering as a button, this determines how thick the button is when it is not pressed.
      *
      * @const
-     * @type {number}
+     * @type {Number}
      */
     var BUTTON_OUT_SIZE = Math.floor (nurdz.game.TILE_SIZE * 0.45);
+
+    /**
+     * When rendering as a wall panel, this determines how tall the panel appears.
+     *
+     * @const
+     * @type {Number}
+     */
+    var PANEL_HEIGHT = Math.floor (nurdz.game.TILE_SIZE / 2);
+
+    /**
+     * When rendering as a wall panel, this determines how wide the panel appears.
+     *
+     * @const
+     * @type {Number}
+     */
+    var PANEL_WIDTH = Math.floor (nurdz.game.TILE_SIZE * 0.30);
+
+    /**
+     * When rendering as a wall panel, this is how far away from the "floor" edge of the tile the panel
+     * appears.
+     *
+     * @const
+     * @type {Number}
+     */
+    var PANEL_MARGIN = 3;
 
     /**
      * This is automatically invoked at the end of the constructor to validate that the properties object
@@ -99,6 +129,7 @@ nurdz.sneak.Button = function (stage, x, y, properties)
     nurdz.sneak.Button.prototype.validateProperties = function ()
     {
         // Validate properties
+        this.isPropertyValid ("panel", "boolean", true);
         this.isPropertyValid ("pressed", "boolean", true);
         this.isPropertyValid ("cycleTime", "number", true);
 
@@ -134,8 +165,9 @@ nurdz.sneak.Button = function (stage, x, y, properties)
      */
     nurdz.sneak.Button.prototype.blocksActorMovement = function ()
     {
-        // The player needs to stand on the button to activate it, so we can't block.
-        return false;
+        // When we're a panel, we should block movement because we should be affixed to a wall. As a
+        // button, the player has to stand on the button to activate it.
+        return this.properties.panel == true;
     };
 
     /**
@@ -149,19 +181,34 @@ nurdz.sneak.Button = function (stage, x, y, properties)
         // Are we visible?
         if (this.properties.visible)
         {
-            // Calculate the Y position of the top of the button graphic.
-            var renderY = -((this.height / 2) - (BUTTON_WIDTH / 2));
-
             // Now draw the button as if we are on the right hand side of the map tile. The rotation will
             // handle positioning things on the appropriate side of the tile.
             this.startRendering (stage, this.properties.facing);
 
-            if (this.properties.pressed)
-                stage.fillRect ((this.width / 2) - BUTTON_IN_SIZE, renderY,
-                                BUTTON_IN_SIZE, BUTTON_WIDTH, this.debugColor);
+            // We render differently as a panel than we do as a button.
+            if (this.properties.panel)
+            {
+                // Now that this seems backwards because width and height as in the wrong order, but the
+                // constants are named for what they do and we happen to be visually drawing the panel
+                // rotated 90 degrees from what you might think.
+                stage.fillRect ((this.width / 2) - PANEL_HEIGHT - PANEL_MARGIN, -(PANEL_WIDTH / 2),
+                                PANEL_HEIGHT, PANEL_WIDTH, '#787878');
+
+                // Now an indication of whether the panel is currently pressed or not.
+                stage.fillCircle(0, 0, PANEL_WIDTH / 2, this.properties.pressed ? "#00cc00" : "#cc0000");
+            }
             else
-                stage.fillRect ((this.width / 2) - BUTTON_OUT_SIZE, renderY,
-                                BUTTON_OUT_SIZE, BUTTON_WIDTH, this.debugColor);
+            {
+                // Calculate the Y position of the top of the button graphic.
+                var renderY = -((this.height / 2) - (BUTTON_WIDTH / 2));
+
+                if (this.properties.pressed)
+                    stage.fillRect ((this.width / 2) - BUTTON_IN_SIZE, renderY,
+                                    BUTTON_IN_SIZE, BUTTON_WIDTH, this.debugColor);
+                else
+                    stage.fillRect ((this.width / 2) - BUTTON_OUT_SIZE, renderY,
+                                    BUTTON_OUT_SIZE, BUTTON_WIDTH, this.debugColor);
+            }
 
             this.endRendering (stage);
         }
