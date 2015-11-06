@@ -134,6 +134,61 @@ nurdz.game.Level = function (stage, levelData)
         return this.entitiesAtXY (location.x, location.y);
     };
 
+
+    /**
+     * Given coordinates in the map (e.g. tile based) domain and a facing, this calculates which map tile
+     * is in the facing direction given and then returns back a list of all entities that exist at the map
+     * tile that is adjacent in that direction, which might be 0. This also detects when either the input or
+     * facing adjusted coordinates are outside of the world.
+     *
+     * @param {Number} x the X coordinate to search
+     * @param {Number} y the Y coordinate to search
+     * @param {Number} facing the facing to search
+     * @returns {nurdz.game.Entity[]|null} the entities at the provided location or null if the location is
+     * invalid
+     */
+    nurdz.game.Level.prototype.entitiesAtXYFacing = function (x, y, facing)
+    {
+        // Based on the facing angle, adjust the map position as needed.
+        switch (facing)
+        {
+            case 0:
+                x++;
+                break;
+
+            case 90:
+                y++;
+                break;
+
+            case 180:
+                x--;
+                break;
+
+            case 270:
+                y--;
+                break;
+        }
+
+        // Now we can do a normal lookup.
+        return this.entitiesAtXY (x, y);
+    };
+
+    /**
+     * Given coordinates in the map (e.g. tile based) domain and a facing, this calculates which map tile
+     * is in the facing direction given and then returns back a list of all entities that exist at the map
+     * tile that is adjacent in that direction, which might be 0. This also detects when either the input or
+     * facing adjusted coordinates are outside of the world.
+     *
+     * @param {nurdz.game.Point} location the location in the map to check
+     * @param {Number} facing the facing to search
+     * @returns {nurdz.game.Entity[]|null} the entities at the provided location or null if the location is
+     * invalid
+     */
+    nurdz.game.Level.prototype.entitiesAtFacing = function (location, facing)
+    {
+        return this.entitiesAtXYFacing (location.x, location.y, facing);
+    };
+
     /**
      * Scan over all entities in the level and return back a list of all entities with the id or ids
      * given, which may be an empty array.
