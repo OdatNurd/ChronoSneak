@@ -128,19 +128,16 @@ nurdz.game.LevelData = function (stage, name, width, height, levelData, entityLi
         if (this.width != nurdz.game.STAGE_TILE_WIDTH || this.height != nurdz.game.STAGE_TILE_HEIGHT)
             error ("Scrolling is not implemented; level '" + this.name + "'must be the same size as the viewport");
 
-        // Iterate over the tile data now. When we find a player start, store the location in X,Y values as
-        // coordinates relative to the level data.
-        //
-        // If we find a player start position after we already have one, that's an error. Additionally, if we
-        // find a tile with an unknown ID, we also complain.
-        for (var y = 0; y < this.height; y++)
+        // Validate that all tiles are valid.
+        for (var y = 0 ; y < this.height ; y++)
         {
-            for (var x = 0; x < this.width; x++)
+            for (var x = 0 ; x < this.width ; x++)
             {
                 // Pull a tileID out of the level data, and validate that the tileset knows what it is.
                 var tileID = this.levelData[y * this.width + x];
                 if (this.tileset.isValidTileID(tileID) == false)
-                    error ("Invalid tileID '" + tileID + "' found at [" + x + "," + y + "] in level" + this.name);
+                    error (
+                        "Invalid tileID '" + tileID + "' found at [" + x + "," + y + "] in level" + this.name);
             }
         }
     };
