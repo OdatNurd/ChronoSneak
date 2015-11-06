@@ -22,7 +22,7 @@
  * @param {Number} width width of the level, in tiles
  * @param {Number} height height of the level, in tiles
  * @param {Number[]} levelData the actual data that represents the level
- * @param {nurdz.game.Entity[]} entityList the list of entities contained in the map (may be 0).
+ * @param {Object[]} entityList the list of entities contained in the map (may be 0).
  * @param {nurdz.game.Tileset} tileset the tileset that this level is using
  * @throws {Error} if the level data is not valid
  * @constructor
@@ -63,16 +63,27 @@ nurdz.sneak.SneakLevelData = function (stage, name, width, height, levelData, en
     var sneakNamespace = nurdz.createOrGetNamespace ("nurdz.sneak");
 
     /**
+     * Throws an error that explains why an entity could not be created.
+     *
+     * @param {String} reason the reason for the failure
+     */
+    var creationError = function (reason)
+    {
+        throw new TypeError ("Unable to create entity: " + reason);
+    };
+
+    /**
      * Given an entity descriptor, create and return the entity object that it represents. This ensures
      * that the descriptor has the keys needed and that the result is an instance of ChronoEntity or one
      * of its subclasses.
      *
      * @param {nurdz.game.Stage} stage the stage to create the entity  on
-     * @param {{}} descriptor the entity descriptor to use to create the entity
+     * @param {Object} descriptor the entity descriptor to use to create the entity
+     * @param {String} descriptor.class the name of the constructor function to use
+     * @param {Number[]} descriptor.position the position to create the entity at
      */
     var createEntity = function (stage, descriptor)
     {
-        // Duplicate the descriptor we get to be the properties for the new entity.
         /**
          * The properties for the created entity. This is a duplicate of the descriptor that we get which
          * has the key elements that tell us how to create the entity removed.
@@ -84,7 +95,7 @@ nurdz.sneak.SneakLevelData = function (stage, name, width, height, levelData, en
         /**
          * The constructor function that will create this entity.
          *
-         * @type {Function|null}
+         * @type {Function}
          */
         var constructor = sneakNamespace[properties.class];
 
@@ -95,14 +106,20 @@ nurdz.sneak.SneakLevelData = function (stage, name, width, height, levelData, en
          */
         var position = properties.position;
 
-        // If we did not get all of the required things, or the types are not correct, throw an error.
-        if (constructor == null || position == null || !Array.isArray (position) || position.length != 2 ||
-            typeof (constructor) != "function" ||
-            typeof  (position[0]) != "number" ||
-            typeof (position[0]) != "number")
-            throw new TypeError ("Unable to create entity; missing or invalid specification details");
+        // Ensure that the fields are valid.
+        if (constructor == null || position == null)
+            creationError ("incomplete entity specification in level data");
 
-        // Remove the key fields from the entity.
+        // Make sure that the constructor is a function that takes the appropriate number of parameters.
+        if (typeof (constructor) != "function" || constructor.length != 4)
+            creationError ("constructor function is not valid");
+
+        // Make sure that the position is valid.
+        if (!Array.isArray (position) || position.length != 2 ||
+            typeof  (position[0]) != "number" || typeof (position[0]) != "number")
+            creationError ("position specification is not valid");
+
+        // Remove the key fields from the entity now.
         delete properties.class;
         delete properties.position;
 
@@ -115,7 +132,7 @@ nurdz.sneak.SneakLevelData = function (stage, name, width, height, levelData, en
 
         // If the entity is not a valid instance, throw an error.
         if (entity instanceof nurdz.sneak.ChronoEntity == false)
-            throw new TypeError ("Unable to create entity; class is not a subclass of ChronoEntity");
+            creationError ("constructor function is not a subclass of ChronoEntity");
 
         // Return the entity now.
         return entity;
@@ -138,7 +155,6 @@ nurdz.sneak.SneakLevelData = function (stage, name, width, height, levelData, en
      *
      * @param {nurdz.game.Stage} stage the stage to create the entities on
      * @param {Object[]} entityDescriptors The table that represents the entities to create
-     * @returns {nurdz.game.Entity[]} the created list of entities
      * @returns {nurdz.sneak.ChronoEntity[]}
      */
     nurdz.sneak.SneakLevelData.prototype.createEntities = function (stage, entityDescriptors)

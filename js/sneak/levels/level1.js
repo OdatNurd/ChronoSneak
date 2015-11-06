@@ -7,7 +7,7 @@
 nurdz.sneak.levels.getLevelOne = function (stage)
 {
     // Create and return the object.
-    return new nurdz.game.LevelData (stage, "level1", 25, 18, [
+    return new nurdz.sneak.SneakLevelData (stage, "level1", 25, 18, [
         2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
         2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 2,
         2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 2,
@@ -27,101 +27,165 @@ nurdz.sneak.levels.getLevelOne = function (stage)
         2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 2,
         2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
     ], [
-        new nurdz.sneak.Player (stage, 23, 11, {
-            facing:     'left',
-            visible:    true
-        }),
+    /***************************************************
+     * The Player
+     **************************************************/
 
-        new nurdz.sneak.LevelGoal (stage, 1, 5, {
-            id: 'winGoal'
-        }),
-        new nurdz.sneak.LevelGoal (stage, 0, 4, {
-            id:       'loseGoal',
-            winLevel: false
-        }),
+        {
+            class:   "Player", position: [23, 11],
+            facing:  'left',
+            visible: true
+        },
 
-        new nurdz.sneak.Door (stage, 4, 8, {
+    /***************************************************
+     * Level Goals
+     **************************************************/
+
+        {
+            class: "LevelGoal", position: [1, 5],
+            id:    'winGoal'
+        },
+
+        {
+            class: "LevelGoal", position: [0, 4],
+            id:    'loseGoal'
+        },
+
+    /***************************************************
+     * Doors
+     **************************************************/
+
+        {
+            class:    "Door", position: [4, 8],
             id:       "exitDoor",
+
             open:     false,
             openTime: 16
-        }),
-        new nurdz.sneak.Door (stage, 19, 11, {
+        },
+
+        {
+            class:    "Door", position: [19, 11],
             id:       "autoDoor1",
+
             open:     true,
             openTime: 4
-        }),
-        new nurdz.sneak.Door (stage, 19, 15, {
+        },
+
+        {
+            class:    "Door", position: [19, 15],
+
             open:     false,
             openTime: 2
-        }),
-        new nurdz.sneak.Door (stage, 11, 10, {
-            id:   "door2",
-            open: false
-        }),
-        new nurdz.sneak.Door (stage, 14, 4, {
-            id:         "door1",
-            open:       false,
-            horizontal: true
-        }),
-        new nurdz.sneak.Door (stage, 22, 5, {
-            id:         "door3",
-            open:       false,
-            horizontal: true
-        }),
+        },
 
-        new nurdz.sneak.Door (stage, 15, 15, {
+        {
+            class: "Door", position: [11, 10],
+            id:    "door2",
+
+            open:  false
+        },
+
+        {
+            class:      "Door", position: [14, 4],
+            id:         "door1",
+
+            open:       false,
+            horizontal: true
+        },
+
+        {
+            class:      "Door", position: [22, 5],
+            id:         "door3",
+
+            horizontal: true,
+            open:       false
+        },
+
+        {
+            class:    "Door", position: [15, 15],
             id:       "guardBlock",
+
             open:     false,
             openTime: 3
-        }),
 
-        new nurdz.sneak.Button (stage, 22, 9, {
+        },
+
+    /***************************************************
+     * Buttons
+     **************************************************/
+
+        {
+            class:   "Button", position: [22, 9],
+            facing: "up",
+
             trigger: "loseGoal",
-            facing:  "up",
             pressed: false
-        }),
-        new nurdz.sneak.Button (stage, 20, 13, {
+        },
+
+        {
+            class:     "Button", position: [20, 13],
+            facing: "left",
+
             trigger:   "autoDoor1",
-            facing:    "left",
             pressed:   true,
             cycleTime: 3
-        }),
-        new nurdz.sneak.Button (stage, 15, 6, {
+        },
+
+        {
+            class:   "Button", position: [15, 6],
             facing:  "right",
+
             trigger: ["door1", "door3"]
-        }),
-        new nurdz.sneak.Button (stage, 14, 1, {
+        },
+
+        {
+            class:   "Button", position: [14, 1],
             facing:  "up",
+
             trigger: "door2"
-        }),
-        new nurdz.sneak.Button (stage, 10, 11, {
+        },
+
+        {
+            class:   "Button", position: [10, 11],
             id:      "exitBtn",
             facing:  "down",
+
             trigger: ["exitDoor", "prepExitBtn"],
             pressed: true
-        }),
-        new nurdz.sneak.Button (stage, 10, 15, {
+        },
+
+        {
+            class:   "Button", position: [10, 15],
             id:      "prepExitBtn",
             facing:  "up",
+
             trigger: "exitBtn"
-        }),
+        },
 
-        new nurdz.sneak.Waypoint (stage, 21, 11, {id: "gStart1"}),
-        new nurdz.sneak.Waypoint (stage, 18, 11, {id: "pStart1"}),
-        new nurdz.sneak.Waypoint (stage, 18, 8, {id: "way1"}),
-        new nurdz.sneak.Waypoint (stage, 18, 15, {id: "way2"}),
-        new nurdz.sneak.Waypoint (stage, 12, 15, {id: "way3"}),
-        new nurdz.sneak.Waypoint (stage, 12, 13, {id: "way3a"}),
-        new nurdz.sneak.Waypoint (stage, 7, 13, {id: "way3b"}),
-        new nurdz.sneak.Waypoint (stage, 12, 8, {id: "way4"}),
+    /***************************************************
+     * Waypoints
+     **************************************************/
+        {class: "Waypoint", position: [21, 11], id: "gStart1"},
+        {class: "Waypoint", position: [18, 11], id: "pStart1"},
+        {class: "Waypoint", position: [18, 8], id: "way1"},
+        {class: "Waypoint", position: [18, 15], id: "way2"},
+        {class: "Waypoint", position: [12, 15], id: "way3"},
+        {class: "Waypoint", position: [12, 13], id: "way3a"},
+        {class: "Waypoint", position: [7, 13], id: "way3b"},
+        {class: "Waypoint", position: [12, 8], id: "way4"},
 
-        new nurdz.sneak.GuardBase (stage, 0, 0, {
-            spawnPoint: "gStart1",
-            facing:     "left",
-            patrolLoop: true,
+    /***************************************************
+     * Guards
+     **************************************************/
+        {
+            class:      "GuardBase", position: [0, 0],
             handedness: "left",
+            facing:     "left",
+            spawnPoint: "gStart1",
+
+            patrolLoop: true,
             patrol:     ["pStart1", "way2", "way3", "way3a", "way3b", "way3a", "way4", "way1"]
-        })
+        }
     ], nurdz.sneak.stdTiles);
 };
 
