@@ -62,7 +62,7 @@
             // Set up the stage. We set it into the sneak namespace so that we can access it via the
             // console in browser, if we need to.
             var stage = new nurdz.game.Stage ('gameContent');
-            document.createElement("canvas");
+            document.createElement ("canvas");
 
             /**
              * The stage for the game. This is a global that exists only so that it can be accessed via
