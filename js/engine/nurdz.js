@@ -188,48 +188,57 @@ var nurdz = (function ()
          * @param {Object} source the object to copy properties from
          * @returns {Object} the destination object passed in
          */
-        copyProperties:  function (destination, source)
-                         {
-                             for (var name in source)
-                             {
-                                 if (source.hasOwnProperty (name) && destination[name] == null)
-                                     destination[name] = source[name];
-                             }
+        copyProperties:       function (destination, source)
+                              {
+                                  for (var name in source)
+                                  {
+                                      if (source.hasOwnProperty (name) && destination[name] == null)
+                                          destination[name] = source[name];
+                                  }
 
-                             return destination;
-                         },
+                                  return destination;
+                              },
         /**
-         * Create a namespace. The namespace is a name with dots separating the different parts.
+         * Create or get a namespace table. The namespace is a name with dots separating the different parts.
          *
          * The result is a global variable that contains the appropriate tables. Any parts of previously
          * existing variables are left as is, so you can create 'boobs.jiggly' and 'boobs.round' and end up
          * with a single global named boobs with the two properties.
          *
+         * As this takes care not to clobber over any existing tables, this can be used to not only create
+         * a namespace, but also to obtain the table for a namespace that has already been created. This
+         * API is in part due to how stupid WebStorm is about documentation, as I would rather have the
+         * same function have two different names for clarity, but what can you do? Use better tools, I guess.
+         *
          * This code was written by Michael Schwarz (as far as I know) and was taken from his blog at:
          *     http://weblogs.asp.net/mschwarz/archive/2005/08/26/423699.aspx
          *
-         * @alias nurdz.createNamespace
+         * @alias nurdz.createOrGetNamespace
          * @param {String} namespace the specification for the namespace to create (e.g. "nurdz.moduleName")
+         * @returns {{}} the namespace table for the namespace spec (e.g. the "moduleName" table)
          */
-        createNamespace: function (namespace)
-                         {
-                             // Split the namespace apart into it's constituent parts, and then set up the
-                             // root of the namespace, which is the global window object (this is the place
-                             // where all global variables end up when JavaScript runs in the browser.
-                             var nsParts = namespace.split (".");
-                             var root = window;
+        createOrGetNamespace: function (namespace)
+                              {
+                                  // Split the namespace apart into it's constituent parts, and then set up
+                                  // the root of the namespace, which is the global window object (this is
+                                  // the place where all global variables end up when JavaScript runs in the
+                                  // browser.
+                                  var nsParts = namespace.split (".");
+                                  var root = /** @type {{}} */ window;
 
-                             // Loop over all of the parts of the requested namespace.
-                             for (var i = 0 ; i < nsParts.length ; i++)
-                             {
-                                 // If the current part is not defined, then create it as a new object.
-                                 if (typeof root[nsParts[i]] == "undefined")
-                                     root[nsParts[i]] = {};
+                                  // Loop over all of the parts of the requested namespace.
+                                  for (var i = 0 ; i < nsParts.length ; i++)
+                                  {
+                                      // If the current part is not defined, then create it as a new object.
+                                      if (typeof root[nsParts[i]] == "undefined")
+                                          root[nsParts[i]] = {};
 
-                                 // Now switch the root to be the current part of the next iteration.
-                                 root = root[nsParts[i]];
-                             }
-                         },
+                                      // Now switch the root to be the current part of the next iteration.
+                                      root = root[nsParts[i]];
+                                  }
+
+                                  return root;
+                              },
 
         /**
          * In a browser non-specific way, watch to determine when the DOM is fully loaded and then invoke

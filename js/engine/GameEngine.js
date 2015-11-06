@@ -9,7 +9,7 @@
      * @alias nurdz.game
      * @type {{}}
      */
-    nurdz.createNamespace ("nurdz.game");
+    nurdz.createOrGetNamespace ("nurdz.game");
 
     /**
      * The aspects of the engine that deal in tiles instead of pixels assume that this is the size of

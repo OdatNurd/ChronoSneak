@@ -4,7 +4,7 @@
  * @alias nurdz.sneak
  * @type {{}}
  */
-nurdz.createNamespace ("nurdz.sneak");
+nurdz.createOrGetNamespace ("nurdz.sneak");
 
 /**
  * The global constant values that control ChronoSneak.
@@ -30,4 +30,4 @@ nurdz.sneak.constants = (function ()
  * @alias nurdz.sneak.levels
  * @type {Object.<String,nurdz.game.Level>}
  */
-nurdz.createNamespace ("nurdz.sneak.levels");
+nurdz.createOrGetNamespace ("nurdz.sneak.levels");
