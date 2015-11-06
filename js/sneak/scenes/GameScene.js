@@ -379,6 +379,80 @@ nurdz.sneak.GameScene = function (stage)
     };
 
     /**
+     * This does a check to determine the list of entities that the player can currently interact with.
+     *
+     * This first checks the tile that the player is standing on for entities, then the tile that the
+     * player is facing directly, then the tile that is adjacent to the player to the right or left (based
+     * on the handedness of the player), and lastly the other side.
+     *
+     * These checks stop as soon as any entities are found, so it does not include every entity that could
+     * be interacted with on the tile and in the three adjacent tiles.
+     *
+     * The list of found entities (if any) are filtered down to only those entities that are currently
+     * willing to interact with the player entity.
+     *
+     * @returns {nurdz.sneak.ChronoEntity[]} list of entities to interact with (may be an empty array)
+     */
+    nurdz.sneak.GameScene.prototype.getInteractionEntities = function ()
+    {
+        /**
+         * A cached copy of the map location of the player.
+         *
+         * @type {nurdz.game.Point}
+         */
+        var mapPos = this.player.mapPosition;
+
+        /**
+         * A cached copy of the facing direction of the player.
+         *
+         * @type {Number}
+         */
+        var facing = this.player.properties.facing;
+
+        /**
+         * A cached copy of the handedness of the Player (true means right handed, false means left handed.)
+         *
+         * @type {Boolean}
+         */
+        var handedness = this.player.properties.handedness;
+
+        // Start off by collecting all of the entities that are on the tile that the player is currently
+        // standing on.
+        var entities = this.level.entitiesAt (this.player.mapPosition);
+
+        // If we didn't find anything, then try to look up entities on the tile that the player is
+        // currently facing instead. Note that since we checked the player location, and the player is an
+        // entity, it shows up in this list, so we need to exclude it.
+        if (entities == null || entities.length <= 1)
+            entities = this.level.entitiesAtFacing (mapPos, facing);
+
+        // If we STILL didn't find anything, then check 90 degrees to the left or right. We search in the
+        // direction of the handedness of the player (true means right).
+        if (entities == null || entities.length == 0)
+            entities = this.level.entitiesAtFacing (mapPos,
+                                                    this.player.normalizeFacingAngle (
+                                                        facing + (handedness ? +90 : -90)));
+
+        // Do one last check for the other side.
+        if (entities == null || entities.length == 0)
+            entities = this.level.entitiesAtFacing (mapPos,
+                                                    this.player.normalizeFacingAngle (
+                                                        facing + (handedness ? -90 : +90)));
+
+        // If we still didn't find anything, return back an empty array.
+        if (entities == null || entities.length == 0)
+            return entities || [];
+
+        // At this point we have found something that we might be able to interact with. Filter this down
+        // to the list of entities that are curently willing to interact with the player and return that list.
+        return entities.filter (function (entity)
+                                {
+                                    return entity.canInteractWith (this.player);
+                                }, this);
+    };
+
+
+    /**
      * Handle keyboard down events for the title screen scene.
      *
      * @param {Event} eventObj the keyboard event
@@ -464,14 +538,8 @@ nurdz.sneak.GameScene = function (stage)
             // time, use the wait key instead.
             case this.keys.KEY_SPACEBAR:
             case this.keys.KEY_Q:
-                // Collect all entities that are on this tile, then filter out entities that we can't
-                // interact with. This includes entities that are just not interactive as well as entities
-                // that don't want to interact with us right now.
-                entities = this.level.entitiesAt (mapPos).filter (function (entity)
-                                                                  {
-                                                                      return entity.canInteractWith (
-                                                                          this.player);
-                                                                  }.bind (this));
+                // Get the entities that we might interact with. This could be an empty list.
+                entities = this.getInteractionEntities ();
                 if (entities.length > 0)
                 {
                     // Step all entities.

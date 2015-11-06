@@ -61,7 +61,8 @@ nurdz.sneak.levels.getLevelOne = function (stage)
             class: "Door", position: [3, 2],
             id:    "closetDoor",
 
-            open:     false
+            open:     false,
+            openTime: 4
         },
 
         /************************************/
@@ -119,7 +120,8 @@ nurdz.sneak.levels.getLevelOne = function (stage)
             id:    "door3",
 
             horizontal: true,
-            open:       false
+            open:       false,
+            openTime:   4
         },
 
         /************************************/
@@ -138,9 +140,10 @@ nurdz.sneak.levels.getLevelOne = function (stage)
      **************************************************/
 
         {
-            class: "Button", position: [3, 1],
-            panel: true,
-            facing: "right",
+            class:     "Button", position: [3, 1],
+            panel:     true,
+            facing:    "right",
+            cycleTime: 4,
 
             trigger: "closetDoor"
         },
@@ -148,9 +151,10 @@ nurdz.sneak.levels.getLevelOne = function (stage)
         /************************************/
 
         {
-            class:  "Button", position: [3, 3],
-            panel: true,
-            facing: "left",
+            class:     "Button", position: [3, 3],
+            panel:     true,
+            facing:    "left",
+            cycleTime: 4,
 
             trigger: "closetDoor"
         },
@@ -188,9 +192,10 @@ nurdz.sneak.levels.getLevelOne = function (stage)
         /************************************/
 
         {
-            class:  "Button", position: [21, 5],
-            panel: true,
-            facing: "up",
+            class:     "Button", position: [21, 5],
+            panel:     true,
+            facing:    "up",
+            cycleTime: 4,
 
             trigger: ["door3"]
         },
@@ -198,9 +203,10 @@ nurdz.sneak.levels.getLevelOne = function (stage)
         /************************************/
 
         {
-            class:  "Button", position: [23, 5],
-            panel: true,
-            facing: "down",
+            class:     "Button", position: [23, 5],
+            panel:     true,
+            facing:    "down",
+            cycleTime: 4,
 
             trigger: ["door3"]
         },
