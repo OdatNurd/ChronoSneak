@@ -152,7 +152,18 @@ nurdz.sneak.Button = function (stage, x, y, properties)
         // The player can interact with the button if they are no more than 90 degrees turned away from
         // its facing. Any more than that and they have their back to it.
         if (otherEntity instanceof nurdz.sneak.Player)
-            return this.angleToNewFacing(otherEntity.properties.facing) <= 90;
+        {
+            // If this is a panel, the player has to be facing in the direction opposite us; panels are
+            // too complicated to operate without your full attention.
+            //
+            // When we are a button you can be facing the button or have it on your left or right, but you
+            // have to be on the same map tile.
+            if (this.properties.panel)
+                return this.angleToNewFacing (otherEntity.properties.facing) == 180;
+            else
+                return this.angleToNewFacing (otherEntity.properties.facing) <= 90 &&
+                    this.mapPosition.equals (otherEntity.mapPosition);
+        }
 
         // No other entity can interact with this.
         return false;
