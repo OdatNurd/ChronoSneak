@@ -46,6 +46,8 @@ nurdz.sneak.levels.getLevelOne = function (stage)
             id:    'winGoal'
         },
 
+        /************************************/
+
         {
             class: "LevelGoal", position: [0, 4],
             id:    'loseGoal'
@@ -56,54 +58,66 @@ nurdz.sneak.levels.getLevelOne = function (stage)
      **************************************************/
 
         {
-            class:    "Door", position: [4, 8],
-            id:       "exitDoor",
+            class: "Door", position: [4, 8],
+            id:    "exitDoor",
 
             open:     false,
             openTime: 16
         },
 
+        /************************************/
+
         {
-            class:    "Door", position: [19, 11],
-            id:       "autoDoor1",
+            class: "Door", position: [19, 11],
+            id:    "autoDoor1",
 
             open:     true,
             openTime: 4
         },
 
+        /************************************/
+
         {
-            class:    "Door", position: [19, 15],
+            class: "Door", position: [19, 15],
 
             open:     false,
             openTime: 2
         },
 
+        /************************************/
+
         {
             class: "Door", position: [11, 10],
             id:    "door2",
 
-            open:  false
+            open: false
         },
 
+        /************************************/
+
         {
-            class:      "Door", position: [14, 4],
-            id:         "door1",
+            class: "Door", position: [14, 4],
+            id:    "door1",
 
             open:       false,
             horizontal: true
         },
 
+        /************************************/
+
         {
-            class:      "Door", position: [22, 5],
-            id:         "door3",
+            class: "Door", position: [22, 5],
+            id:    "door3",
 
             horizontal: true,
             open:       false
         },
 
+        /************************************/
+
         {
-            class:    "Door", position: [15, 15],
-            id:       "guardBlock",
+            class: "Door", position: [15, 15],
+            id:    "guardBlock",
 
             open:     false,
             openTime: 3
@@ -115,15 +129,17 @@ nurdz.sneak.levels.getLevelOne = function (stage)
      **************************************************/
 
         {
-            class:   "Button", position: [22, 9],
+            class:  "Button", position: [22, 9],
             facing: "up",
 
             trigger: "loseGoal",
             pressed: false
         },
 
+        /************************************/
+
         {
-            class:     "Button", position: [20, 13],
+            class:  "Button", position: [20, 13],
             facing: "left",
 
             trigger:   "autoDoor1",
@@ -131,33 +147,41 @@ nurdz.sneak.levels.getLevelOne = function (stage)
             cycleTime: 3
         },
 
+        /************************************/
+
         {
-            class:   "Button", position: [15, 6],
-            facing:  "right",
+            class:  "Button", position: [15, 6],
+            facing: "right",
 
             trigger: ["door1", "door3"]
         },
 
+        /************************************/
+
         {
-            class:   "Button", position: [14, 1],
-            facing:  "up",
+            class:  "Button", position: [14, 1],
+            facing: "up",
 
             trigger: "door2"
         },
 
+        /************************************/
+
         {
-            class:   "Button", position: [10, 11],
-            id:      "exitBtn",
-            facing:  "down",
+            class:  "Button", position: [10, 11],
+            id:     "exitBtn",
+            facing: "down",
 
             trigger: ["exitDoor", "prepExitBtn"],
             pressed: true
         },
 
+        /************************************/
+
         {
-            class:   "Button", position: [10, 15],
-            id:      "prepExitBtn",
-            facing:  "up",
+            class:  "Button", position: [10, 15],
+            id:     "prepExitBtn",
+            facing: "up",
 
             trigger: "exitBtn"
         },
