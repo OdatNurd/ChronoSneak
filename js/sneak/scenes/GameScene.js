@@ -205,6 +205,20 @@ nurdz.sneak.GameScene = function (stage)
 
     /**
      * This gets triggered while the game is running, this scene is the current scene, and the mouse
+     * is clicked on the stage.
+     *
+     * @param {Event} eventObj the event object
+     * @see nurdz.game.Stage.calculateMousePos
+     */
+    nurdz.sneak.GameScene.prototype.inputMouseClick = function (eventObj)
+    {
+        // Calculate where the mouse was clicked and jump the player there.
+        var clickPos = this.stage.calculateMousePos (eventObj);
+        this.player.setMapPosition (clickPos.reduce(nurdz.game.TILE_SIZE));
+    };
+
+    /**
+     * This gets triggered while the game is running, this scene is the current scene, and the mouse
      * moves over the stage.
      *
      * @param {Event} eventObj the event object
@@ -497,6 +511,14 @@ nurdz.sneak.GameScene = function (stage)
             case this.keys.KEY_F5:
                 this.screenshot ("ChronoSneak_", "ChronoSneak Screenshot");
                 return true;
+
+            case this.keys.KEY_C:
+                newFacing = this.player.normalizeFacingAngle(this.player.properties.facing - 90);
+                break;
+
+            case this.keys.KEY_V:
+                newFacing = this.player.normalizeFacingAngle(this.player.properties.facing + 90);
+                break;
 
             case this.keys.KEY_UP:
             case this.keys.KEY_W:
