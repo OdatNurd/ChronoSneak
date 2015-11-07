@@ -458,7 +458,8 @@ nurdz.sneak.GameScene = function (stage)
             return entities || [];
 
         // At this point we have found something that we might be able to interact with. Filter this down
-        // to the list of entities that are curently willing to interact with the player and return that list.
+        // to the list of entities that are currently willing to interact with the player and return that
+        // list.
         return entities.filter (function (entity)
                                 {
                                     return entity.canInteractWith (this.player);
@@ -607,7 +608,7 @@ nurdz.sneak.GameScene = function (stage)
             //
             // This happens after the move and the entity gets a turn so that the entities have a chance
             // to move during their step such that they are no longer where the player might have ended up.
-            if (this.targetPosition != null)
+            if (targetPos != null)
             {
                 entities = this.level.entitiesAt (targetPos);
                 for (i = 0 ; i < entities.length ; i++)
