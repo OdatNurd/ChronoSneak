@@ -607,7 +607,7 @@ nurdz.sneak.GameScene = function (stage)
             //
             // This happens after the move and the entity gets a turn so that the entities have a chance
             // to move during their step such that they are no longer where the player might have ended up.
-            if (this.targetPosition != null)
+            if (targetPos != null)
             {
                 entities = this.level.entitiesAt (targetPos);
                 for (i = 0 ; i < entities.length ; i++)

@@ -50,7 +50,9 @@ nurdz.sneak.levels.getLevelOne = function (stage)
 
         {
             class: "LevelGoal", position: [0, 4],
-            id:    'loseGoal'
+            id:    'loseGoal',
+
+            winLevel: false
         },
 
     /***************************************************
