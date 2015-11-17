@@ -2,19 +2,32 @@
   <dictionary name="tmartin">
     <words>
       <w>aspx</w>
+      <w>bezier</w>
       <w>chrono</w>
       <w>contentloaded</w>
+      <w>ecma</w>
+      <w>filenames</w>
       <w>gmail</w>
       <w>keydown</w>
       <w>keyup</w>
+      <w>monospace</w>
       <w>mousedown</w>
       <w>mousemove</w>
+      <w>navbar</w>
       <w>nurdz</w>
       <w>perini</w>
+      <w>polyfill</w>
       <w>readystatechange</w>
       <w>schwarz</w>
+      <w>screenshot</w>
+      <w>screenshots</w>
+      <w>spacebar</w>
       <w>tileset</w>
       <w>tilesets</w>
+      <w>uint</w>
+      <w>wasd</w>
+      <w>waypoint</w>
+      <w>waypoints</w>
     </words>
   </dictionary>
 </component>

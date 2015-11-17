@@ -1,44 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title>ChronoSneak</title>
-    <style type="text/css">
-        #gameContent {
-            margin-top: 32px;
-        }
-    </style>
-</head>
-<body>
-    <button id="controlBtn">Stop Game</button>
-    <div id="gameContent"></div>
-
-    <script src="js/engine/nurdz.js"></script>
-    <script src="js/engine/GameEngine.js"></script>
-    <script src="js/engine/Point.js"></script>
-    <script src="js/engine/Actor.js"></script>
-    <script src="js/engine/Entity.js"></script>
-    <script src="js/engine/Scene.js"></script>
-    <script src="js/engine/Stage.js"></script>
-    <script src="js/engine/Tile.js"></script>
-    <script src="js/engine/Tileset.js"></script>
-    <script src="js/engine/LevelData.js"></script>
-    <script src="js/engine/Level.js"></script>
-    <script src="js/sneak/sneak.js"></script>
-    <script src="js/sneak/SneakLevel.js"></script>
-    <script src="js/sneak/SneakLevelData.js"></script>
-    <script src="js/sneak/entities/ChronoEntity.js"></script>
-    <script src="js/sneak/entities/Player.js"></script>
-    <script src="js/sneak/entities/LevelGoal.js"></script>
-    <script src="js/sneak/entities/Door.js"></script>
-    <script src="js/sneak/entities/Button.js"></script>
-    <script src="js/sneak/entities/Waypoint.js"></script>
-    <script src="js/sneak/entities/GuardBase.js"></script>
-    <script src="js/sneak/tiles/Wall.js"></script>
-    <script src="js/sneak/tiles/Floor.js"></script>
-    <script src="js/sneak/tilesets.js"></script>
-    <script src="js/sneak/levels/level1.js"></script>
-    <script src="js/sneak/scenes/GameScene.js"></script>
-    <script src="js/main.js"></script>
-</body>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="The web prototype of ChronoSneak">
+        <meta name="author" content="Terence Martin">
+        <title>ChronoSneak</title>
+        <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+        <link href="sneak.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <!--suppress ALL -->
+            <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <!--suppress ALL -->
+            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">ChronoSneak</a>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a data-target="#helpAbout" data-toggle="modal" href="#helpAbout">About</a>
+                        </li>
+                        <li>
+                            <a data-target="#controlsModal" data-toggle="modal" href="#controlsModal">Controls</a>
+                        </li>
+                        <li>
+                            <button id="controlBtn" class="btn navbar-btn btn-default">Stop Game</button>
+                        </li>
+                    </ul>
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </nav>
+        <div id="gameContent" class="container">
+        </div>
+        <footer class="footer" data-pg-collapsed>
+            <div class="container">
+                <p class="text-muted">ChronoSneak Copyright&copy; 2015 Terence Martin</p>
+            </div>
+        </footer>
+        <div class="modal fade pg-show-modal" id="helpAbout" tabindex="-1" role="dialog" aria-hidden="true" data-pg-collapsed> 
+            <div class="modal-dialog"> 
+                <div class="modal-content"> 
+                    <div class="modal-header"> 
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>                         
+                        <h4 class="modal-title">About ChronoSneak</h4>
+                    </div>                     
+                    <div class="modal-body"> 
+                        <p>ChronoSneak is a simple web prototype of a turn based stealth puzzle game which features time travel mechanics.</p>
+                        <p>This simplistic version is for testing out theories/ideas about how the game could work. The experience is somewhat lacking.</p>
+                    </div>                     
+                    <div class="modal-footer"> 
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>                         
+                    </div>                     
+                </div>                 
+            </div>             
+        </div>
+        <div class="modal fade pg-show-modal" id="controlsModal" tabindex="-1" role="dialog" aria-hidden="true" data-pg-collapsed> 
+            <div class="modal-dialog"> 
+                <div class="modal-content"> 
+                    <div class="modal-header"> 
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>                         
+                        <h4 class="modal-title">ChronoSneak Controls</h4>
+                    </div>                     
+                    <div class="modal-body">
+                        <dl>
+                            <dt>WASD/Arrow Keys</dt>
+                            <dd>Move the player. Trying to move in a direction you are not facing causes
+                                the player to change their facing</dd>
+                            <dt>Space Bar/Q</dt>
+                            <dd>Interact with entities. Entities on the same tile as the player will be
+                                interacted with; if none, entities on adjacent tiles will be selected
+                                instead, based on their facing</dd>
+                            <dt>Enter/E</dt>
+                            <dd>Wait; All entities get a turn while the player remains in the same
+                                location</dd>
+                            <dt>F1</dt>
+                            <dd>Dump entity information for the entity under the cursor to the console.
+                                If the entity is a guard, its patrol is outlined. If the entity has
+                                triggers, arrows show what entities it will trigger.</dd>
+                            <dt>F5</dt>
+                            <dd>Take a screen shot (opens in a new tab/window)</dd>
+                        </dl>
+                    </div>                     
+                    <div class="modal-footer"> 
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>                         
+                    </div>                     
+                </div>                 
+            </div>             
+        </div>
+        <script src="bootstrap/assets/js/jquery.min.js"></script>
+        <script src="bootstrap/js/bootstrap.min.js"></script>
+        <script src="bootstrap/assets/js/ie10-viewport-bug-workaround.js"></script>
+        <script src="js/engine/nurdz.js"></script>
+        <script src="js/engine/GameEngine.js"></script>
+        <script src="js/engine/Point.js"></script>
+        <script src="js/engine/Actor.js"></script>
+        <script src="js/engine/Entity.js"></script>
+        <script src="js/engine/Scene.js"></script>
+        <script src="js/engine/Stage.js"></script>
+        <script src="js/engine/Tile.js"></script>
+        <script src="js/engine/Tileset.js"></script>
+        <script src="js/engine/LevelData.js"></script>
+        <script src="js/engine/Level.js"></script>
+        <script src="js/sneak/sneak.js"></script>
+        <script src="js/sneak/SneakLevel.js"></script>
+        <script src="js/sneak/SneakLevelData.js"></script>
+        <script src="js/sneak/entities/ChronoEntity.js"></script>
+        <script src="js/sneak/entities/Player.js"></script>
+        <script src="js/sneak/entities/LevelGoal.js"></script>
+        <script src="js/sneak/entities/Door.js"></script>
+        <script src="js/sneak/entities/Button.js"></script>
+        <script src="js/sneak/entities/Waypoint.js"></script>
+        <script src="js/sneak/entities/GuardBase.js"></script>
+        <script src="js/sneak/tiles/Wall.js"></script>
+        <script src="js/sneak/tiles/Floor.js"></script>
+        <script src="js/sneak/tilesets.js"></script>
+        <script src="js/sneak/levels/level1.js"></script>
+        <script src="js/sneak/scenes/GameScene.js"></script>
+        <script src="js/main.js"></script>
+    </body>
 </html>
