@@ -112,6 +112,7 @@ nurdz.sneak.GuardBase = function (stage, x, y, properties)
      * @type {Number}
      */
     this.visionFOV = 130;
+    // TODO the above should be a property
 
     // Call the super class constructor.
     nurdz.sneak.ChronoEntity.call (this, "GuardBase", stage, x, y, properties, 2, '#EB3B00');
@@ -554,6 +555,9 @@ nurdz.sneak.GuardBase = function (stage, x, y, properties)
         var level = this.stage.currentScene ().level;
         if (level == null)
             return;
+
+        // TODO the below eye position should not be the center, but a little forward of center, so that
+        // the rays do not hit the intersections of tiles.
 
         // Calculate the eye position of the guard in its cell and what half of the vision FOV is.
         var eyePosition = this.position.copyTranslatedXY (TILE_SIZE / 2, TILE_SIZE / 2);
