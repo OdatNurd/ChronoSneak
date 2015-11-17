@@ -113,6 +113,7 @@ nurdz.game.Level = function (stage, levelData)
             var entity = this.entities[i];
 
             // If the location matches, add it to the array.
+            // TODO Scope leak; this should not use map position because it's not in general entities
             if (entity.mapPosition.equalsXY (x, y))
                 retVal.push (entity);
         }
@@ -120,6 +121,7 @@ nurdz.game.Level = function (stage, levelData)
         return retVal;
     };
 
+    //noinspection JSUnusedGlobalSymbols
     /**
      * Given coordinates in the map (e.g. tile based) domain, return back a list of all entities in the
      * level that exist at this location, which might be 0. This also detects when the coordinates are
@@ -173,6 +175,7 @@ nurdz.game.Level = function (stage, levelData)
         return this.entitiesAtXY (x, y);
     };
 
+    //noinspection JSUnusedGlobalSymbols
     /**
      * Given coordinates in the map (e.g. tile based) domain and a facing, this calculates which map tile
      * is in the facing direction given and then returns back a list of all entities that exist at the map
@@ -243,6 +246,7 @@ nurdz.game.Level = function (stage, levelData)
             entities[i].trigger (activator);
     };
 
+    //noinspection JSUnusedGlobalSymbols
     /**
      * Given coordinates in the map (e.g. tile based) domain, return back the tile at that location. If
      * the coordinates are outside of the world, this is detected and null is returned back.
@@ -274,6 +278,7 @@ nurdz.game.Level = function (stage, levelData)
         return this.tileset.tilesByValue[this.levelData[y * this.width + x]];
     };
 
+    //noinspection JSUnusedGlobalSymbols
     /**
      * Given coordinates in the map, return back a boolean that indicates if that space is blocked or not
      * as far as movement is concerned.

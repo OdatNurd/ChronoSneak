@@ -71,7 +71,7 @@ nurdz.game.LevelData = function (stage, name, width, height, levelData, entityLi
     /**
      * The tileset that is associated with this level data.
      *
-     * @type {nurdz.sneak.Tileset}
+     * @type {nurdz.game.Tileset}
      */
     this.tileset = tileset;
 

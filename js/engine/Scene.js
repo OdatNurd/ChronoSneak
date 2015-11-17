@@ -149,6 +149,7 @@ nurdz.game.Scene = function (name, stage)
             this.addActor (actorArray[i]);
     };
 
+    //noinspection JSUnusedGlobalSymbols
     /**
      * Return the complete list of actors that are currently registered with this scene.
      *
