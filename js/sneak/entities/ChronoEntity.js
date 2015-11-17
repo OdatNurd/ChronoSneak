@@ -119,6 +119,22 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
     };
 
     /**
+     * This helper method takes an angle that is some number of degrees and then normalizes it to ensure
+     * that it falls between 0 and 359 degrees (360 becomes 0 on the wrap around).
+     *
+     * @param {Number} angle the  angle to normalize (in degrees)
+     * @returns {Number} the normalized angle
+     */
+    nurdz.sneak.ChronoEntity.prototype.normalizeAngle = function (angle)
+    {
+        // Now make sure that the angle is between 0 and 360.
+        angle %= 360;
+        if (angle < 0)
+            angle += 360;
+        return angle % 360;
+    };
+
+    /**
      * This helper method takes a facing value that is some number of degrees, and then normalizes it.
      * First, the angle is snapped to an increment of 90 degrees. Secondly, it is constrained to values
      * between 0 and 270 (360 becomes 0 on the wrap around).
@@ -126,7 +142,7 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
      * This works even if the new facing is a negative number. in which case it becomes the appropriate
      * positive angle (e.g. -90 becomes 270).
      *
-     * @param {Number} facing the facing angle to normalize
+     * @param {Number} facing the facing angle to normalize (in degrees)
      * @returns {Number} the normalized angle
      */
     nurdz.sneak.ChronoEntity.prototype.normalizeFacingAngle = function (facing)
@@ -144,10 +160,7 @@ nurdz.sneak.ChronoEntity = function (name, stage, x, y, properties, zOrder, debu
         }
 
         // Now make sure that the angle is between 0 and 360.
-        facing %= 360;
-        if (facing < 0)
-            facing += 360;
-        return facing % 360;
+        return this.normalizeAngle(facing);
     };
 
     /**
