@@ -87,6 +87,32 @@ nurdz.sneak.GuardBase = function (stage, x, y, properties)
      */
     this.nextPatrolPoint = null;
 
+    /**
+     * This is an array of points that determine where the vision cone for this guard visually extends.
+     * This is only used for display on the map; other mechanisms are used to determine what the guard can
+     * actually detect.
+     *
+     * The contents of this is an array of points that should be joined together in order to form the
+     * cone. The array is empty at startup, and then will have 1 or more points. A single point means that
+     * no rays have been cast yet.
+     *
+     * The final result is a list of points which, when connected, form the vision cone. The first point
+     * is the eye position of the guard, which is somewhere inside of the tile that the guard is currently
+     * sitting in.
+     *
+     * @type {nurdz.game.Point[]}
+     */
+    this.visionCone = [];
+
+    /**
+     * The arc of vision, in degrees, that this guard has. The facing of the guard is the center of the
+     * cone, and the cone itself extends to the left and right at 1/2 of the angle represented here,
+     * making the full sweep of the cone the FOV degrees.
+     *
+     * @type {Number}
+     */
+    this.visionFOV = 130;
+
     // Call the super class constructor.
     nurdz.sneak.ChronoEntity.call (this, "GuardBase", stage, x, y, properties, 2, '#EB3B00');
 };
@@ -106,6 +132,25 @@ nurdz.sneak.GuardBase = function (stage, x, y, properties)
             value:        nurdz.sneak.GuardBase
         }
     });
+
+    /**
+     * Our cached copy of the tile size. This value is used extensively in the raycasting process so we
+     * want an easier way to access it.
+     *
+     * @type {Number}
+     */
+    var TILE_SIZE = nurdz.game.TILE_SIZE;
+
+    /**
+     * Convert an angle in degrees to radians.
+     *
+     * @param {Number} degrees an angle in degrees
+     * @returns {number}
+     */
+    var toRadians = function (degrees)
+    {
+        return degrees * (Math.PI / 180);
+    };
 
     /**
      * This is automatically invoked at the end of the constructor to validate that the properties object
@@ -129,6 +174,50 @@ nurdz.sneak.GuardBase = function (stage, x, y, properties)
         nurdz.sneak.ChronoEntity.prototype.validateProperties.call (this);
     };
 
+    /**
+     * Change the facing of this entity to the value passed in. You can pass in an angle (in degrees) as a
+     * number of one of the strings "up", "down", "left" or "right" to have the routine calculate the
+     * correct angle.
+     *
+     * As a result of ChronoSneak being a grid based game, the facing is constrained to one of the four
+     * cardinal directions. The default is the right (0 degrees) if the passed in angle or facing string
+     * is not valid.
+     * @param {String|Number} newFacing the new facing
+     */
+    nurdz.sneak.GuardBase.prototype.setFacing = function (newFacing)
+    {
+        // Invoke the super method to do the actual work, then recalculate what our vision cone is.
+        nurdz.sneak.ChronoEntity.prototype.setFacing.call (this, newFacing);
+        this.calculateVisionCone ();
+    };
+
+    /**
+     * Set the position of this entity by setting its position on the stage (world coordinates). The
+     * position of the entity on the map will automatically be updated.
+     *
+     * @param {Number} x the X coordinate of the new stage position
+     * @param {Number} y the Y coordinate of the new stage position
+     */
+    nurdz.sneak.GuardBase.prototype.setStagePositionXY = function (x, y)
+    {
+        // Invoke the super method to do the actual work, then recalculate what our vision cone is.
+        nurdz.sneak.ChronoEntity.prototype.setStagePositionXY.call (this, x, y);
+        this.calculateVisionCone ();
+    };
+
+    /**
+     * Set the position of this entity by setting its position in the level (map coordinates). The
+     * position of the entity on the stage will automatically be updated.
+     *
+     * @param {Number} x the X coordinate of the new stage position
+     * @param {Number} y the Y coordinate of the new stage position
+     */
+    nurdz.sneak.GuardBase.prototype.setMapPositionXY = function (x, y)
+    {
+        // Invoke the super method to do the actual work, then recalculate what our vision cone is.
+        nurdz.sneak.ChronoEntity.prototype.setMapPositionXY.call (this, x, y);
+        this.calculateVisionCone ();
+    };
 
     /**
      * Every time this is invoked, it causes the guard to select the next patrol point in its patrol. If
@@ -304,7 +393,7 @@ nurdz.sneak.GuardBase = function (stage, x, y, properties)
      */
     nurdz.sneak.GuardBase.prototype.render = function (stage)
     {
-        // Draw a small dot to mark the waypoint if it's visible, otherwise, chain to the superclass version.
+        // Render the guard if its visible, otherwise, chain to the superclass version.
         if (this.properties.visible)
         {
             this.startRendering (stage, this.properties.facing);
@@ -314,6 +403,28 @@ nurdz.sneak.GuardBase = function (stage, x, y, properties)
             stage.setArrowStyle ("#000000");
             stage.drawArrow (-(this.width / 2) + MARGIN, 0, (this.width / 2) - MARGIN, 0);
             this.endRendering (stage);
+
+            // If there is a vision cone, render it now.
+            if (this.visionCone.length > 1)
+            {
+                stage.canvasContext.save( );
+
+                // Set up drawing.
+                stage.canvasContext.fillStyle = "green";
+                stage.canvasContext.globalAlpha = 0.4;
+
+                // Draw the cone now. The path starts at the casting location.
+                stage.canvasContext.beginPath ();
+                stage.canvasContext.moveTo (this.visionCone[0].x, this.visionCone[0].y);
+
+                // Now connect all of the points with a line
+                for (var i = 1 ; i < this.visionCone.length ; i++)
+                    this.stage.canvasContext.lineTo (this.visionCone[i].x, this.visionCone[i].y);
+
+                // Fill and restore the canvas context.
+                stage.canvasContext.fill ();
+                stage.canvasContext.restore ();
+            }
         }
         else
             nurdz.sneak.ChronoEntity.prototype.render.call (this, stage);
@@ -429,6 +540,236 @@ nurdz.sneak.GuardBase = function (stage, x, y, properties)
         // point now.
         if (this.mapPosition.equals (this.nextPatrolPoint.mapPosition))
             this.selectNextPatrolWaypoint ();
+    };
+
+    /**
+     * When invoked, this calculates what the vision cone of this guard should be based on its current
+     * location, facing, and vision FOV.
+     */
+    nurdz.sneak.GuardBase.prototype.calculateVisionCone = function ()
+    {
+        // TODO We need to get invoked AFTER the scene is fully prepared. This does not happen currently.
+        // Fetch the level that the guard is in. If we don't know what this is, then we have to leave;
+        // without the level we can't see where our raycasting should stop.
+        var level = this.stage.currentScene ().level;
+        if (level == null)
+            return;
+
+        // Calculate the eye position of the guard in its cell and what half of the vision FOV is.
+        var eyePosition = this.position.copyTranslatedXY (TILE_SIZE / 2, TILE_SIZE / 2);
+        var FOV = this.visionFOV / 2;
+
+        // Reset the vision cone array.
+        this.visionCone = [eyePosition];
+
+        // We cast in a sweep. The start of the cone is to the left of the viewing angle and is half of
+        // the total view, following all the way to the right over the range of the whole FOV.
+        for (var angle = this.properties.facing - FOV ; angle <= this.properties.facing + FOV ; angle += 5)
+            this.castRay (level, eyePosition.x, eyePosition.y, this.normalizeAngle (angle));
+    };
+
+    /**
+     * Calculate the ray information for the provided ray angle, which is expressed in degrees. The ray is
+     * cast from the current casting position.
+     *
+     * @param {nurdz.game.Level} level the level that the guard is in, for determining geometry
+     * @param {Number} x the X coordinate (world space not map space) to start the ray from
+     * @param {Number} y the Y coordinate (world space not map space) to start the ray from
+     * @param {Number} rayAngle the angle (in degrees) to cast for.
+     */
+    nurdz.sneak.GuardBase.prototype.castRay = function (level, x, y, rayAngle)
+    {
+        // Convert the incoming angle to radians and then perform a tangent call on it. Tangent is
+        // infinite at the vertical asymptotes of 90 and 270 degrees.
+        var tanAngle = Math.tan (toRadians (rayAngle));
+
+        // These values are the X and Y intersections of the rays that we are casting. Each set of
+        // intersections is a point on the grid that the trace is colliding with.
+        var xHorzIntersect, yHorzIntersect;
+        var xVertIntersect, yVertIntersect;
+
+        // The calculated distances from the casting location to the horizontal and vertical intersections.
+        var horizontalDistance, verticalDistance;
+
+        // After we get our initial intersection points, we know that the distance to the next intersections
+        // always have the same values. One of the two values here is always TILE_SIZE (or -TILE_SIZE) and
+        // the other is easily calculated by knowing the angle and that the other side is TILE_SIZE.
+        var xIncrement, yIncrement;
+
+        //// Store the initial point to start with. This is where the trace begins.
+        //this.debugPoint(this.castPos.x, this.castPos.y);
+
+        // The first thing that we do is find horizontal intersections. However, if the angle is exactly 0
+        // or 180, there can be no intersections with horizontal lines because the ray is parallel to the
+        // grid in the horizontal direction.
+        if (rayAngle != 0 && rayAngle != 180)
+        {
+            // STEP 1: First Horizontal Intersection
+            //
+            // Determine the location of the first intersection with this ray and a horizontal line. We know
+            // that every intersection with this ray and a horizontal line is going to fall where the Y value
+            // is an even multiple of the tile size, because rays can only intersect tiles.
+            //
+            // Based on the direction that the ray is going, select the nearest Y value either above or below
+            // the current casting position.
+            if (rayAngle > 180)
+                yHorzIntersect = Math.floor (y / TILE_SIZE) * TILE_SIZE;
+            else
+                yHorzIntersect = Math.floor (y / TILE_SIZE) * TILE_SIZE + TILE_SIZE;
+
+            // Using the point-slope version of the line equation, determine where the X point on this
+            // intersection is. This equation is:
+            //     (y2 - y1) / (x2 - x1) = m
+            //
+            // This is essentially the slope formula. In order to solve this equation you need two points and
+            // the slope of the line. As it happens, we have one point (the casting position), one piece of
+            // the other point (the Y intersect) and the slope of the line, which is just the tangent of the
+            // line, since the slope is (y/x) and the tangent is opposite/adjacent or (y/x).
+            //
+            // Note however that our view angles are reversed and so when we calculate the tangent we need to
+            // reflect the slope in order to get the correct value.
+            xHorzIntersect = x + (y - yHorzIntersect) / tanAngle * -1;
+
+            // STEP 2: Determine the X and Y increment to the next intersection.
+            //
+            // The ray that we are casting is the hypotenuse of a right triangle. By breaking this down into a
+            // series of stacked (and offset) smaller right triangles, we see that each such sub triangle has
+            // the same height, which is the height of a tile. Since the tangent of the angle is equal to the
+            // opposite (y) over the adjacent (x), we can determine what X increment we need to go with that Y
+            // increment.
+            //
+            // Start with the Y increment, which is either going to increase or decrease depending on the
+            // direction the ray is going.
+            if (rayAngle > 180)
+                yIncrement = -TILE_SIZE;
+            else
+                yIncrement = TILE_SIZE;
+
+            // Now the X increment. Using the formula for tangent, get the adjacent (x) side of a triangle
+            // with an opposite side and angle that we know of. Since the tangent of the angle depends on the
+            // quadrant, we need to reflect the tangent by -1 if we're facing downward in order to get the
+            // correct sign.
+            //
+            // Additionally, the tangent is an asymptote at angles of 90 or 270 because the line is purely
+            // vertical. In those cases the X increment is 0 for obvious reasons.
+            if (rayAngle == 90 || rayAngle == 270)
+                xIncrement = 0;
+            else
+                xIncrement = TILE_SIZE / tanAngle * (rayAngle >= 180 ? -1 : 1);
+
+            // Now we know the position of the first horizontal intersection and the amount to add to that
+            // intersection in order to get to the next one. Keep looping, checking intersections until we hit
+            // something that stops the ray or hit the edge of the screen.
+            while (1)
+            {
+                // Check to see if the map is blocked or not. Note that the coordinates that we get need
+                // to be rounded down to a multiple of the tile size. If the ray is going upwards (the Y
+                // increment is negative) we need to subtract one from the value because it's actually the
+                // cell above that we want to check.
+                if (level.isBlockedAtXY (Math.floor (xHorzIntersect / TILE_SIZE),
+                                         Math.floor (yHorzIntersect / TILE_SIZE) + (yIncrement < 0 ? -1 : 0)))
+                    break;
+
+                // Stop if this point is out of bounds.
+                if (xHorzIntersect <= 0 || yHorzIntersect <= 0 || xHorzIntersect >= this.stage.width || yHorzIntersect >= this.stage.height)
+                    break;
+
+                // Find the next point.
+                xHorzIntersect += xIncrement;
+                yHorzIntersect += yIncrement;
+            }
+
+            // Calculate the horizontal distance now
+            horizontalDistance = Math.pow (xHorzIntersect - x, 2) + Math.pow (yHorzIntersect - y, 2);
+        }
+
+        // We're not casting in this direction, so make the distance to the horizontal intersection
+        // arbitrarily large.
+        else
+            horizontalDistance = Number.MAX_VALUE;
+
+        // Now we do vertical intersections. Like the horizontal intersections above, we can't find
+        // intersections with vertical grid points if the angle is 90 or 279 because in those cases the
+        // ray is parallel to them.
+        if (rayAngle != 90 && rayAngle != 270)
+        {
+            // STEP 3: First Vertical Intersection
+            //
+            // This uses the same principles as above, but now we are solving for the Y instead of the X. The
+            // constants are still the same because our tiles are square.
+            //
+            // Here we need the X intersect to be on the right hand side if we're moving to the right or on
+            // the left if we are moving left.
+            if (rayAngle >= 270 || rayAngle < 90)
+                xVertIntersect = Math.floor (x / TILE_SIZE) * TILE_SIZE + TILE_SIZE;
+            else
+                xVertIntersect = Math.floor(x / TILE_SIZE) * TILE_SIZE;
+
+            // Now calculate the Y intersect. Notice that in this formula the slope (tangent) is multiplied
+            // instead of being divided. Work the algebra on the point-slope form of the line to see why this
+            // is so.
+            yVertIntersect = y + (x - xVertIntersect) * tanAngle * -1;
+
+            // Now as above, calculate the X and Y increment values. Here the formula is slightly flipped,
+            // since the X portion is constant instead of the Y portion./
+            if (rayAngle >= 270 || rayAngle < 90)
+                xIncrement = TILE_SIZE;
+            else
+                xIncrement = -TILE_SIZE;
+
+            // Now we multiply the tangent instead of dividing it. If the angle is 0 or 180 we set the
+            // yIncrement to be 0 because in these cases the line is horizontal. This is not really
+            // needed, but just to make the numbers for the intersections be correct, this is what we do.
+            //
+            // Without this, they will be almost but not quite 0 due to how PI is an irrational number.
+            // This is DOUBLE redundant because when the angle is 0, the math actually works out, but this
+            // is clearer.
+            if (rayAngle == 0 || rayAngle == 180)
+                yIncrement = 0;
+            else
+                yIncrement = TILE_SIZE * tanAngle * (rayAngle >= 270 || rayAngle < 90 ? 1 : -1);
+
+            while (1)
+            {
+                // Check to see if the map is blocked or not. Note that the coordinates that we get need
+                // to be rounded down to a multiple of the tile size. If the ray is going left (the X
+                // increment is negative) we need to subtract one from the value because it's actually the
+                // cell to the left that we want to check.
+                if (level.isBlockedAtXY (Math.floor (xVertIntersect / TILE_SIZE) + (xIncrement < 0 ? -1 : 0),
+                                         Math.floor (yVertIntersect / TILE_SIZE)))
+                    break;
+
+                // Stop if this point is out of bounds.
+                if (xVertIntersect <= 0 || yVertIntersect <= 0 || xVertIntersect >= this.stage.width || yVertIntersect >= this.stage.height)
+                    break;
+
+                // Find the next point.
+                xVertIntersect += xIncrement;
+                yVertIntersect += yIncrement;
+            }
+
+            // Calculate the vertical distance now
+            verticalDistance = Math.pow(xVertIntersect - x, 2) + Math.pow (yVertIntersect - y, 2);
+        }
+
+        // We're not casting in this direction, so make the distance to the vertical intersection
+        // arbitrarily large.
+        else
+            verticalDistance = Number.MAX_VALUE;
+
+        // Choose the point that was closest.
+        // If the horizontal distance is smaller and the vertical distance actually exists, the horizontal
+        // intersection is closer.
+        if (horizontalDistance < verticalDistance)
+        {
+            this.visionCone.push (new nurdz.game.Point (xHorzIntersect, yHorzIntersect));
+            //this.debugPoint(xHorzIntersect, yHorzIntersect);
+        }
+        else
+        {
+            this.visionCone.push (new nurdz.game.Point (xVertIntersect, yVertIntersect));
+            //this.debugPoint(xVertIntersect, yVertIntersect);
+        }
     };
 
     /**
