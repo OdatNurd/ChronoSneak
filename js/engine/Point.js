@@ -277,6 +277,39 @@ nurdz.game.Point = function (x, y)
         return this.x == x && this.y == y;
     };
 
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Calculate and return the value of the point that is some distance away from this point at the angle
+     * provided.
+     *
+     * This works by using trig and assuming that the point desired is the point that describes the
+     * hypotenuse of a right triangle.
+     *
+     * @param {Number} angle the angle desired, in degrees
+     * @param {Number} distance the desired distance from this point
+     * @returns {nurdz.game.Point}
+     */
+    nurdz.game.Point.prototype.pointAtAngle = function (angle, distance)
+    {
+        // Convert the incoming angle to radians.
+        angle *= (Math.PI / 180);
+
+        // We treat this like a right angle triangle problem.
+        //
+        // Since we know that the cosine is the ratio between the lengths of the adjacent and hypotenuse and
+        // the sine is the ratio between the opposite and the hypotenuse, we can calculate those values for
+        // the angle we were given, realizing that the adjacent side is the X component and the opposite
+        // is the Y component (draw it on paper if you need to).
+        //
+        // By multiplying each value with the distance required (the provided distance is the length of
+        // the hypotenuse in the triangle), we determine what the actual X and Y values for the point is.
+        //
+        // Note that these calculations assume that the origin is the point from which the hypotenuse
+        // extends, and so we need to translate the calculated values by the position of that point to get
+        // the final location of where the end of the line falls.
+        return new nurdz.game.Point (Math.cos (angle), Math.sin (angle)).scale (distance).translate (this);
+    };
+
     /**
      * Return a string representation of the object, for debugging purposes.
      *
