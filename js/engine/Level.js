@@ -99,7 +99,7 @@ nurdz.game.Level = function (stage, levelData)
      * @returns {nurdz.game.Entity[]|null} the entities at the provided location or null if the location is
      * invalid
      */
-    nurdz.game.Level.prototype.entitiesAtXY = function (x, y)
+    nurdz.game.Level.prototype.entitiesAtMapXY = function (x, y)
     {
         // Return null if the coordinate is out of bounds.
         if (x < 0 || y < 0 || x >= this.width || y >= this.width)
@@ -130,9 +130,9 @@ nurdz.game.Level = function (stage, levelData)
      * @returns {nurdz.game.Entity[]|null} the entities at the provided location or null if the location is
      * invalid
      */
-    nurdz.game.Level.prototype.entitiesAt = function (location)
+    nurdz.game.Level.prototype.entitiesAtMapPosition = function (location)
     {
-        return this.entitiesAtXY (location.x, location.y);
+        return this.entitiesAtMapXY (location.x, location.y);
     };
 
 
@@ -148,7 +148,7 @@ nurdz.game.Level = function (stage, levelData)
      * @returns {nurdz.game.Entity[]|null} the entities at the provided location or null if the location is
      * invalid
      */
-    nurdz.game.Level.prototype.entitiesAtXYFacing = function (x, y, facing)
+    nurdz.game.Level.prototype.entitiesAtMapXYFacing = function (x, y, facing)
     {
         // Based on the facing angle, adjust the map position as needed.
         switch (facing)
@@ -171,7 +171,7 @@ nurdz.game.Level = function (stage, levelData)
         }
 
         // Now we can do a normal lookup.
-        return this.entitiesAtXY (x, y);
+        return this.entitiesAtMapXY (x, y);
     };
 
     //noinspection JSUnusedGlobalSymbols
@@ -186,9 +186,9 @@ nurdz.game.Level = function (stage, levelData)
      * @returns {nurdz.game.Entity[]|null} the entities at the provided location or null if the location is
      * invalid
      */
-    nurdz.game.Level.prototype.entitiesAtFacing = function (location, facing)
+    nurdz.game.Level.prototype.entitiesAtMapPositionFacing = function (location, facing)
     {
-        return this.entitiesAtXYFacing (location.x, location.y, facing);
+        return this.entitiesAtMapXYFacing (location.x, location.y, facing);
     };
 
     /**
@@ -311,7 +311,7 @@ nurdz.game.Level = function (stage, levelData)
 
         // Get the list of entities that are at this location on the map. If there are any and any of them
         // blocks actor movement, the move is blocked.
-        var entities = this.entitiesAtXY (x, y);
+        var entities = this.entitiesAtMapXY (x, y);
         if (entities != null)
         {
             for (var i = 0 ; i < entities.length ; i++)

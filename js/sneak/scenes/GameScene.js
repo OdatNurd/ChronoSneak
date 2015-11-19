@@ -253,7 +253,7 @@ nurdz.sneak.GameScene = function (stage)
         {
             // Get the tile and any entities under the mouse.
             var mTile = this.level.tileAt (mapPos);
-            var entities = this.level.entitiesAt (mapPos);
+            var entities = this.level.entitiesAtMapPosition (mapPos);
 
             this.debugTxt = mapPos.toString ();
             if (mTile != null)
@@ -365,7 +365,7 @@ nurdz.sneak.GameScene = function (stage)
 
         // Collect all of the entities at the debug location. If there are any, we can display some
         // information about them.
-        var entities = this.level.entitiesAt (this.debugPos);
+        var entities = this.level.entitiesAtMapPosition (this.debugPos);
         if (entities != null && entities.length > 0)
         {
             // As we display entities, we check to see if they have any targets. If they do, we put
@@ -447,25 +447,25 @@ nurdz.sneak.GameScene = function (stage)
 
         // Start off by collecting all of the entities that are on the tile that the player is currently
         // standing on.
-        var entities = this.level.entitiesAt (this.player.mapPosition);
+        var entities = this.level.entitiesAtMapPosition (this.player.mapPosition);
 
         // If we didn't find anything, then try to look up entities on the tile that the player is
         // currently facing instead. Note that since we checked the player location, and the player is an
         // entity, it shows up in this list, so we need to exclude it.
         if (entities == null || entities.length <= 1)
-            entities = this.level.entitiesAtFacing (mapPos, facing);
+            entities = this.level.entitiesAtMapPositionFacing (mapPos, facing);
 
         // If we STILL didn't find anything, then check 90 degrees to the left or right. We search in the
         // direction of the handedness of the player (true means right).
         if (entities == null || entities.length == 0)
-            entities = this.level.entitiesAtFacing (mapPos,
-                                                    this.player.normalizeFacingAngle (
+            entities = this.level.entitiesAtMapPositionFacing (mapPos,
+                                                               this.player.normalizeFacingAngle (
                                                         facing + (handedness ? +90 : -90)));
 
         // Do one last check for the other side.
         if (entities == null || entities.length == 0)
-            entities = this.level.entitiesAtFacing (mapPos,
-                                                    this.player.normalizeFacingAngle (
+            entities = this.level.entitiesAtMapPositionFacing (mapPos,
+                                                               this.player.normalizeFacingAngle (
                                                         facing + (handedness ? -90 : +90)));
 
         // If we still didn't find anything, return back an empty array.
@@ -625,7 +625,7 @@ nurdz.sneak.GameScene = function (stage)
             // to move during their step such that they are no longer where the player might have ended up.
             if (targetPos != null)
             {
-                entities = this.level.entitiesAt (targetPos);
+                entities = this.level.entitiesAtMapPosition (targetPos);
                 for (i = 0 ; i < entities.length ; i++)
                     entities[i].triggerTouch (this.player);
             }

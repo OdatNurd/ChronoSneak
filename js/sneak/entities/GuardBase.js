@@ -491,7 +491,7 @@ nurdz.sneak.GuardBase = function (stage, x, y, properties)
         // There is not a world block. Check to see if there are any entities that block movement on the
         // target square. Note that we know that the entities will never be null because if the location
         // was invalid, the movement test would have blocked the move already.
-        var entities = level.entitiesAt (movePos);
+        var entities = level.entitiesAtMapPosition (movePos);
         if (entities.length > 0)
         {
             // TODO Opening of doors should be deferred
