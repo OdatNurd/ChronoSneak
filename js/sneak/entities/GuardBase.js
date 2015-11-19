@@ -25,6 +25,9 @@
  *        - This only has an effect when a patrol is specified, but it indicates that when the last waypoint
  *          in the patrol is reached, the patrol should walk back to the first waypoint in the patrol and
  *          continue.
+ *    - 'fov': number (default: 90)
+ *        - The complete size of the vision cone that this guard can see in, in degrees. The field of
+ *          vision is centered on the facing of the guard.
  *
  * @param {nurdz.game.Stage} stage the stage that will manage this entity
  * @param {Number} x the X coordinate of the entity, in map coordinates
@@ -38,7 +41,8 @@ nurdz.sneak.GuardBase = function (stage, x, y, properties)
 
     // Set up the default properties for entities of this type.
     this.defaultProperties = {
-        patrolLoop: false
+        patrolLoop: false,
+        fov: 90
     };
 
     /**
@@ -104,16 +108,6 @@ nurdz.sneak.GuardBase = function (stage, x, y, properties)
      */
     this.visionCone = [];
 
-    /**
-     * The arc of vision, in degrees, that this guard has. The facing of the guard is the center of the
-     * cone, and the cone itself extends to the left and right at 1/2 of the angle represented here,
-     * making the full sweep of the cone the FOV degrees.
-     *
-     * @type {Number}
-     */
-    this.visionFOV = 130;
-    // TODO the above should be a property
-
     // Call the super class constructor.
     nurdz.sneak.ChronoEntity.call (this, "GuardBase", stage, x, y, properties, 2, '#EB3B00');
 };
@@ -170,6 +164,7 @@ nurdz.sneak.GuardBase = function (stage, x, y, properties)
         this.isPropertyValid ("patrol", "array", false);
         this.isPropertyValid ("patrolLoop", "boolean", false);
         this.isPropertyValid ("spawnPoint", "string", true);
+        this.isPropertyValid ("fov", "number", true);
 
         // Chain to the super to check properties it might have inserted or know about.
         nurdz.sneak.ChronoEntity.prototype.validateProperties.call (this);
@@ -562,7 +557,7 @@ nurdz.sneak.GuardBase = function (stage, x, y, properties)
 
         // Calculate the eye position of the guard in its cell and what half of the vision FOV is.
         var eyePosition = this.position.copyTranslatedXY (TILE_SIZE / 2, TILE_SIZE / 2);
-        var FOV = this.visionFOV / 2;
+        var FOV = this.properties.fov / 2;
 
         // Reset the vision cone array.
         this.visionCone = [eyePosition];

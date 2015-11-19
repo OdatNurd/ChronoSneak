@@ -264,6 +264,7 @@ nurdz.sneak.levels.getLevelOne = function (stage)
             facing:     "left",
             spawnPoint: "gStart1",
 
+            fov: 45,
             patrolLoop: true,
             patrol:     ["pStart1", "way2", "way3", "way3a", "way3b", "way3a", "way4", "way1"]
         }
