@@ -122,6 +122,21 @@ nurdz.sneak.GameScene = function (stage)
     {
         this.stage.canvasContext.font = "20px monospace";
 
+        // Iterate over all of the entities in our level, and for every guard, set their position to the
+        // position that they currently occupy.
+        //
+        // Guards update their vision cone graphics every time their position is set, but before the scene
+        // is active, the guards have no way to access the level data in order to do it.
+        //
+        // This just sets the guards to their current positions, so that they don't move but their cones
+        // get generated.
+        for (var i = 0 ; i < this.level.entities.length ; i++)
+        {
+            var entity = this.level.entities[i];
+            if (entity instanceof nurdz.sneak.GuardBase)
+                entity.setStagePosition (entity.position);
+        }
+
         nurdz.game.Scene.prototype.activating.call (this, previousScene);
     };
 

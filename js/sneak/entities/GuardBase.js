@@ -549,9 +549,10 @@ nurdz.sneak.GuardBase = function (stage, x, y, properties)
      */
     nurdz.sneak.GuardBase.prototype.calculateVisionCone = function ()
     {
-        // TODO We need to get invoked AFTER the scene is fully prepared. This does not happen currently.
         // Fetch the level that the guard is in. If we don't know what this is, then we have to leave;
         // without the level we can't see where our raycasting should stop.
+        //
+        // This happens when our position gets set but the scene that we're in is not the current scene.
         var level = this.stage.currentScene ().level;
         if (level == null)
             return;
