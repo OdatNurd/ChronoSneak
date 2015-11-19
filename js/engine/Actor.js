@@ -30,11 +30,21 @@ nurdz.game.Actor = function (name, stage, x, y, width, height, zOrder, debugColo
     this.stage = stage;
 
     /**
-     * The position of this actor.
+     * The position of this actor on the stage. These coordinates are in pixels
      *
      * @type {nurdz.game.Point}
      */
     this.position = new nurdz.game.Point (x, y);
+
+    /**
+     * The position of this entity on the map. These coordinates are in tiles.
+     *
+     * This is just a version of the position we were given as our regular position scaled to be tile map
+     * coordinates instead of world coordinates.
+     *
+     * @type {nurdz.game.Point}
+     */
+    this.mapPosition = this.position.copyReduced (nurdz.game.TILE_SIZE);
 
     /**
      * How wide this actor is, in pixels.
@@ -93,26 +103,52 @@ nurdz.game.Actor = function (name, stage, x, y, width, height, zOrder, debugColo
 
     //noinspection JSUnusedGlobalSymbols
     /**
-     * Set the position of this actor by setting its position on the stage (world coordinates).
+     * Set the position of this actor by setting its position on the stage (world coordinates). The position
+     * of the actor on the map will automatically be updated.
      *
-     * @param {nurdz.game.Point} position the new position
-     * @see nurdz.game.Actor.setStagePositionXY
+     * @param {nurdz.game.Point} point the point to set the position to.
      */
-    nurdz.game.Actor.prototype.setStagePosition = function (position)
+    nurdz.game.Actor.prototype.setStagePosition = function (point)
     {
-        this.position.setTo (position);
+        this.setStagePositionXY (point.x, point.y);
     };
 
     /**
-     * Set the position of this actor by setting its position on the stage (world coordinates).
+     * Set the position of this actor by setting its position on the stage (world coordinates). The position
+     * of the actor on the map will automatically be updated.
      *
-     * @param {Number} x the new X-coordinate for this actor
-     * @param {Number} y the new Y-coordinate for this actor
-     * @see nurdz.game.Actor.setStagePosition
+     * @param {Number} x the X coordinate of the new stage position
+     * @param {Number} y the Y coordinate of the new stage position
      */
     nurdz.game.Actor.prototype.setStagePositionXY = function (x, y)
     {
         this.position.setToXY (x, y);
+        this.mapPosition = this.position.copyReduced (nurdz.game.TILE_SIZE);
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Set the position of this actor by setting its position in the level (map coordinates). The position of
+     * the entity on the stage will automatically be updated.
+     *
+     * @param {nurdz.game.Point} point the point to set the position to.
+     */
+    nurdz.game.Actor.prototype.setMapPosition = function (point)
+    {
+        this.setMapPositionXY (point.x, point.y);
+    };
+
+    /**
+     * Set the position of this actor by setting its position in the level (map coordinates). The position of
+     * the entity on the stage will automatically be updated.
+     *
+     * @param {Number} x the X coordinate of the new stage position
+     * @param {Number} y the Y coordinate of the new stage position
+     */
+    nurdz.game.Actor.prototype.setMapPositionXY = function (x, y)
+    {
+        this.mapPosition.setToXY (x, y);
+        this.position = this.mapPosition.copyScaled (nurdz.game.TILE_SIZE);
     };
 
     /**

@@ -113,7 +113,6 @@ nurdz.game.Level = function (stage, levelData)
             var entity = this.entities[i];
 
             // If the location matches, add it to the array.
-            // TODO Scope leak; this should not use map position because it's not in general entities
             if (entity.mapPosition.equalsXY (x, y))
                 retVal.push (entity);
         }
