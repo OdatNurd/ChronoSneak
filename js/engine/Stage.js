@@ -163,13 +163,18 @@ nurdz.game.Stage = function (containerDivID, initialColor)
             // If there is a scene change scheduled, change it now.
             if (nextScene != null && nextScene !== currentScene)
             {
-                // Notify the current scene that it is deactivating, then notify the new scene that it is
-                // activating.
+                // Tell the current scene that it is deactivating and what scene is coming next.
                 currentScene.deactivating (nextScene);
-                nextScene.activating (currentScene);
 
-                // Now do the swap and clear the flag.
+                // Save the current scene, then swap to the new one
+                var previousScene = currentScene;
                 currentScene = nextScene;
+
+                // Now tell the current scene that it is activating, telling it what scene used to be in
+                // effect.
+                currentScene.activating (previousScene);
+
+                // Clear the flag now.
                 nextScene = null;
             }
 
