@@ -42,7 +42,7 @@ nurdz.sneak.GuardBase = function (stage, x, y, properties)
     // Set up the default properties for entities of this type.
     this.defaultProperties = {
         patrolLoop: false,
-        fov: 90
+        fov:        90
     };
 
     /**
@@ -403,7 +403,7 @@ nurdz.sneak.GuardBase = function (stage, x, y, properties)
             // If there is a vision cone, render it now.
             if (this.visionCone.length > 1)
             {
-                stage.canvasContext.save( );
+                stage.canvasContext.save();
 
                 // Set up drawing.
                 stage.canvasContext.fillStyle = "green";
@@ -552,11 +552,15 @@ nurdz.sneak.GuardBase = function (stage, x, y, properties)
         if (level == null)
             return;
 
-        // TODO the below eye position should not be the center, but a little forward of center, so that
-        // the rays do not hit the intersections of tiles.
-
-        // Calculate the eye position of the guard in its cell and what half of the vision FOV is.
+        // Calculate the eye position of the guard. We make a copy of the position of ourselves and translate
+        // it so that it is in the center of the tile that we're standing on. We then determine the point 1/4
+        // of the size of a tile ahead of us, which puts the eye position half way between the center of the
+        // tile and the edge of the tile itself.
         var eyePosition = this.position.copyTranslatedXY (TILE_SIZE / 2, TILE_SIZE / 2);
+        eyePosition = eyePosition.pointAtAngle (this.properties.facing, TILE_SIZE / 4);
+
+        // Make a copy of the FOV and split it in half, since we sweep from the left hand side of the cone
+        // to the right.
         var FOV = this.properties.fov / 2;
 
         // Reset the vision cone array.
