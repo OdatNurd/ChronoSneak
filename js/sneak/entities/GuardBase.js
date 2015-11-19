@@ -382,6 +382,15 @@ nurdz.sneak.GuardBase = function (stage, x, y, properties)
     var MARGIN = Math.floor (nurdz.game.TILE_SIZE * 0.15);
 
     /**
+     * The number of rays that we cast when generating our vision cones for guards. The higher the value,
+     * the better the fidelity of the generated cone, but the higher the point count on the generated polygon.
+     *
+     * @const
+     * @type {Number}
+     */
+    var RAY_COUNT = 60;
+
+    /**
      * Render this actor to the stage provided. The base class version renders a positioning box for this
      * actor using its position and size, using the debug color provided in the constructor.
      *
@@ -563,12 +572,15 @@ nurdz.sneak.GuardBase = function (stage, x, y, properties)
         // to the right.
         var FOV = this.properties.fov / 2;
 
+        // Calculate how many degrees each ray needs to be in order to get a full set of rays cast.
+        var sweepAngle = this.properties.fov / RAY_COUNT;
+
         // Reset the vision cone array.
         this.visionCone = [eyePosition];
 
         // We cast in a sweep. The start of the cone is to the left of the viewing angle and is half of
         // the total view, following all the way to the right over the range of the whole FOV.
-        for (var angle = this.properties.facing - FOV ; angle <= this.properties.facing + FOV ; angle += 5)
+        for (var angle = this.properties.facing - FOV ; angle <= this.properties.facing + FOV ; angle += sweepAngle)
             this.castRay (level, eyePosition.x, eyePosition.y, this.normalizeAngle (angle));
     };
 
